@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGameState } from '@/hooks/useGameState';
@@ -7,65 +6,18 @@ import PixelCharacter from '@/components/PixelCharacter';
 import XPBar from '@/components/XPBar';
 import Header from '@/components/Header';
 import rpgMapBg from '@/assets/rpg-map-bg.png';
-import { Lock, Sparkles, ChevronRight } from 'lucide-react';
-
-function WelcomeModal({ onComplete }: { onComplete: (name: string) => void }) {
-  const [name, setName] = useState('');
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 p-4">
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="pixel-card-primary max-w-md w-full p-8 text-center"
-      >
-        <h1 className="font-pixel text-xl text-primary mb-2 animate-pixel-glow">PIXÑOL</h1>
-        <p className="font-pixel text-[0.55rem] text-secondary mb-6">Aprende Español con RPG</p>
-        <div className="flex justify-center mb-6">
-          <PixelCharacter
-            character={{ skinColor: '#f4c794', hairColor: '#3d2314', outfitColor: '#e74c3c', bootsColor: '#5d4037', eyeColor: '#1a1a2e', hairStyle: 0, accessory: 0 }}
-            size={8}
-            animate
-          />
-        </div>
-        <p className="text-foreground font-body mb-4">!مرحبًا بك في مغامرة تعلم الإسبانية</p>
-        <p className="text-muted-foreground font-body text-sm mb-6">اختر اسم المغامر الخاص بك</p>
-        <input
-          type="text"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && name.trim() && onComplete(name.trim())}
-          placeholder="اسمك هنا..."
-          className="w-full px-4 py-3 mb-4 bg-muted border-2 border-border text-foreground font-body text-center placeholder:text-muted-foreground focus:outline-none focus:border-primary"
-          dir="auto"
-          autoFocus
-        />
-        <button
-          onClick={() => name.trim() && onComplete(name.trim())}
-          disabled={!name.trim()}
-          className="pixel-btn w-full disabled:opacity-50"
-        >
-          ¡VAMOS! ابدأ المغامرة
-        </button>
-      </motion.div>
-    </div>
-  );
-}
+import { Lock, Sparkles, ChevronRight, Flame, BookOpen, Swords } from 'lucide-react';
 
 export default function Index() {
-  const { state, updateUsername, isNewUser, xpToNextLevel } = useGameState();
+  const { state, xpToNextLevel } = useGameState();
   const navigate = useNavigate();
-
-  if (isNewUser) {
-    return <WelcomeModal onComplete={(name) => updateUsername(name)} />;
-  }
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-3 py-6">
         {/* Hero section */}
-        <div className="relative mb-8 overflow-hidden pixel-card-primary">
+        <div className="relative mb-6 overflow-hidden pixel-card-primary">
           <img
             src={rpgMapBg}
             alt="RPG World Map"
@@ -88,6 +40,41 @@ export default function Index() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Quick actions */}
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          <motion.button
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate('/daily-challenge')}
+            className="pixel-card pixel-border-secondary p-4 text-center group hover:translate-y-[-2px] transition-all"
+          >
+            <Flame size={24} className="mx-auto text-secondary mb-2" />
+            <p className="font-pixel text-[0.5rem] text-secondary">التحدي اليومي</p>
+            <p className="font-pixel text-[0.35rem] text-muted-foreground mt-1">Desafío Diario</p>
+          </motion.button>
+          <motion.button
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate('/stories')}
+            className="pixel-card pixel-border-accent p-4 text-center group hover:translate-y-[-2px] transition-all"
+          >
+            <BookOpen size={24} className="mx-auto text-accent mb-2" />
+            <p className="font-pixel text-[0.5rem] text-accent">القصص</p>
+            <p className="font-pixel text-[0.35rem] text-muted-foreground mt-1">Historias</p>
+          </motion.button>
+          <motion.button
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate('/boss-fights')}
+            className="pixel-card p-4 text-center group hover:translate-y-[-2px] transition-all"
+            style={{ border: '3px solid hsl(0, 75%, 55%)', boxShadow: '4px 4px 0 0 hsl(0 75% 55% / 0.4)' }}
+          >
+            <Swords size={24} className="mx-auto text-destructive mb-2" />
+            <p className="font-pixel text-[0.5rem] text-destructive">Boss Fight</p>
+            <p className="font-pixel text-[0.35rem] text-muted-foreground mt-1">معركة القواعد</p>
+          </motion.button>
         </div>
 
         {/* Zone Grid */}
