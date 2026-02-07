@@ -7,6 +7,7 @@ import { useState } from 'react';
 
 const NAV_ITEMS = [
   { path: '/', label: 'الخريطة', labelEs: 'Mapa', icon: Map },
+  { path: '/daily-challenge', label: 'التحدي', labelEs: 'Desafío', icon: Trophy },
   { path: '/profile', label: 'الملف', labelEs: 'Perfil', icon: User },
   { path: '/ai-chat', label: 'AI مساعد', labelEs: 'Chat AI', icon: MessageCircle },
   { path: '/achievements', label: 'الإنجازات', labelEs: 'Logros', icon: Trophy },
