@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGameState } from '@/hooks/useGameState';
+import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { ZONES } from '@/data/zones';
 import PixelCharacter from '@/components/PixelCharacter';
 import XPBar from '@/components/XPBar';
@@ -10,6 +11,7 @@ import { Lock, Sparkles, ChevronRight, Flame, BookOpen, Swords } from 'lucide-re
 
 export default function Index() {
   const { state, xpToNextLevel } = useGameState();
+  const { playClick, playSuccess, playError } = usePixelSounds();
   const navigate = useNavigate();
 
   return (
@@ -47,7 +49,7 @@ export default function Index() {
           <motion.button
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => navigate('/daily-challenge')}
+            onClick={() => { playClick(); navigate('/daily-challenge'); }}
             className="pixel-card pixel-border-secondary p-4 text-center group hover:translate-y-[-2px] transition-all"
           >
             <Flame size={24} className="mx-auto text-secondary mb-2" />
@@ -57,7 +59,7 @@ export default function Index() {
           <motion.button
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => navigate('/stories')}
+            onClick={() => { playClick(); navigate('/stories'); }}
             className="pixel-card pixel-border-accent p-4 text-center group hover:translate-y-[-2px] transition-all"
           >
             <BookOpen size={24} className="mx-auto text-accent mb-2" />
@@ -67,7 +69,7 @@ export default function Index() {
           <motion.button
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => navigate('/boss-fights')}
+            onClick={() => { playClick(); navigate('/boss-fights'); }}
             className="pixel-card p-4 text-center group hover:translate-y-[-2px] transition-all"
             style={{ border: '3px solid hsl(0, 75%, 55%)', boxShadow: '4px 4px 0 0 hsl(0 75% 55% / 0.4)' }}
           >
@@ -93,7 +95,7 @@ export default function Index() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
-                onClick={() => isUnlocked && navigate(`/zone/${zone.id}`)}
+                onClick={() => { if (isUnlocked) { playSuccess(); navigate(`/zone/${zone.id}`); } else { playError(); } }}
                 className={`pixel-card relative cursor-pointer transition-all duration-300 group ${
                   isUnlocked
                     ? `hover:translate-y-[-2px] ${zone.glowClass}`

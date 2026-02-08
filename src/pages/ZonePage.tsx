@@ -1,6 +1,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGameState } from '@/hooks/useGameState';
+import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { ZONES } from '@/data/zones';
 import Header from '@/components/Header';
 import { ArrowLeft, Check, BookOpen, Gamepad2, ChevronRight } from 'lucide-react';
@@ -9,6 +10,7 @@ export default function ZonePage() {
   const { zoneId } = useParams<{ zoneId: string }>();
   const navigate = useNavigate();
   const { state } = useGameState();
+  const { playClick } = usePixelSounds();
 
   const zone = ZONES.find(z => z.id === zoneId);
   if (!zone) {
@@ -66,6 +68,7 @@ export default function ZonePage() {
               >
                 <Link
                   to={`/lesson/${lesson.id}`}
+                  onClick={() => playClick()}
                   className={`pixel-card flex items-center gap-3 p-4 group hover:translate-y-[-1px] transition-all ${
                     isCompleted ? 'border-accent/50' : ''
                   }`}
@@ -103,6 +106,7 @@ export default function ZonePage() {
             >
               <Link
                 to={`/game/${game.type}?zone=${zone.id}`}
+                onClick={() => playClick()}
                 className="pixel-card pixel-border-secondary flex items-center gap-3 p-4 hover:translate-y-[-2px] transition-all group"
               >
                 <span className="text-2xl">{game.icon}</span>
