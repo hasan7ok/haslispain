@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameState } from '@/hooks/useGameState';
+import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { GRAMMAR_BOSSES } from '@/data/grammarBosses';
 import Header from '@/components/Header';
 import { ArrowLeft, Shield, Swords, Heart, Zap, Skull } from 'lucide-react';
@@ -10,6 +11,7 @@ export default function GrammarBossPage() {
   const { bossId } = useParams<{ bossId: string }>();
   const navigate = useNavigate();
   const { addXP, completeGame } = useGameState();
+  const { playSuccess, playError, playVictory, playDefeat, playCombo } = usePixelSounds();
 
   const boss = GRAMMAR_BOSSES.find(b => b.id === bossId);
 
@@ -47,7 +49,13 @@ export default function GrammarBossPage() {
       const damage = question.damage + (combo * 5);
       setBossShake(true);
       setShowDamage({ amount: damage, type: 'boss' });
-      setCombo(c => c + 1);
+      const newCombo = combo + 1;
+      setCombo(newCombo);
+      if (newCombo > 1) {
+        playCombo();
+      } else {
+        playSuccess();
+      }
       setTimeout(() => setBossShake(false), 500);
       setTimeout(() => setShowDamage(null), 1500);
 
@@ -58,6 +66,7 @@ export default function GrammarBossPage() {
             setGameOver('win');
             addXP(boss.xpReward);
             completeGame(boss.id, boss.xpReward);
+            playVictory();
           }, 1000);
         }
         return newHp;
@@ -68,13 +77,17 @@ export default function GrammarBossPage() {
       setShakeScreen(true);
       setShowDamage({ amount: damage, type: 'player' });
       setCombo(0);
+      playError();
       setTimeout(() => setShakeScreen(false), 500);
       setTimeout(() => setShowDamage(null), 1500);
 
       setPlayerHp(prev => {
         const newHp = Math.max(0, prev - damage);
         if (newHp <= 0) {
-          setTimeout(() => setGameOver('lose'), 1000);
+          setTimeout(() => {
+            setGameOver('lose');
+            playDefeat();
+          }, 1000);
         }
         return newHp;
       });

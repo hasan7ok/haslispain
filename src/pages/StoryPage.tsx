@@ -2,14 +2,16 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameState } from '@/hooks/useGameState';
+import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { STORIES, StoryChoice } from '@/data/stories';
 import Header from '@/components/Header';
-import { ArrowLeft, MessageCircle, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
 
 export default function StoryPage() {
   const { storyId } = useParams<{ storyId: string }>();
   const navigate = useNavigate();
   const { addXP } = useGameState();
+  const { playSuccess, playError, playVictory } = usePixelSounds();
   const [currentNodeId, setCurrentNodeId] = useState('start');
   const [feedback, setFeedback] = useState<{ text: string; isCorrect: boolean } | null>(null);
   const [completed, setCompleted] = useState(false);
@@ -34,10 +36,16 @@ export default function StoryPage() {
   const handleChoice = (choice: StoryChoice) => {
     // Show feedback
     if (choice.feedbackAr) {
+      const isCorrect = choice.isCorrect !== false;
       setFeedback({
         text: choice.feedbackAr,
-        isCorrect: choice.isCorrect !== false,
+        isCorrect,
       });
+      if (isCorrect) {
+        playSuccess();
+      } else {
+        playError();
+      }
     }
 
     setTimeout(() => {
@@ -49,6 +57,7 @@ export default function StoryPage() {
         setXpEarned(nextNode.xpReward);
         addXP(nextNode.xpReward);
         setCompleted(true);
+        playVictory();
       }
     }, choice.feedbackAr ? 2000 : 500);
   };
