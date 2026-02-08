@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameState } from '@/hooks/useGameState';
+import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { getDailyChallenge } from '@/data/dailyChallenges';
 import Header from '@/components/Header';
 import { ArrowLeft, Flame, Check, X, Trophy } from 'lucide-react';
@@ -9,6 +10,7 @@ import { ArrowLeft, Flame, Check, X, Trophy } from 'lucide-react';
 export default function DailyChallengePage() {
   const navigate = useNavigate();
   const { addXP } = useGameState();
+  const { playSuccess, playError, playVictory } = usePixelSounds();
   const challenges = getDailyChallenge();
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
@@ -27,14 +29,17 @@ export default function DailyChallengePage() {
       setScore(s => s + 1);
       setTotalXP(xp => xp + current.xpReward);
       addXP(current.xpReward);
+      playSuccess();
     } else {
       setResult('wrong');
+      playError();
     }
   };
 
   const nextChallenge = () => {
     if (currentIdx >= challenges.length - 1) {
       setCompleted(true);
+      playVictory();
       return;
     }
     setCurrentIdx(i => i + 1);

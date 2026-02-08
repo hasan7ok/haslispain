@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGameState } from '@/hooks/useGameState';
+import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { WORD_HUNT_CHALLENGES } from '@/data/vocabulary';
 import Header from '@/components/Header';
 import { ArrowLeft, Target } from 'lucide-react';
@@ -9,6 +10,7 @@ import { ArrowLeft, Target } from 'lucide-react';
 export default function WordHuntPage() {
   const navigate = useNavigate();
   const { completeGame } = useGameState();
+  const { playSuccess, playError, playVictory } = usePixelSounds();
   const [round, setRound] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [result, setResult] = useState<'correct' | 'wrong' | null>(null);
@@ -24,8 +26,10 @@ export default function WordHuntPage() {
     if (option === current.correct) {
       setResult('correct');
       setScore(s => s + 1);
+      playSuccess();
     } else {
       setResult('wrong');
+      playError();
     }
   };
 
@@ -33,6 +37,7 @@ export default function WordHuntPage() {
     if (round >= challenges.length - 1) {
       setGameOver(true);
       completeGame('word-hunt', score * 4 + 10);
+      playVictory();
       return;
     }
     setRound(r => r + 1);

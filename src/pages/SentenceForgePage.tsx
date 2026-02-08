@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameState } from '@/hooks/useGameState';
+import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { SENTENCE_CHALLENGES } from '@/data/vocabulary';
 import Header from '@/components/Header';
 import { ArrowLeft, RotateCcw, Swords } from 'lucide-react';
@@ -9,6 +10,7 @@ import { ArrowLeft, RotateCcw, Swords } from 'lucide-react';
 export default function SentenceForgePage() {
   const navigate = useNavigate();
   const { completeGame } = useGameState();
+  const { playSuccess, playError, playVictory } = usePixelSounds();
   const [round, setRound] = useState(0);
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
   const [availableWords, setAvailableWords] = useState<string[]>(() =>
@@ -42,8 +44,10 @@ export default function SentenceForgePage() {
     if (answer === current.targetSentence) {
       setResult('correct');
       setScore(s => s + 1);
+      playSuccess();
     } else {
       setResult('wrong');
+      playError();
     }
   };
 
@@ -51,6 +55,7 @@ export default function SentenceForgePage() {
     if (round >= challenges.length - 1) {
       setGameOver(true);
       completeGame('sentence-forge', score * 5 + 10);
+      playVictory();
       return;
     }
     const next = round + 1;
