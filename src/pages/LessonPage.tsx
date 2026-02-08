@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameState } from '@/hooks/useGameState';
+import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { LESSONS } from '@/data/vocabulary';
 import Header from '@/components/Header';
 import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw } from 'lucide-react';
@@ -10,6 +11,7 @@ export default function LessonPage() {
   const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
   const { state, completeLesson } = useGameState();
+  const { playClick, playSuccess, playVictory } = usePixelSounds();
   const [currentCard, setCurrentCard] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
   const [completed, setCompleted] = useState(false);
@@ -33,6 +35,7 @@ export default function LessonPage() {
 
   const handleComplete = () => {
     setCompleted(true);
+    playVictory();
     if (!isAlreadyCompleted) {
       const zone = lesson.id.split('-')[0];
       const xp = zone === 'pueblo' ? 25 : zone === 'ciudad' ? 35 : 40;
@@ -43,6 +46,7 @@ export default function LessonPage() {
   const nextCard = () => {
     setShowTranslation(false);
     if (currentCard < vocab.length - 1) {
+      playClick();
       setCurrentCard(c => c + 1);
     } else {
       handleComplete();
@@ -104,7 +108,7 @@ export default function LessonPage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -30 }}
               className="pixel-card-primary p-6 min-h-[250px] flex flex-col items-center justify-center cursor-pointer"
-              onClick={() => setShowTranslation(!showTranslation)}
+              onClick={() => { playSuccess(); setShowTranslation(!showTranslation); }}
             >
               <p className="font-pixel text-[0.5rem] text-muted-foreground mb-4">اضغط لكشف الترجمة</p>
               <h2 className="font-pixel text-base text-primary mb-2">{vocab[currentCard].word}</h2>
