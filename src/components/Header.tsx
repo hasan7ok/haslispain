@@ -1,8 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useGameState } from '@/hooks/useGameState';
+import { useAuth } from '@/hooks/useAuth';
 import PixelCharacter from './PixelCharacter';
 import XPBar from './XPBar';
-import { Map, User, MessageCircle, Trophy, Menu, X } from 'lucide-react';
+import { Map, User, MessageCircle, Trophy, Menu, X, LogOut } from 'lucide-react';
 import { useState } from 'react';
 
 const NAV_ITEMS = [
@@ -15,6 +16,7 @@ const NAV_ITEMS = [
 
 export default function Header() {
   const { state, xpToNextLevel, xpProgress } = useGameState();
+  const { signOut } = useAuth();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -59,6 +61,13 @@ export default function Header() {
           <Link to="/profile" className="hover:animate-pixel-bounce">
             <PixelCharacter character={state.character} size={4} />
           </Link>
+          <button
+            onClick={signOut}
+            className="p-1.5 text-muted-foreground hover:text-destructive transition-colors border border-transparent hover:border-destructive/30"
+            title="تسجيل الخروج"
+          >
+            <LogOut size={14} />
+          </button>
         </div>
 
         {/* Mobile menu button */}
@@ -97,6 +106,12 @@ export default function Header() {
           <div className="p-3">
             <XPBar xp={state.xp} xpToNext={xpToNextLevel} level={state.level} />
           </div>
+          <button
+            onClick={signOut}
+            className="w-full flex items-center gap-3 px-4 py-3 font-pixel text-[0.6rem] text-destructive border-t border-border hover:bg-destructive/5"
+          >
+            <LogOut size={16} /> تسجيل الخروج
+          </button>
         </nav>
       )}
     </header>

@@ -14,7 +14,110 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      nft_collections: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          frame_style: string | null
+          id: string
+          image_seed: string
+          name: string
+          rarity: string
+          unlock_condition: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          frame_style?: string | null
+          id?: string
+          image_seed: string
+          name: string
+          rarity?: string
+          unlock_condition?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          frame_style?: string | null
+          id?: string
+          image_seed?: string
+          name?: string
+          rarity?: string
+          unlock_condition?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          id: string
+          learning_motivation: string | null
+          level: string | null
+          quiz_completed: boolean
+          quiz_results: Json | null
+          updated_at: string
+          user_id: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          learning_motivation?: string | null
+          level?: string | null
+          quiz_completed?: boolean
+          quiz_results?: Json | null
+          updated_at?: string
+          user_id: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          learning_motivation?: string | null
+          level?: string | null
+          quiz_completed?: boolean
+          quiz_results?: Json | null
+          updated_at?: string
+          user_id?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      user_nfts: {
+        Row: {
+          earned_at: string
+          id: string
+          nft_id: string
+          user_id: string
+        }
+        Insert: {
+          earned_at?: string
+          id?: string
+          nft_id: string
+          user_id: string
+        }
+        Update: {
+          earned_at?: string
+          id?: string
+          nft_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_nfts_nft_id_fkey"
+            columns: ["nft_id"]
+            isOneToOne: false
+            referencedRelation: "nft_collections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
