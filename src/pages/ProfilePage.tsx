@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGameState, CharacterConfig } from '@/hooks/useGameState';
+import { useAuth } from '@/hooks/useAuth';
 import PixelCharacter from '@/components/PixelCharacter';
+import PixelAvatar from '@/components/PixelAvatar';
+import NFTCollection, { NFTItem } from '@/components/NFTCollection';
 import XPBar from '@/components/XPBar';
 import Header from '@/components/Header';
 import { ArrowLeft, Edit3, Save, Trash2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const SKIN_COLORS = ['#f4c794', '#e0ac69', '#c68642', '#8d5524', '#6b3a1f', '#f9d5a7'];
 const HAIR_COLORS = ['#3d2314', '#1a1a2e', '#c9a96e', '#e74c3c', '#2980b9', '#8e44ad', '#f39c12', '#ecf0f1'];
@@ -25,8 +29,46 @@ const ACHIEVEMENTS_LIST = [
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { state, updateCharacter, updateUsername, resetProgress, xpToNextLevel } = useGameState();
+  const { profile, user } = useAuth();
   const [editingName, setEditingName] = useState(false);
   const [newName, setNewName] = useState(state.username);
+  const [nfts, setNfts] = useState<NFTItem[]>([]);
+
+  useEffect(() => {
+    const loadNFTs = async () => {
+      // Get all NFT collections
+      const { data: collections } = await supabase
+        .from('nft_collections')
+        .select('*');
+
+      // Get user's earned NFTs
+      const { data: userNfts } = user
+        ? await supabase
+            .from('user_nfts')
+            .select('nft_id, earned_at')
+            .eq('user_id', user.id)
+        : { data: [] };
+
+      if (collections) {
+        const earnedIds = new Set((userNfts || []).map(n => n.nft_id));
+        setNfts(
+          collections.map(c => ({
+            id: c.id,
+            name: c.name,
+            description: c.description,
+            image_seed: c.image_seed,
+            rarity: c.rarity,
+            category: c.category,
+            frame_style: c.frame_style || 'default',
+            unlock_condition: c.unlock_condition,
+            earned: earnedIds.has(c.id),
+            earned_at: userNfts?.find(n => n.nft_id === c.id)?.earned_at || undefined,
+          }))
+        );
+      }
+    };
+    loadNFTs();
+  }, [user]);
 
   const handleColorChange = (key: keyof CharacterConfig, value: string) => {
     updateCharacter({ [key]: value });
@@ -68,7 +110,11 @@ export default function ProfilePage() {
               <button onClick={() => setEditingName(true)} className="text-muted-foreground hover:text-foreground"><Edit3 size={14} /></button>
             </div>
           )}
-          <p className="font-pixel text-[0.5rem] text-muted-foreground mt-1">Level {state.level} Aventurero</p>
+          {profile?.avatar_url && (
+            <div className="mt-3 flex justify-center">
+              <PixelAvatar seed={profile.avatar_url || profile.username} size={48} frameStyle="cyber-green" />
+            </div>
+          )}
           <div className="max-w-xs mx-auto mt-3">
             <XPBar xp={state.xp} xpToNext={xpToNextLevel} level={state.level} />
           </div>
@@ -123,6 +169,13 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
+
+        {/* NFT Collection */}
+        {nfts.length > 0 && (
+          <div className="pixel-card p-4 mb-6">
+            <NFTCollection nfts={nfts} title="مجموعة NFT - Colección NFT" />
+          </div>
+        )}
 
         {/* Achievements */}
         <div className="pixel-card p-4 mb-6">
