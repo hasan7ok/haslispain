@@ -21,11 +21,22 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 pixel-card border-b-4 border-primary/30 bg-card/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 border-b-2 border-primary/30 backdrop-blur-md"
+      style={{
+        background: 'rgba(9,0,20,0.92)',
+        boxShadow: '0 0 20px rgba(255,0,255,0.1), 0 4px 30px rgba(0,0,0,0.5)',
+      }}
+    >
       <div className="container mx-auto flex items-center justify-between px-3 py-2">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group">
-          <span className="font-pixel text-sm md:text-base text-primary animate-pixel-glow group-hover:animate-pixel-bounce">
+          <span className="font-pixel text-sm md:text-base animate-pixel-glow group-hover:animate-pixel-bounce"
+            style={{
+              background: 'linear-gradient(to right, #FF9900, #FF00FF, #00FFFF)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
             PIXÑOL
           </span>
         </Link>
@@ -41,8 +52,8 @@ export default function Header() {
                 to={item.path}
                 className={`flex items-center gap-1.5 px-3 py-2 font-pixel text-[0.55rem] transition-all duration-200 border-2 ${
                   isActive
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
+                    ? 'border-secondary bg-secondary/10 text-secondary shadow-[0_0_10px_rgba(0,255,255,0.2)]'
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-primary/30 hover:shadow-[0_0_8px_rgba(255,0,255,0.15)]'
                 }`}
               >
                 <Icon size={14} />
@@ -54,8 +65,9 @@ export default function Header() {
 
         {/* XP & Character */}
         <div className="hidden md:flex items-center gap-3">
-          <div className="flex items-center gap-1 px-2 py-1 pixel-border-muted">
-            <span className="font-pixel text-[0.5rem] text-secondary">🔥 {state.streak}</span>
+          <div className="flex items-center gap-1 px-2 py-1 border border-accent/30"
+            style={{ boxShadow: '0 0 8px rgba(255,153,0,0.15)' }}>
+            <span className="font-pixel text-[0.5rem] text-accent">🔥 {state.streak}</span>
           </div>
           <XPBar xp={state.xp} xpToNext={xpToNextLevel} level={state.level} compact />
           <Link to="/profile" className="hover:animate-pixel-bounce">
@@ -63,7 +75,7 @@ export default function Header() {
           </Link>
           <button
             onClick={signOut}
-            className="p-1.5 text-muted-foreground hover:text-destructive transition-colors border border-transparent hover:border-destructive/30"
+            className="p-1.5 text-muted-foreground hover:text-destructive transition-all border border-transparent hover:border-destructive/30 hover:shadow-[0_0_8px_rgba(255,0,0,0.2)]"
             title="تسجيل الخروج"
           >
             <LogOut size={14} />
@@ -72,11 +84,11 @@ export default function Header() {
 
         {/* Mobile menu button */}
         <div className="flex md:hidden items-center gap-2">
-          <span className="font-pixel text-[0.5rem] text-primary">Lv.{state.level}</span>
-          <span className="font-pixel text-[0.5rem] text-secondary">🔥{state.streak}</span>
+          <span className="font-pixel text-[0.5rem] text-secondary" style={{ filter: 'drop-shadow(0 0 4px rgba(0,255,255,0.4))' }}>Lv.{state.level}</span>
+          <span className="font-pixel text-[0.5rem] text-accent">🔥{state.streak}</span>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-foreground"
+            className="p-2 text-foreground hover:text-secondary transition-colors"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -85,7 +97,8 @@ export default function Header() {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <nav className="md:hidden border-t-2 border-border bg-card animate-slide-up">
+        <nav className="md:hidden border-t-2 border-primary/30 animate-slide-up"
+          style={{ background: 'rgba(9,0,20,0.97)' }}>
           {NAV_ITEMS.map(item => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -94,8 +107,8 @@ export default function Header() {
                 key={item.path}
                 to={item.path}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 font-pixel text-[0.6rem] border-b border-border ${
-                  isActive ? 'text-primary bg-primary/5' : 'text-muted-foreground'
+                className={`flex items-center gap-3 px-4 py-3 font-pixel text-[0.6rem] border-b border-border transition-all ${
+                  isActive ? 'text-secondary bg-secondary/5 shadow-[inset_2px_0_0_hsl(var(--secondary))]' : 'text-muted-foreground hover:text-foreground hover:bg-primary/5'
                 }`}
               >
                 <Icon size={16} />
@@ -108,7 +121,7 @@ export default function Header() {
           </div>
           <button
             onClick={signOut}
-            className="w-full flex items-center gap-3 px-4 py-3 font-pixel text-[0.6rem] text-destructive border-t border-border hover:bg-destructive/5"
+            className="w-full flex items-center gap-3 px-4 py-3 font-pixel text-[0.6rem] text-destructive border-t border-border hover:bg-destructive/5 transition-colors"
           >
             <LogOut size={16} /> تسجيل الخروج
           </button>
