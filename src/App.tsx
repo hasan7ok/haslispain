@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SplashScreen from "@/components/SplashScreen";
 import AuthPage from "@/pages/AuthPage";
 import WelcomeQuiz from "@/components/WelcomeQuiz";
@@ -41,6 +41,21 @@ function AppContent() {
     setShowSplash(false);
     sessionStorage.setItem('pixnol-splash-seen', 'true');
   };
+
+  // Sync username to game state on load
+  useEffect(() => {
+    if (auth.profile?.username && auth.profile.quiz_completed) {
+      const currentState = localStorage.getItem('pixnol-game-state');
+      if (currentState) {
+        const parsed = JSON.parse(currentState);
+        if (parsed.username !== auth.profile.username) {
+          updateUsername(auth.profile.username);
+        }
+      } else {
+        updateUsername(auth.profile.username);
+      }
+    }
+  }, [auth.profile?.username, auth.profile?.quiz_completed, updateUsername]);
 
   // Show splash screen
   if (showSplash) {
@@ -80,13 +95,12 @@ function AppContent() {
             quiz_results: results,
             level,
           });
-          // Grant welcome NFT
           if (auth.user) {
             const { data: signupNft } = await supabase
               .from('nft_collections')
               .select('id')
               .eq('unlock_condition', 'signup')
-              .single();
+              .maybeSingle();
             if (signupNft) {
               await supabase.from('user_nfts').insert({
                 user_id: auth.user.id,
@@ -94,7 +108,6 @@ function AppContent() {
               });
             }
           }
-          // Sync username to local game state
           if (auth.profile?.username) {
             updateUsername(auth.profile.username);
           }
@@ -102,19 +115,6 @@ function AppContent() {
         }}
       />
     );
-  }
-
-  // Sync username to game state on load
-  if (auth.profile?.username) {
-    const currentState = localStorage.getItem('pixnol-game-state');
-    if (currentState) {
-      const parsed = JSON.parse(currentState);
-      if (parsed.username !== auth.profile.username) {
-        updateUsername(auth.profile.username);
-      }
-    } else {
-      updateUsername(auth.profile.username);
-    }
   }
 
   return (
