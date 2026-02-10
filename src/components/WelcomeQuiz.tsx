@@ -132,12 +132,19 @@ export default function WelcomeQuiz({ onComplete }: WelcomeQuizProps) {
 
   if (showResult) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="min-h-screen flex items-center justify-center bg-background p-4 relative">
+        {/* Grid bg */}
+        <div className="fixed inset-0 pointer-events-none opacity-20"
+          style={{
+            backgroundImage: 'linear-gradient(transparent 95%, rgba(255,0,255,0.15) 95%), linear-gradient(90deg, transparent 95%, rgba(255,0,255,0.15) 95%)',
+            backgroundSize: '50px 50px',
+          }}
+        />
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 200 }}
-          className="pixel-card-primary max-w-md w-full p-8 text-center"
+          className="pixel-card-primary max-w-md w-full p-8 text-center relative z-10"
         >
           <motion.div
             initial={{ scale: 0 }}
@@ -147,7 +154,7 @@ export default function WelcomeQuiz({ onComplete }: WelcomeQuizProps) {
           >
             🎉
           </motion.div>
-          <h2 className="font-pixel text-lg text-primary mb-3">!Excelente ممتاز</h2>
+          <h2 className="font-pixel text-lg mb-3 text-gradient-vapor">!Excelente ممتاز</h2>
           <p className="font-body text-foreground mb-6">
             حسب إجاباتك، راح نبدأ وياك من:
           </p>
@@ -155,10 +162,11 @@ export default function WelcomeQuiz({ onComplete }: WelcomeQuizProps) {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="px-6 py-4 pixel-border-accent bg-accent/10 mb-6 inline-block"
+            className="px-6 py-4 border-2 border-secondary bg-secondary/10 mb-6 inline-block"
+            style={{ boxShadow: '0 0 20px rgba(0,255,255,0.2)' }}
           >
-            <span className="font-pixel text-sm text-accent">{level}</span>
-            <p className="font-pixel text-[0.4rem] text-muted-foreground mt-1">
+            <span className="font-pixel text-sm text-secondary" style={{ filter: 'drop-shadow(0 0 6px rgba(0,255,255,0.6))' }}>{level}</span>
+            <p className="font-mono text-[0.55rem] text-muted-foreground mt-1 uppercase tracking-wider">
               {level === 'مبتدئ' ? 'Principiante' : level === 'مبتدئ متقدم' ? 'Principiante Avanzado' : 'Intermedio'}
             </p>
           </motion.div>
@@ -169,11 +177,13 @@ export default function WelcomeQuiz({ onComplete }: WelcomeQuizProps) {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => onComplete(answers, level)}
-            className="pixel-btn w-full flex items-center justify-center gap-2"
+            className="pixel-btn-secondary w-full flex items-center justify-center gap-2"
           >
-            <Sparkles size={16} />
-            يلا نبدأ المغامرة!
-            <ChevronRight size={14} />
+            <span className="flex items-center gap-2">
+              <Sparkles size={16} />
+              يلا نبدأ المغامرة!
+              <ChevronRight size={14} />
+            </span>
           </motion.button>
         </motion.div>
       </div>
@@ -181,19 +191,26 @@ export default function WelcomeQuiz({ onComplete }: WelcomeQuizProps) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 relative">
+      {/* Grid bg */}
+      <div className="fixed inset-0 pointer-events-none opacity-20"
+        style={{
+          backgroundImage: 'linear-gradient(transparent 95%, rgba(0,255,255,0.1) 95%), linear-gradient(90deg, transparent 95%, rgba(0,255,255,0.1) 95%)',
+          backgroundSize: '50px 50px',
+        }}
+      />
+      <div className="max-w-md w-full relative z-10">
         {/* Progress bar */}
         <div className="mb-6">
           <div className="flex justify-between items-center mb-2">
-            <span className="font-pixel text-[0.4rem] text-muted-foreground">
+            <span className="font-mono text-[0.6rem] text-muted-foreground uppercase tracking-wider">
               {currentQ + 1} / {QUESTIONS.length}
             </span>
-            <span className="font-pixel text-[0.4rem] text-primary">
+            <span className="font-pixel text-[0.4rem] text-primary" style={{ filter: 'drop-shadow(0 0 4px rgba(255,0,255,0.5))' }}>
               {Math.round(progress)}%
             </span>
           </div>
-          <div className="xp-bar-bg h-2 rounded-sm overflow-hidden">
+          <div className="xp-bar-bg h-2 rounded-none overflow-hidden">
             <motion.div
               className="xp-bar-fill h-full"
               animate={{ width: `${progress}%` }}
@@ -212,8 +229,8 @@ export default function WelcomeQuiz({ onComplete }: WelcomeQuizProps) {
             className="pixel-card-primary p-6"
           >
             <div className="text-center mb-6">
-              <span className="text-4xl block mb-3">{question.emoji}</span>
-              <h2 className="font-pixel text-[0.6rem] text-primary mb-2">{question.title}</h2>
+              <span className="text-4xl block mb-3" style={{ filter: 'drop-shadow(0 0 10px rgba(255,0,255,0.4))' }}>{question.emoji}</span>
+              <h2 className="font-pixel text-[0.6rem] text-secondary mb-2" style={{ filter: 'drop-shadow(0 0 5px rgba(0,255,255,0.5))' }}>{question.title}</h2>
               <p className="font-body text-foreground text-base">{question.subtitle}</p>
             </div>
 
@@ -221,13 +238,13 @@ export default function WelcomeQuiz({ onComplete }: WelcomeQuizProps) {
               {question.options.map((opt) => (
                 <motion.button
                   key={opt.value}
-                  whileHover={{ x: 4 }}
+                  whileHover={{ x: 4, boxShadow: '0 0 15px rgba(0,255,255,0.15)' }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleSelect(opt.value)}
-                  className={`w-full text-right p-4 border-2 font-body text-sm flex items-center gap-3 transition-all ${
+                  className={`w-full text-right p-4 border-2 font-body text-sm flex items-center gap-3 transition-all duration-200 ${
                     selectedOption === opt.value
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-border bg-card hover:border-muted-foreground text-foreground'
+                      ? 'border-primary bg-primary/10 text-primary shadow-[0_0_15px_rgba(255,0,255,0.2)]'
+                      : 'border-border bg-card/50 hover:border-secondary/40 text-foreground'
                   }`}
                 >
                   <span className="text-xl">{opt.emoji}</span>

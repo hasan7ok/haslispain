@@ -15,6 +15,8 @@ export default {
     extend: {
       fontFamily: {
         pixel: ["'Press Start 2P'", "monospace"],
+        heading: ["'Orbitron'", "sans-serif"],
+        mono: ["'Share Tech Mono'", "monospace"],
         body: ["'IBM Plex Sans Arabic'", "system-ui", "sans-serif"],
       },
       colors: {
