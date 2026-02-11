@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      chat_rate_limits: {
+        Row: {
+          id: string
+          request_count: number
+          user_id: string
+          window_start: string
+        }
+        Insert: {
+          id?: string
+          request_count?: number
+          user_id: string
+          window_start?: string
+        }
+        Update: {
+          id?: string
+          request_count?: number
+          user_id?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       nft_collections: {
         Row: {
           category: string
@@ -123,6 +144,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_nft: { Args: { p_unlock_condition: string }; Returns: boolean }
       check_username_exists: {
         Args: { target_username: string }
         Returns: boolean
