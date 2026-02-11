@@ -435,11 +435,15 @@ export default function AuthPage({ onSignUp, onSignIn, checkUsername }: AuthPage
             </form>
           </div>
 
-          {/* Status bar */}
-          <div className="px-4 py-1.5 border-t border-border bg-background/50">
-            <span className="font-mono text-[0.5rem] text-muted-foreground uppercase tracking-wider">
-              {'>'} system ready_
-            </span>
+          {/* How it works link */}
+          <div className="px-4 py-2.5 border-t border-border bg-background/50 text-center">
+            <a
+              href="/how-it-works"
+              className="font-pixel text-[0.5rem] text-secondary/70 hover:text-secondary transition-colors uppercase tracking-wider"
+              style={{ filter: 'drop-shadow(0 0 3px rgba(0,255,255,0.3))' }}
+            >
+              كيف يعمل التطبيق؟ - ¿Cómo funciona?
+            </a>
           </div>
         </div>
       </motion.div>

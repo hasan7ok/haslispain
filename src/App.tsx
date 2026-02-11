@@ -21,6 +21,7 @@ import StoriesListPage from "./pages/StoriesListPage";
 import StoryPage from "./pages/StoryPage";
 import BossFightsListPage from "./pages/BossFightsListPage";
 import GrammarBossPage from "./pages/GrammarBossPage";
+import HowItWorksPage from "./pages/HowItWorksPage";
 import NotFound from "./pages/NotFound";
 import { useAuth } from "@/hooks/useAuth";
 import { useGameState } from "@/hooks/useGameState";
@@ -74,14 +75,21 @@ function AppContent() {
     );
   }
 
-  // Not logged in → show auth page
+  // Not logged in → show auth page or how-it-works
   if (!auth.user) {
     return (
-      <AuthPage
-        onSignUp={auth.signUp}
-        onSignIn={auth.signIn}
-        checkUsername={auth.checkUsernameAvailable}
-      />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/how-it-works" element={<HowItWorksPage />} />
+          <Route path="*" element={
+            <AuthPage
+              onSignUp={auth.signUp}
+              onSignIn={auth.signIn}
+              checkUsername={auth.checkUsernameAvailable}
+            />
+          } />
+        </Routes>
+      </BrowserRouter>
     );
   }
 
