@@ -96,11 +96,10 @@ export function useAuth() {
   };
 
   const checkUsernameAvailable = async (username: string): Promise<boolean> => {
-    const { data } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('username', username)
-      .maybeSingle();
+    const { data, error } = await supabase.rpc('check_username_exists', {
+      target_username: username,
+    });
+    if (error) return false;
     return !data;
   };
 
