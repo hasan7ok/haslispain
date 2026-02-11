@@ -96,17 +96,7 @@ function AppContent() {
             level,
           });
           if (auth.user) {
-            const { data: signupNft } = await supabase
-              .from('nft_collections')
-              .select('id')
-              .eq('unlock_condition', 'signup')
-              .maybeSingle();
-            if (signupNft) {
-              await supabase.from('user_nfts').insert({
-                user_id: auth.user.id,
-                nft_id: signupNft.id,
-              });
-            }
+            await supabase.rpc('award_nft', { p_unlock_condition: 'signup' });
           }
           if (auth.profile?.username) {
             updateUsername(auth.profile.username);
