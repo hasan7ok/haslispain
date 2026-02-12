@@ -3,8 +3,9 @@ import { useGameState } from '@/hooks/useGameState';
 import { useAuth } from '@/hooks/useAuth';
 import PixelCharacter from './PixelCharacter';
 import XPBar from './XPBar';
-import { Map, User, MessageCircle, Trophy, Menu, X, LogOut } from 'lucide-react';
+import { Map, User, MessageCircle, Trophy, Menu, X, LogOut, Settings } from 'lucide-react';
 import { useState } from 'react';
+import logo from '@/assets/logo.png';
 
 const NAV_ITEMS = [
   { path: '/', label: 'الخريطة', labelEs: 'Mapa', icon: Map },
@@ -12,6 +13,7 @@ const NAV_ITEMS = [
   { path: '/profile', label: 'الملف', labelEs: 'Perfil', icon: User },
   { path: '/ai-chat', label: 'AI مساعد', labelEs: 'Chat AI', icon: MessageCircle },
   { path: '/achievements', label: 'الإنجازات', labelEs: 'Logros', icon: Trophy },
+  { path: '/settings', label: 'الإعدادات', labelEs: 'Ajustes', icon: Settings },
 ];
 
 export default function Header() {
@@ -30,15 +32,7 @@ export default function Header() {
       <div className="container mx-auto flex items-center justify-between px-3 py-2">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group">
-          <span className="font-pixel text-sm md:text-base animate-pixel-glow group-hover:animate-pixel-bounce"
-            style={{
-              background: 'linear-gradient(to right, #FF9900, #FF00FF, #00FFFF)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            PIXÑOL
-          </span>
+          <img src={logo} alt="PixÑol" className="h-8 md:h-10 w-auto" style={{ imageRendering: 'pixelated' }} />
         </Link>
 
         {/* Desktop nav */}
