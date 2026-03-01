@@ -66,6 +66,58 @@
     --font-mono: 'Share Tech Mono', monospace;
     --font-body: 'IBM Plex Sans Arabic', system-ui, sans-serif;
   }
+
+  /* Light Theme */
+  .light {
+    --background: 0 0% 98%;
+    --foreground: 240 10% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 10%;
+
+    --primary: 300 80% 42%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 180 70% 35%;
+    --secondary-foreground: 0 0% 100%;
+
+    --accent: 36 90% 48%;
+    --accent-foreground: 0 0% 100%;
+
+    --muted: 240 5% 92%;
+    --muted-foreground: 240 5% 45%;
+
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 6% 82%;
+    --input: 240 6% 88%;
+    --ring: 300 80% 42%;
+
+    --pixel-blue: 210 70% 45%;
+    --pixel-purple: 270 50% 50%;
+    --xp-gold: 36 90% 50%;
+    --health-green: 120 50% 40%;
+    --pixel-red: 0 65% 50%;
+    --pixel-cyan: 180 70% 35%;
+
+    --neon-magenta: 300 80% 42%;
+    --neon-cyan: 180 70% 35%;
+    --neon-orange: 36 90% 48%;
+    --sunset-pink: 330 70% 50%;
+
+    --sidebar-background: 0 0% 96%;
+    --sidebar-foreground: 240 10% 10%;
+    --sidebar-primary: 300 80% 42%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 5% 92%;
+    --sidebar-accent-foreground: 240 10% 10%;
+    --sidebar-border: 240 6% 82%;
+    --sidebar-ring: 300 80% 42%;
+  }
 }
 
 @layer base {
@@ -112,6 +164,12 @@
   z-index: 9998;
   pointer-events: none;
   background: linear-gradient(90deg, rgba(255,0,255,0.015), rgba(0,255,255,0.01), rgba(255,0,255,0.015));
+}
+
+/* Disable CRT effects in light mode */
+.light #root::after,
+.light #root::before {
+  display: none;
 }
 
 @layer components {

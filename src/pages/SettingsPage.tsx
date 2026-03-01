@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
 import PixelAvatar from '@/components/PixelAvatar';
 import Header from '@/components/Header';
-import { ArrowLeft, Save, RefreshCw, Loader2, Check } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { ArrowLeft, Save, RefreshCw, Loader2, Check, Sun, Moon } from 'lucide-react';
 import { z } from 'zod';
 
 const usernameSchema = z.string().trim().min(3, 'الاسم يجب أن يكون 3 أحرف على الأقل').max(20, 'الاسم يجب أن يكون أقل من 20 حرف').regex(/^[a-zA-Z0-9_]+$/, 'فقط أحرف إنجليزية وأرقام و _');
@@ -12,6 +14,7 @@ const usernameSchema = z.string().trim().min(3, 'الاسم يجب أن يكون
 export default function SettingsPage() {
   const navigate = useNavigate();
   const { profile, user, updateProfile, checkUsernameAvailable, refreshProfile } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const [username, setUsername] = useState(profile?.username || '');
   const [avatarSeed, setAvatarSeed] = useState(profile?.avatar_url || '');
@@ -128,7 +131,27 @@ export default function SettingsPage() {
                 {!checkingUsername && usernameAvailable === true && <Check size={14} className="text-accent" />}
                 {!checkingUsername && usernameAvailable === false && <span className="text-destructive text-xs">✗</span>}
               </div>
+          </div>
+
+          {/* Theme Toggle */}
+          <div className="pixel-card p-6 mb-6">
+            <label className="block font-pixel text-[0.5rem] text-foreground mb-3">
+              المظهر - Tema
+            </label>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {theme === 'dark' ? (
+                  <Moon size={18} className="text-secondary" />
+                ) : (
+                  <Sun size={18} className="text-accent" />
+                )}
+                <span className="font-mono text-sm text-foreground">
+                  {theme === 'dark' ? 'الوضع المظلم - Oscuro' : 'الوضع الفاتح - Claro'}
+                </span>
+              </div>
+              <Switch checked={theme === 'light'} onCheckedChange={toggleTheme} />
             </div>
+          </div>
             <p className="font-mono text-[0.55rem] text-muted-foreground mt-2">3-20 حرف إنجليزي أو أرقام أو _</p>
           </div>
 
