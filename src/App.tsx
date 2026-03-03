@@ -16,6 +16,7 @@ import WordHuntPage from "./pages/WordHuntPage";
 import ProfilePage from "./pages/ProfilePage";
 import AIChatPage from "./pages/AIChatPage";
 import AchievementsPage from "./pages/AchievementsPage";
+import JournalPage from "./pages/JournalPage";
 import DailyChallengePage from "./pages/DailyChallengePage";
 import StoriesListPage from "./pages/StoriesListPage";
 import StoryPage from "./pages/StoryPage";
@@ -127,6 +128,7 @@ function AppContent() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/ai-chat" element={<AIChatPage />} />
         <Route path="/achievements" element={<AchievementsPage />} />
+        <Route path="/journal" element={<JournalPage />} />
         <Route path="/daily-challenge" element={<DailyChallengePage />} />
         <Route path="/stories" element={<StoriesListPage />} />
         <Route path="/story/:storyId" element={<StoryPage />} />
