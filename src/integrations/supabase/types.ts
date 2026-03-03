@@ -35,6 +35,36 @@ export type Database = {
         }
         Relationships: []
       }
+      journal_entries: {
+        Row: {
+          canvas_data: string | null
+          created_at: string
+          id: string
+          text_content: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          canvas_data?: string | null
+          created_at?: string
+          id?: string
+          text_content?: string | null
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          canvas_data?: string | null
+          created_at?: string
+          id?: string
+          text_content?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       nft_collections: {
         Row: {
           category: string

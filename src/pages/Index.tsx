@@ -92,30 +92,6 @@ export default function Index() {
           </motion.button>
         </div>
 
-        {/* Journal Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-6"
-        >
-          <motion.button
-            whileHover={{ y: -4, boxShadow: '0 0 25px rgba(139,92,246,0.3)' }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => { playClick(); navigate('/journal'); }}
-            className="w-full pixel-card border-t-2 border-t-primary p-5 text-right group transition-all flex items-center gap-4"
-          >
-            <div className="p-3 border-2 border-primary/30 bg-primary/10">
-              <PenLine size={28} className="text-primary" style={{ filter: 'drop-shadow(0 0 8px rgba(255,0,255,0.5))' }} />
-            </div>
-            <div className="flex-1">
-              <p className="font-pixel text-[0.6rem] text-primary mb-1">📝 التدوين - Diario</p>
-              <p className="font-body text-xs text-muted-foreground">ارسم، اكتب، أضف صور... مفكرتك الإبداعية</p>
-            </div>
-            <ChevronRight size={18} className="text-muted-foreground group-hover:text-primary transition-colors" />
-          </motion.button>
-        </motion.div>
-
         {/* Zone Grid */}
         <h2 className="font-pixel text-sm text-foreground mb-4 flex items-center gap-2">
           <Sparkles size={16} className="text-primary" style={{ filter: 'drop-shadow(0 0 6px rgba(255,0,255,0.5))' }} />
@@ -180,6 +156,30 @@ export default function Index() {
             );
           })}
         </div>
+
+        {/* Journal Section - after zones */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mt-6"
+        >
+          <motion.button
+            whileHover={{ y: -4, boxShadow: '0 0 25px rgba(139,92,246,0.3)' }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => { playClick(); navigate('/journal'); }}
+            className="w-full pixel-card border-t-2 border-t-primary p-5 text-right group transition-all flex items-center gap-4"
+          >
+            <div className="p-3 border-2 border-primary/30 bg-primary/10">
+              <PenLine size={28} className="text-primary" style={{ filter: 'drop-shadow(0 0 8px rgba(255,0,255,0.5))' }} />
+            </div>
+            <div className="flex-1">
+              <p className="font-pixel text-[0.6rem] text-primary mb-1">📝 التدوين - Diario</p>
+              <p className="font-body text-xs text-muted-foreground">ارسم، اكتب، أضف صور... مفكرتك الإبداعية</p>
+            </div>
+            <ChevronRight size={18} className="text-muted-foreground group-hover:text-primary transition-colors" />
+          </motion.button>
+        </motion.div>
       </main>
     </div>
   );
