@@ -154,6 +154,32 @@ export default function ProfilePage() {
           </div>
         </motion.div>
 
+        {/* ─── Statistics Section ─── */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="pixel-card p-5 mb-6">
+          <h3 className="font-pixel text-[0.6rem] text-gradient-vapor mb-4">الإحصائيات - Estadísticas</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {[
+              { icon: '📚', value: state.completedLessons.length, label: 'دروس مكتملة', labelEs: 'Lecciones' },
+              { icon: '🎮', value: state.completedGames.length, label: 'ألعاب مكتملة', labelEs: 'Juegos' },
+              { icon: '📝', value: state.completedLessons.length * 8, label: 'كلمات متعلّمة', labelEs: 'Palabras' },
+              { icon: '⭐', value: state.totalXpEarned, label: 'مجموع XP', labelEs: 'XP Total' },
+              { icon: '🔥', value: state.streak, label: 'أيام متتالية', labelEs: 'Racha' },
+              { icon: '🏆', value: state.achievements.length, label: 'إنجازات', labelEs: 'Logros' },
+              { icon: '🗺️', value: state.unlockedZones.length, label: 'مناطق مفتوحة', labelEs: 'Zonas' },
+              { icon: '⏱️', value: `${Math.max(1, Math.round((state.completedLessons.length * 5 + state.completedGames.length * 3)))}`, label: 'دقائق تعلّم', labelEs: 'Minutos' },
+              { icon: '🎯', value: state.level, label: 'المستوى', labelEs: 'Nivel' },
+            ].map((stat, i) => (
+              <motion.div key={i} initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.05 + i * 0.03 }}
+                className="pixel-card p-3 text-center border-primary/20 hover:border-primary/50 transition-all">
+                <div className="text-xl mb-1">{stat.icon}</div>
+                <p className="font-pixel text-sm text-secondary" style={{ filter: 'drop-shadow(0 0 4px hsl(var(--secondary) / 0.4))' }}>{stat.value}</p>
+                <p className="font-pixel text-[0.4rem] text-muted-foreground mt-0.5">{stat.label}</p>
+                <p className="font-mono text-[0.5rem] text-primary/60">{stat.labelEs}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
         {/* ─── Settings Section ─── */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <h3 className="font-pixel text-[0.6rem] text-gradient-vapor mb-4">الإعدادات - Ajustes</h3>
