@@ -3,13 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGameState, CharacterConfig } from '@/hooks/useGameState';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
 import PixelCharacter from '@/components/PixelCharacter';
 import PixelAvatar from '@/components/PixelAvatar';
 import NFTCollection, { NFTItem } from '@/components/NFTCollection';
 import XPBar from '@/components/XPBar';
 import Header from '@/components/Header';
-import { ArrowLeft, Edit3, Save, Trash2 } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { ArrowLeft, Edit3, Save, Trash2, RefreshCw, Loader2, Check, Sun, Moon } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { z } from 'zod';
 
 const SKIN_COLORS = ['#f4c794', '#e0ac69', '#c68642', '#8d5524', '#6b3a1f', '#f9d5a7'];
 const HAIR_COLORS = ['#3d2314', '#1a1a2e', '#c9a96e', '#e74c3c', '#2980b9', '#8e44ad', '#f39c12', '#ecf0f1'];
@@ -26,42 +29,41 @@ const ACHIEVEMENTS_LIST = [
   { id: 'xp1000', name: 'الأسطورة', nameEs: 'Leyenda', icon: '👑', desc: 'اجمع 1000 XP' },
 ];
 
+const usernameSchema = z.string().trim().min(3, 'الاسم يجب أن يكون 3 أحرف على الأقل').max(20, 'الاسم يجب أن يكون أقل من 20 حرف').regex(/^[a-zA-Z0-9_]+$/, 'فقط أحرف إنجليزية وأرقام و _');
+
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { state, updateCharacter, updateUsername, resetProgress, xpToNextLevel } = useGameState();
-  const { profile, user } = useAuth();
+  const { profile, user, updateProfile, checkUsernameAvailable, refreshProfile } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+
   const [editingName, setEditingName] = useState(false);
   const [newName, setNewName] = useState(state.username);
   const [nfts, setNfts] = useState<NFTItem[]>([]);
 
+  // Settings state
+  const [username, setUsername] = useState(profile?.username || '');
+  const [avatarSeed, setAvatarSeed] = useState(profile?.avatar_url || '');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [checkingUsername, setCheckingUsername] = useState(false);
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
+
   useEffect(() => {
     const loadNFTs = async () => {
-      // Get all NFT collections
-      const { data: collections } = await supabase
-        .from('nft_collections')
-        .select('*');
-
-      // Get user's earned NFTs
+      const { data: collections } = await supabase.from('nft_collections').select('*');
       const { data: userNfts } = user
-        ? await supabase
-            .from('user_nfts')
-            .select('nft_id, earned_at')
-            .eq('user_id', user.id)
+        ? await supabase.from('user_nfts').select('nft_id, earned_at').eq('user_id', user.id)
         : { data: [] };
 
       if (collections) {
         const earnedIds = new Set((userNfts || []).map(n => n.nft_id));
         setNfts(
           collections.map(c => ({
-            id: c.id,
-            name: c.name,
-            description: c.description,
-            image_seed: c.image_seed,
-            rarity: c.rarity,
-            category: c.category,
-            frame_style: c.frame_style || 'default',
-            unlock_condition: c.unlock_condition,
-            earned: earnedIds.has(c.id),
+            id: c.id, name: c.name, description: c.description, image_seed: c.image_seed,
+            rarity: c.rarity, category: c.category, frame_style: c.frame_style || 'default',
+            unlock_condition: c.unlock_condition, earned: earnedIds.has(c.id),
             earned_at: userNfts?.find(n => n.nft_id === c.id)?.earned_at || undefined,
           }))
         );
@@ -75,10 +77,43 @@ export default function ProfilePage() {
   };
 
   const saveName = () => {
-    if (newName.trim()) {
-      updateUsername(newName.trim());
-      setEditingName(false);
-    }
+    if (newName.trim()) { updateUsername(newName.trim()); setEditingName(false); }
+  };
+
+  const regenerateAvatar = () => {
+    setAvatarSeed(`pixel_${Date.now()}_${Math.random().toString(36).slice(2)}`);
+  };
+
+  const handleUsernameChange = async (value: string) => {
+    setUsername(value);
+    setError('');
+    setUsernameAvailable(null);
+    if (value === profile?.username) { setUsernameAvailable(true); return; }
+    const parsed = usernameSchema.safeParse(value);
+    if (!parsed.success || value.length < 3) return;
+    setCheckingUsername(true);
+    const available = await checkUsernameAvailable(value);
+    setUsernameAvailable(available);
+    setCheckingUsername(false);
+  };
+
+  const handleSave = async () => {
+    setError(''); setSuccess('');
+    const parsed = usernameSchema.safeParse(username);
+    if (!parsed.success) { setError(parsed.error.errors[0].message); return; }
+    if (username !== profile?.username && usernameAvailable === false) { setError('هذا الاسم مستخدم بالفعل'); return; }
+
+    setSaving(true);
+    try {
+      const updates: Record<string, unknown> = {};
+      if (username !== profile?.username) updates.username = username;
+      if (avatarSeed !== profile?.avatar_url) updates.avatar_url = avatarSeed;
+      if (Object.keys(updates).length === 0) { setSuccess('لا توجد تغييرات لحفظها'); setSaving(false); return; }
+
+      const result = await updateProfile(updates);
+      if (result?.error) { setError(result.error.message || 'حدث خطأ أثناء الحفظ'); }
+      else { setSuccess('تم حفظ التغييرات بنجاح ✓'); await refreshProfile(); }
+    } finally { setSaving(false); }
   };
 
   return (
@@ -94,14 +129,8 @@ export default function ProfilePage() {
           <PixelCharacter character={state.character} size={10} animate className="mb-4" />
           {editingName ? (
             <div className="flex gap-2 justify-center items-center">
-              <input
-                value={newName}
-                onChange={e => setNewName(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && saveName()}
-                className="px-3 py-1 bg-muted border-2 border-primary text-foreground font-body text-center focus:outline-none"
-                dir="auto"
-                autoFocus
-              />
+              <input value={newName} onChange={e => setNewName(e.target.value)} onKeyDown={e => e.key === 'Enter' && saveName()}
+                className="px-3 py-1 bg-muted border-2 border-primary text-foreground font-body text-center focus:outline-none" dir="auto" autoFocus />
               <button onClick={saveName} className="p-1 text-accent"><Save size={16} /></button>
             </div>
           ) : (
@@ -125,10 +154,75 @@ export default function ProfilePage() {
           </div>
         </motion.div>
 
-        {/* Customization */}
-        <div className="pixel-card p-4 mb-6">
-          <h3 className="font-pixel text-[0.6rem] text-foreground mb-4">تخصيص الشخصية - Personalizar</h3>
+        {/* ─── Settings Section ─── */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+          <h3 className="font-pixel text-[0.6rem] text-gradient-vapor mb-4">الإعدادات - Ajustes</h3>
 
+          {/* Avatar regeneration */}
+          <div className="pixel-card-primary p-6 mb-4 text-center">
+            <p className="font-pixel text-[0.5rem] text-secondary mb-4">الصورة الرمزية - Avatar</p>
+            <motion.div key={avatarSeed} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring' }}>
+              <PixelAvatar seed={avatarSeed} size={96} frameStyle="cyber-green" />
+            </motion.div>
+            <button type="button" onClick={regenerateAvatar}
+              className="mt-4 flex items-center gap-1.5 px-4 py-2 mx-auto text-xs font-mono text-secondary border border-secondary/30 hover:bg-secondary/10 hover:shadow-[0_0_10px_rgba(0,255,255,0.2)] transition-all uppercase tracking-wider">
+              <RefreshCw size={12} /> توليد صورة جديدة
+            </button>
+          </div>
+
+          {/* Username edit */}
+          <div className="pixel-card p-6 mb-4">
+            <label className="block font-pixel text-[0.5rem] text-foreground mb-3">اسم المعرّف - Username</label>
+            <div className="relative">
+              <input type="text" value={username} onChange={e => handleUsernameChange(e.target.value)} maxLength={20}
+                className="w-full px-4 py-3 bg-background border-b-2 border-primary text-secondary font-mono text-sm placeholder:text-primary/40 focus:outline-none focus:border-secondary focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all" dir="ltr" />
+              <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                {checkingUsername && <Loader2 size={14} className="animate-spin text-muted-foreground" />}
+                {!checkingUsername && usernameAvailable === true && <Check size={14} className="text-accent" />}
+                {!checkingUsername && usernameAvailable === false && <span className="text-destructive text-xs">✗</span>}
+              </div>
+            </div>
+            <p className="font-mono text-[0.55rem] text-muted-foreground mt-2">3-20 حرف إنجليزي أو أرقام أو _</p>
+          </div>
+
+          {/* Theme toggle */}
+          <div className="pixel-card p-6 mb-4">
+            <label className="block font-pixel text-[0.5rem] text-foreground mb-3">المظهر - Tema</label>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {theme === 'dark' ? <Moon size={18} className="text-secondary" /> : <Sun size={18} className="text-accent" />}
+                <span className="font-mono text-sm text-foreground">
+                  {theme === 'dark' ? 'الوضع المظلم - Oscuro' : 'الوضع الفاتح - Claro'}
+                </span>
+              </div>
+              <Switch checked={theme === 'light'} onCheckedChange={toggleTheme} />
+            </div>
+          </div>
+
+          {/* Error / Success */}
+          {error && (
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-destructive font-body text-sm px-3 py-2 border border-destructive/30 bg-destructive/10 mb-4">{error}</motion.p>
+          )}
+          {success && (
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-accent font-body text-sm px-3 py-2 border border-accent/30 bg-accent/10 mb-4">{success}</motion.p>
+          )}
+
+          {/* Game-style Save Button */}
+          <button onClick={handleSave} disabled={saving}
+            className="w-full flex items-center justify-center gap-3 px-6 py-4 font-pixel text-[0.65rem] uppercase tracking-widest text-primary-foreground border-2 border-primary transition-all duration-200 hover:shadow-[0_0_20px_hsl(var(--primary)/0.5),0_0_40px_hsl(var(--primary)/0.2)] active:scale-95 disabled:opacity-50"
+            style={{
+              background: 'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.7))',
+              boxShadow: '0 0 12px hsl(var(--primary) / 0.4), inset 0 1px 0 hsl(var(--primary-foreground) / 0.1)',
+            }}
+          >
+            {saving ? <Loader2 size={18} className="animate-spin" /> : <span className="text-lg">💾</span>}
+            {saving ? 'جاري الحفظ...' : 'حفظ'}
+          </button>
+        </motion.div>
+
+        {/* ─── Customization ─── */}
+        <div className="pixel-card p-4 mb-6 mt-6">
+          <h3 className="font-pixel text-[0.6rem] text-foreground mb-4">تخصيص الشخصية - Personalizar</h3>
           {[
             { label: 'لون البشرة', key: 'skinColor' as keyof CharacterConfig, colors: SKIN_COLORS },
             { label: 'لون الشعر', key: 'hairColor' as keyof CharacterConfig, colors: HAIR_COLORS },
@@ -139,30 +233,19 @@ export default function ProfilePage() {
               <p className="text-muted-foreground font-body text-xs mb-1.5">{label}</p>
               <div className="flex gap-2 flex-wrap">
                 {colors.map(color => (
-                  <button
-                    key={color}
-                    onClick={() => handleColorChange(key, color)}
-                    className={`w-7 h-7 border-2 transition-all ${
-                      state.character[key] === color ? 'border-primary scale-110' : 'border-border hover:border-muted-foreground'
-                    }`}
-                    style={{ backgroundColor: color }}
-                  />
+                  <button key={color} onClick={() => handleColorChange(key, color)}
+                    className={`w-7 h-7 border-2 transition-all ${state.character[key] === color ? 'border-primary scale-110' : 'border-border hover:border-muted-foreground'}`}
+                    style={{ backgroundColor: color }} />
                 ))}
               </div>
             </div>
           ))}
-
           <div className="mb-3">
             <p className="text-muted-foreground font-body text-xs mb-1.5">تسريحة الشعر</p>
             <div className="flex gap-2">
               {[0, 1, 2].map(style => (
-                <button
-                  key={style}
-                  onClick={() => updateCharacter({ hairStyle: style })}
-                  className={`px-3 py-1 font-pixel text-[0.45rem] border-2 ${
-                    state.character.hairStyle === style ? 'border-primary text-primary' : 'border-border text-muted-foreground'
-                  }`}
-                >
+                <button key={style} onClick={() => updateCharacter({ hairStyle: style })}
+                  className={`px-3 py-1 font-pixel text-[0.45rem] border-2 ${state.character.hairStyle === style ? 'border-primary text-primary' : 'border-border text-muted-foreground'}`}>
                   Style {style + 1}
                 </button>
               ))}
@@ -195,11 +278,9 @@ export default function ProfilePage() {
         </div>
 
         {/* Reset */}
-        <div className="text-center">
-          <button
-            onClick={() => { if (confirm('هل أنت متأكد؟ سيتم حذف كل التقدم!')) resetProgress(); }}
-            className="text-destructive font-body text-xs flex items-center gap-1 mx-auto hover:underline"
-          >
+        <div className="text-center mb-8">
+          <button onClick={() => { if (confirm('هل أنت متأكد؟ سيتم حذف كل التقدم!')) resetProgress(); }}
+            className="text-destructive font-body text-xs flex items-center gap-1 mx-auto hover:underline">
             <Trash2 size={12} /> إعادة تعيين التقدم
           </button>
         </div>

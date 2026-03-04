@@ -23,7 +23,7 @@ import StoryPage from "./pages/StoryPage";
 import BossFightsListPage from "./pages/BossFightsListPage";
 import GrammarBossPage from "./pages/GrammarBossPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
-import SettingsPage from "./pages/SettingsPage";
+
 import NotFound from "./pages/NotFound";
 import { useAuth } from "@/hooks/useAuth";
 import { useGameState } from "@/hooks/useGameState";
@@ -134,7 +134,7 @@ function AppContent() {
         <Route path="/story/:storyId" element={<StoryPage />} />
         <Route path="/boss-fights" element={<BossFightsListPage />} />
         <Route path="/boss/:bossId" element={<GrammarBossPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/settings" element={<ProfilePage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
