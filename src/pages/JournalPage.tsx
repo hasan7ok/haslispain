@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Header from '@/components/Header';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, Pen, Eraser, Type, Image as ImageIcon, Trash2, Download, Palette, Undo2, Redo2, Circle, Save, FolderOpen, Plus, Loader2, Brush, Pencil, Highlighter } from 'lucide-react';
+import { ArrowLeft, Pen, Eraser, Type, Image as ImageIcon, Trash2, Download, Palette, Undo2, Redo2, Circle, Save, FolderOpen, Plus, Loader2, Brush, Pencil, Highlighter, BookOpen, FileText, Bold, Italic, List, AlignRight, AlignLeft, AlignCenter } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface DrawPoint { x: number; y: number; }
@@ -45,13 +45,17 @@ const PEN_TYPES = [
 
 const ERASER_SIZES = [8, 16, 32, 48];
 
+type ActiveTab = 'write' | 'draw';
+
 export default function JournalPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
+  const [activeTab, setActiveTab] = useState<ActiveTab>('write');
   const [tool, setTool] = useState<'pen' | 'eraser'>('pen');
   const [penColor, setPenColor] = useState('#ffffff');
   const [selectedPen, setSelectedPen] = useState('normal');
@@ -76,7 +80,6 @@ export default function JournalPage() {
 
   const currentPen = PEN_TYPES.find(p => p.id === selectedPen) || PEN_TYPES[1];
 
-  // Load entries list
   useEffect(() => {
     if (!user) return;
     const load = async () => {
@@ -91,7 +94,6 @@ export default function JournalPage() {
     load();
   }, [user]);
 
-  // Init canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
@@ -100,20 +102,32 @@ export default function JournalPage() {
     canvas.height = 600;
     clearCanvasBackground(canvas);
     setCanvasReady(true);
-  }, []);
+  }, [activeTab]);
 
   const clearCanvasBackground = (canvas: HTMLCanvasElement) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    ctx.fillStyle = '#1a1a2e';
+    // Notebook paper style
+    ctx.fillStyle = '#12121e';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = 'rgba(255,0,255,0.04)';
+
+    // Ruled lines
+    ctx.strokeStyle = 'rgba(255,0,255,0.06)';
     ctx.lineWidth = 1;
-    for (let x = 0; x < canvas.width; x += 30) {
-      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+    for (let y = 30; y < canvas.height; y += 32) {
+      ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(canvas.width - 10, y); ctx.stroke();
     }
-    for (let y = 0; y < canvas.height; y += 30) {
-      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+    // Left margin line
+    ctx.strokeStyle = 'rgba(0,255,255,0.12)';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(36, 0); ctx.lineTo(36, canvas.height); ctx.stroke();
+
+    // Subtle dots grid
+    ctx.fillStyle = 'rgba(255,255,255,0.03)';
+    for (let x = 40; x < canvas.width; x += 32) {
+      for (let y = 30; y < canvas.height; y += 32) {
+        ctx.fillRect(x - 1, y - 1, 2, 2);
+      }
     }
   };
 
@@ -157,13 +171,11 @@ export default function JournalPage() {
       else if (action.type === 'image') drawImages.push(action);
     });
 
-    // Draw images (async)
     drawImages.forEach(action => {
       if (!action.imageData) return;
       const img = new window.Image();
       img.onload = () => {
         ctx.drawImage(img, action.x || 0, action.y || 0, action.width || 200, action.height || 200);
-        // Redraw paths on top of images
         actions.forEach(a => { if (a.type === 'path') drawPath(a); });
       };
       img.src = action.imageData;
@@ -171,8 +183,8 @@ export default function JournalPage() {
   }, [actions]);
 
   useEffect(() => {
-    if (canvasReady) redrawCanvas();
-  }, [actions, canvasReady, redrawCanvas]);
+    if (canvasReady && activeTab === 'draw') redrawCanvas();
+  }, [actions, canvasReady, redrawCanvas, activeTab]);
 
   const getPos = (e: React.MouseEvent | React.TouchEvent) => {
     const canvas = canvasRef.current;
@@ -205,7 +217,6 @@ export default function JournalPage() {
     const pos = getPos(e);
     currentPath.current.push(pos);
 
-    // Live preview stroke
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (!ctx || currentPath.current.length < 2) return;
@@ -305,7 +316,6 @@ export default function JournalPage() {
     link.click();
   };
 
-  // Save to DB
   const saveEntry = async () => {
     if (!user) return;
     setSaving(true);
@@ -326,7 +336,6 @@ export default function JournalPage() {
         }).select('id').single();
         if (data) setCurrentEntryId(data.id);
       }
-      // Refresh list
       const { data: all } = await supabase
         .from('journal_entries')
         .select('id, title, text_content, canvas_data, created_at, updated_at')
@@ -371,6 +380,20 @@ export default function JournalPage() {
     toast.success('تم الحذف');
   };
 
+  const insertTextFormatting = (prefix: string, suffix: string = '') => {
+    const area = textAreaRef.current;
+    if (!area) return;
+    const start = area.selectionStart;
+    const end = area.selectionEnd;
+    const selected = textContent.substring(start, end);
+    const newText = textContent.substring(0, start) + prefix + selected + (suffix || prefix) + textContent.substring(end);
+    setTextContent(newText);
+    setTimeout(() => {
+      area.focus();
+      area.setSelectionRange(start + prefix.length, end + prefix.length);
+    }, 0);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -379,40 +402,64 @@ export default function JournalPage() {
           <ArrowLeft size={16} /> العودة
         </button>
 
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pixel-card-primary p-6 mb-4 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="font-pixel text-sm text-primary mb-1">📝 التدوين - Diario</h1>
-            <p className="font-body text-xs text-muted-foreground">ارسم، اكتب، أضف صور... عبّر عن إبداعك!</p>
+        {/* Notebook header */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+          className="relative p-6 mb-4 border-2 border-primary/30 bg-gradient-to-br from-card via-card to-primary/5"
+          style={{ boxShadow: '0 4px 20px rgba(255,0,255,0.08), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
+          {/* Notebook binding dots */}
+          <div className="absolute left-0 top-0 bottom-0 w-2 flex flex-col justify-around items-center py-4">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="w-1.5 h-1.5 rounded-full bg-primary/30" />
+            ))}
           </div>
-          <div className="flex gap-2">
-            <button onClick={newEntry} className="p-2 border-2 border-accent/50 text-accent hover:bg-accent/10 transition-all" title="تدوينة جديدة">
-              <Plus size={18} />
-            </button>
-            <button onClick={() => setShowEntries(!showEntries)} className="p-2 border-2 border-secondary/50 text-secondary hover:bg-secondary/10 transition-all" title="التدوينات المحفوظة">
-              <FolderOpen size={18} />
-            </button>
-            <button onClick={saveEntry} disabled={saving} className="px-3 py-1 border-2 border-primary text-primary hover:bg-primary/10 transition-all font-pixel text-[0.45rem] flex items-center gap-1">
-              {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
-              حفظ
-            </button>
+
+          <div className="pl-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <BookOpen size={22} className="text-primary" />
+              <div>
+                <h1 className="font-pixel text-sm text-primary mb-0.5">📓 المفكرة - Cuaderno</h1>
+                <p className="font-body text-xs text-muted-foreground">مفكرتك الشخصية — اكتب، ارسم، أبدع!</p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={newEntry} className="p-2 border-2 border-accent/50 text-accent hover:bg-accent/10 transition-all" title="تدوينة جديدة">
+                <Plus size={18} />
+              </button>
+              <button onClick={() => setShowEntries(!showEntries)} className="p-2 border-2 border-secondary/50 text-secondary hover:bg-secondary/10 transition-all relative" title="التدوينات المحفوظة">
+                <FolderOpen size={18} />
+                {entries.length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-primary-foreground text-[0.5rem] font-pixel flex items-center justify-center rounded-full">
+                    {entries.length}
+                  </span>
+                )}
+              </button>
+              <button onClick={saveEntry} disabled={saving}
+                className="px-4 py-2 border-2 border-primary text-primary hover:bg-primary/10 hover:shadow-[0_0_12px_hsl(var(--primary)/0.3)] transition-all font-pixel text-[0.45rem] flex items-center gap-1.5">
+                {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                حفظ
+              </button>
+            </div>
           </div>
         </motion.div>
 
         {/* Saved entries panel */}
         {showEntries && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="pixel-card p-4 mb-4 max-h-60 overflow-y-auto">
-            <h3 className="font-pixel text-[0.5rem] text-secondary mb-3">التدوينات المحفوظة</h3>
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+            className="border-2 border-border bg-card p-4 mb-4 max-h-64 overflow-y-auto">
+            <h3 className="font-pixel text-[0.5rem] text-secondary mb-3 flex items-center gap-2">
+              <FileText size={14} /> التدوينات المحفوظة ({entries.length})
+            </h3>
             {loading ? (
               <div className="text-center py-4"><Loader2 size={20} className="animate-spin text-muted-foreground mx-auto" /></div>
             ) : entries.length === 0 ? (
-              <p className="text-muted-foreground font-body text-xs text-center py-4">لا توجد تدوينات محفوظة</p>
+              <p className="text-muted-foreground font-body text-xs text-center py-4">لا توجد تدوينات محفوظة بعد</p>
             ) : (
               <div className="space-y-2">
                 {entries.map(entry => (
-                  <div key={entry.id} className={`flex items-center justify-between p-2 border-2 transition-all cursor-pointer ${currentEntryId === entry.id ? 'border-primary bg-primary/10' : 'border-border hover:border-muted-foreground'}`}>
+                  <div key={entry.id} className={`flex items-center justify-between p-3 border-2 transition-all cursor-pointer hover:shadow-[0_0_8px_rgba(255,0,255,0.1)] ${currentEntryId === entry.id ? 'border-primary bg-primary/10' : 'border-border hover:border-muted-foreground'}`}>
                     <button onClick={() => loadEntry(entry)} className="flex-1 text-right">
                       <p className="font-pixel text-[0.45rem] text-foreground">{entry.title}</p>
-                      <p className="font-body text-[0.6rem] text-muted-foreground">{new Date(entry.updated_at).toLocaleDateString('ar')}</p>
+                      <p className="font-body text-[0.6rem] text-muted-foreground">{new Date(entry.updated_at).toLocaleDateString('ar')} — {entry.text_content?.slice(0, 40) || 'رسم فقط'}...</p>
                     </button>
                     <button onClick={() => deleteEntry(entry.id)} className="p-1 text-destructive/50 hover:text-destructive ml-2"><Trash2 size={14} /></button>
                   </div>
@@ -422,133 +469,192 @@ export default function JournalPage() {
           </motion.div>
         )}
 
-        {/* Title */}
-        <div className="pixel-card p-3 mb-3">
+        {/* Title input — notebook style */}
+        <div className="border-2 border-border border-b-0 bg-card p-4">
           <input
             value={entryTitle}
             onChange={e => setEntryTitle(e.target.value)}
-            className="w-full bg-transparent font-pixel text-[0.6rem] text-foreground focus:outline-none placeholder:text-muted-foreground/50"
-            placeholder="عنوان التدوينة..."
+            className="w-full bg-transparent font-pixel text-[0.7rem] text-foreground focus:outline-none placeholder:text-muted-foreground/50 border-b-2 border-dashed border-primary/20 pb-2"
+            placeholder="✏️ عنوان التدوينة..."
             dir="auto"
           />
         </div>
 
-        {/* Text area */}
-        <div className="pixel-card p-4 mb-3">
-          <div className="flex items-center gap-2 mb-2">
-            <Type size={14} className="text-secondary" />
-            <span className="font-pixel text-[0.45rem] text-secondary">الكتابة</span>
-          </div>
-          <textarea
-            value={textContent}
-            onChange={e => setTextContent(e.target.value)}
-            placeholder="اكتب أفكارك هنا... Escribe tus ideas aquí..."
-            className="w-full min-h-[100px] bg-muted/30 border-2 border-border p-3 text-foreground font-body text-sm resize-y focus:outline-none focus:border-primary placeholder:text-muted-foreground/40"
-            dir="auto"
-          />
+        {/* Tab switcher */}
+        <div className="flex border-2 border-border border-t-0 border-b-0 bg-card">
+          <button
+            onClick={() => setActiveTab('write')}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 font-pixel text-[0.5rem] transition-all border-b-2 ${
+              activeTab === 'write'
+                ? 'border-primary text-primary bg-primary/5'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <Type size={16} /> الكتابة
+          </button>
+          <button
+            onClick={() => setActiveTab('draw')}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 font-pixel text-[0.5rem] transition-all border-b-2 ${
+              activeTab === 'draw'
+                ? 'border-primary text-primary bg-primary/5'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <Pen size={16} /> الرسم
+          </button>
         </div>
 
-        {/* Drawing toolbar */}
-        <div className="pixel-card p-3 mb-1">
-          <div className="flex flex-wrap items-center gap-1.5">
-            {/* Pen types */}
-            <div className="relative">
-              <button onClick={() => { setTool('pen'); setShowPenTypes(!showPenTypes); setShowColorPicker(false); setShowEraserSizes(false); }}
-                className={`p-2 border-2 transition-all flex items-center gap-1 ${tool === 'pen' ? 'border-primary bg-primary/20 text-primary' : 'border-border text-muted-foreground hover:text-foreground'}`}>
-                {(() => { const Icon = currentPen.icon; return <Icon size={18} />; })()}
-                <span className="font-pixel text-[0.35rem] hidden sm:inline">{currentPen.name}</span>
+        {/* Writing tab */}
+        {activeTab === 'write' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            className="border-2 border-border border-t-0 bg-card p-4 mb-6">
+            {/* Formatting toolbar */}
+            <div className="flex items-center gap-1.5 mb-3 pb-3 border-b border-border">
+              <button onClick={() => insertTextFormatting('**')} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all" title="غامق">
+                <Bold size={14} />
               </button>
-              {showPenTypes && (
-                <div className="absolute top-full left-0 mt-1 p-2 bg-card border-2 border-border z-30 space-y-1 min-w-[120px]">
-                  {PEN_TYPES.map(pen => {
-                    const Icon = pen.icon;
-                    return (
-                      <button key={pen.id} onClick={() => { setSelectedPen(pen.id); setTool('pen'); setShowPenTypes(false); }}
-                        className={`w-full flex items-center gap-2 p-1.5 border-2 transition-all ${selectedPen === pen.id ? 'border-primary bg-primary/10' : 'border-transparent hover:border-border'}`}>
-                        <Icon size={16} />
-                        <span className="font-pixel text-[0.4rem]">{pen.name}</span>
-                        <div className="ml-auto rounded-full bg-foreground" style={{ width: Math.min(pen.size, 12), height: Math.min(pen.size, 12), opacity: pen.opacity }} />
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
+              <button onClick={() => insertTextFormatting('*')} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all" title="مائل">
+                <Italic size={14} />
+              </button>
+              <button onClick={() => insertTextFormatting('• ', '')} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all" title="قائمة">
+                <List size={14} />
+              </button>
+              <div className="w-px h-6 bg-border mx-1" />
+              <button onClick={() => { if (textAreaRef.current) textAreaRef.current.style.textAlign = 'right'; }} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
+                <AlignRight size={14} />
+              </button>
+              <button onClick={() => { if (textAreaRef.current) textAreaRef.current.style.textAlign = 'center'; }} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
+                <AlignCenter size={14} />
+              </button>
+              <button onClick={() => { if (textAreaRef.current) textAreaRef.current.style.textAlign = 'left'; }} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
+                <AlignLeft size={14} />
+              </button>
+              <div className="flex-1" />
+              <span className="font-mono text-[0.55rem] text-muted-foreground">{textContent.length} حرف</span>
             </div>
 
-            {/* Eraser */}
-            <div className="relative">
-              <button onClick={() => { setTool('eraser'); setShowEraserSizes(!showEraserSizes); setShowColorPicker(false); setShowPenTypes(false); }}
-                className={`p-2 border-2 transition-all ${tool === 'eraser' ? 'border-primary bg-primary/20 text-primary' : 'border-border text-muted-foreground hover:text-foreground'}`}>
-                <Eraser size={18} />
-              </button>
-              {showEraserSizes && (
-                <div className="absolute top-full left-0 mt-1 p-2 bg-card border-2 border-border z-30 flex gap-1.5">
-                  {ERASER_SIZES.map(s => (
-                    <button key={s} onClick={() => { setEraserSize(s); setShowEraserSizes(false); }}
-                      className={`w-9 h-9 flex items-center justify-center border-2 transition-all ${eraserSize === s ? 'border-primary bg-primary/20' : 'border-border'}`}>
-                      <div className="rounded-full bg-muted-foreground" style={{ width: Math.min(s, 20), height: Math.min(s, 20) }} />
-                    </button>
-                  ))}
+            <textarea
+              ref={textAreaRef}
+              value={textContent}
+              onChange={e => setTextContent(e.target.value)}
+              placeholder="ابدأ الكتابة هنا... اكتب ملاحظاتك، أفكارك، أو ما تعلمته اليوم ✍️"
+              className="w-full min-h-[300px] bg-transparent text-foreground font-body text-sm resize-y focus:outline-none placeholder:text-muted-foreground/40 leading-8"
+              style={{
+                backgroundImage: 'repeating-linear-gradient(transparent, transparent 31px, rgba(255,0,255,0.05) 31px, rgba(255,0,255,0.05) 32px)',
+                backgroundSize: '100% 32px',
+                paddingTop: '8px',
+              }}
+              dir="auto"
+            />
+          </motion.div>
+        )}
+
+        {/* Drawing tab */}
+        {activeTab === 'draw' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            {/* Drawing toolbar */}
+            <div className="border-2 border-border border-t-0 bg-card p-3">
+              <div className="flex flex-wrap items-center gap-1.5">
+                {/* Pen types */}
+                <div className="relative">
+                  <button onClick={() => { setTool('pen'); setShowPenTypes(!showPenTypes); setShowColorPicker(false); setShowEraserSizes(false); }}
+                    className={`p-2 border-2 transition-all flex items-center gap-1 ${tool === 'pen' ? 'border-primary bg-primary/20 text-primary' : 'border-border text-muted-foreground hover:text-foreground'}`}>
+                    {(() => { const Icon = currentPen.icon; return <Icon size={18} />; })()}
+                    <span className="font-pixel text-[0.35rem] hidden sm:inline">{currentPen.name}</span>
+                  </button>
+                  {showPenTypes && (
+                    <div className="absolute top-full left-0 mt-1 p-2 bg-card border-2 border-border z-30 space-y-1 min-w-[120px]">
+                      {PEN_TYPES.map(pen => {
+                        const Icon = pen.icon;
+                        return (
+                          <button key={pen.id} onClick={() => { setSelectedPen(pen.id); setTool('pen'); setShowPenTypes(false); }}
+                            className={`w-full flex items-center gap-2 p-1.5 border-2 transition-all ${selectedPen === pen.id ? 'border-primary bg-primary/10' : 'border-transparent hover:border-border'}`}>
+                            <Icon size={16} />
+                            <span className="font-pixel text-[0.4rem]">{pen.name}</span>
+                            <div className="ml-auto rounded-full bg-foreground" style={{ width: Math.min(pen.size, 12), height: Math.min(pen.size, 12), opacity: pen.opacity }} />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              )}
+
+                {/* Eraser */}
+                <div className="relative">
+                  <button onClick={() => { setTool('eraser'); setShowEraserSizes(!showEraserSizes); setShowColorPicker(false); setShowPenTypes(false); }}
+                    className={`p-2 border-2 transition-all ${tool === 'eraser' ? 'border-primary bg-primary/20 text-primary' : 'border-border text-muted-foreground hover:text-foreground'}`}>
+                    <Eraser size={18} />
+                  </button>
+                  {showEraserSizes && (
+                    <div className="absolute top-full left-0 mt-1 p-2 bg-card border-2 border-border z-30 flex gap-1.5">
+                      {ERASER_SIZES.map(s => (
+                        <button key={s} onClick={() => { setEraserSize(s); setShowEraserSizes(false); }}
+                          className={`w-9 h-9 flex items-center justify-center border-2 transition-all ${eraserSize === s ? 'border-primary bg-primary/20' : 'border-border'}`}>
+                          <div className="rounded-full bg-muted-foreground" style={{ width: Math.min(s, 20), height: Math.min(s, 20) }} />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="w-px h-8 bg-border" />
+
+                {/* Color picker */}
+                <div className="relative">
+                  <button onClick={() => { setShowColorPicker(!showColorPicker); setShowPenTypes(false); setShowEraserSizes(false); }}
+                    className="p-2 border-2 border-border hover:border-primary transition-all flex items-center gap-1">
+                    <Circle size={16} fill={penColor} stroke={penColor} />
+                    <Palette size={12} className="text-muted-foreground" />
+                  </button>
+                  {showColorPicker && (
+                    <div className="absolute top-full left-0 mt-1 p-2 bg-card border-2 border-border z-30 grid grid-cols-5 gap-1.5">
+                      {PEN_COLORS.map(c => (
+                        <button key={c} onClick={() => { setPenColor(c); setShowColorPicker(false); }}
+                          className={`w-7 h-7 border-2 transition-all ${penColor === c ? 'border-primary scale-110' : 'border-border hover:border-muted-foreground'}`}
+                          style={{ backgroundColor: c }} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="w-px h-8 bg-border" />
+
+                {/* Image */}
+                <button onClick={() => fileInputRef.current?.click()} className="p-2 border-2 border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all" title="إدراج صورة">
+                  <ImageIcon size={18} />
+                </button>
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+
+                <div className="w-px h-8 bg-border" />
+
+                {/* Undo/Redo */}
+                <button onClick={undo} disabled={actions.length === 0} className="p-2 border-2 border-border text-muted-foreground hover:text-foreground disabled:opacity-30 transition-all"><Undo2 size={16} /></button>
+                <button onClick={redo} disabled={undoneActions.length === 0} className="p-2 border-2 border-border text-muted-foreground hover:text-foreground disabled:opacity-30 transition-all"><Redo2 size={16} /></button>
+
+                <div className="flex-1" />
+
+                <button onClick={clearAll} className="p-2 border-2 border-destructive/50 text-destructive hover:bg-destructive/10 transition-all"><Trash2 size={16} /></button>
+                <button onClick={downloadCanvas} className="p-2 border-2 border-accent/50 text-accent hover:bg-accent/10 transition-all"><Download size={16} /></button>
+              </div>
             </div>
 
-            <div className="w-px h-8 bg-border" />
-
-            {/* Color picker */}
-            <div className="relative">
-              <button onClick={() => { setShowColorPicker(!showColorPicker); setShowPenTypes(false); setShowEraserSizes(false); }}
-                className="p-2 border-2 border-border hover:border-primary transition-all flex items-center gap-1">
-                <Circle size={16} fill={penColor} stroke={penColor} />
-                <Palette size={12} className="text-muted-foreground" />
-              </button>
-              {showColorPicker && (
-                <div className="absolute top-full left-0 mt-1 p-2 bg-card border-2 border-border z-30 grid grid-cols-5 gap-1.5">
-                  {PEN_COLORS.map(c => (
-                    <button key={c} onClick={() => { setPenColor(c); setShowColorPicker(false); }}
-                      className={`w-7 h-7 border-2 transition-all ${penColor === c ? 'border-primary scale-110' : 'border-border hover:border-muted-foreground'}`}
-                      style={{ backgroundColor: c }} />
-                  ))}
-                </div>
-              )}
+            {/* Canvas */}
+            <div ref={containerRef} className="border-2 border-border border-t-0 bg-card p-1 mb-6 overflow-hidden">
+              <canvas
+                ref={canvasRef}
+                className="w-full cursor-crosshair touch-none"
+                style={{ minHeight: 500 }}
+                onMouseDown={startDraw}
+                onMouseMove={draw}
+                onMouseUp={endDraw}
+                onMouseLeave={endDraw}
+                onTouchStart={startDraw}
+                onTouchMove={draw}
+                onTouchEnd={endDraw}
+              />
             </div>
-
-            <div className="w-px h-8 bg-border" />
-
-            {/* Image */}
-            <button onClick={() => fileInputRef.current?.click()} className="p-2 border-2 border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
-              <ImageIcon size={18} />
-            </button>
-            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-
-            <div className="w-px h-8 bg-border" />
-
-            {/* Undo/Redo */}
-            <button onClick={undo} disabled={actions.length === 0} className="p-2 border-2 border-border text-muted-foreground hover:text-foreground disabled:opacity-30 transition-all"><Undo2 size={16} /></button>
-            <button onClick={redo} disabled={undoneActions.length === 0} className="p-2 border-2 border-border text-muted-foreground hover:text-foreground disabled:opacity-30 transition-all"><Redo2 size={16} /></button>
-
-            <div className="flex-1" />
-
-            <button onClick={clearAll} className="p-2 border-2 border-destructive/50 text-destructive hover:bg-destructive/10 transition-all"><Trash2 size={16} /></button>
-            <button onClick={downloadCanvas} className="p-2 border-2 border-accent/50 text-accent hover:bg-accent/10 transition-all"><Download size={16} /></button>
-          </div>
-        </div>
-
-        {/* Canvas */}
-        <div ref={containerRef} className="pixel-card p-1 mb-6 overflow-hidden">
-          <canvas
-            ref={canvasRef}
-            className="w-full cursor-crosshair touch-none"
-            style={{ minHeight: 500 }}
-            onMouseDown={startDraw}
-            onMouseMove={draw}
-            onMouseUp={endDraw}
-            onMouseLeave={endDraw}
-            onTouchStart={startDraw}
-            onTouchMove={draw}
-            onTouchEnd={endDraw}
-          />
-        </div>
+          </motion.div>
+        )}
       </main>
     </div>
   );
