@@ -10,8 +10,9 @@ import NFTCollection, { NFTItem } from '@/components/NFTCollection';
 import XPBar from '@/components/XPBar';
 import Header from '@/components/Header';
 import { Switch } from '@/components/ui/switch';
-import { ArrowLeft, Edit3, Save, Trash2, RefreshCw, Loader2, Check, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, Edit3, Save, Trash2, RefreshCw, Loader2, Check, Sun, Moon, Share2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 const SKIN_COLORS = ['#f4c794', '#e0ac69', '#c68642', '#8d5524', '#6b3a1f', '#f9d5a7'];
@@ -116,6 +117,103 @@ export default function ProfilePage() {
     } finally { setSaving(false); }
   };
 
+  const shareStats = async () => {
+    const statsArea = document.getElementById('stats-share-area');
+    if (!statsArea) return;
+    
+    // Create a canvas to render stats as image
+    const canvas = document.createElement('canvas');
+    canvas.width = 600;
+    canvas.height = 400;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Background
+    ctx.fillStyle = '#0a0a1a';
+    ctx.fillRect(0, 0, 600, 400);
+    
+    // Border glow
+    ctx.strokeStyle = '#ff00ff';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(8, 8, 584, 384);
+    ctx.strokeStyle = '#00ffff';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(12, 12, 576, 376);
+
+    // Title
+    ctx.fillStyle = '#ff00ff';
+    ctx.font = 'bold 22px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('📊 إحصائياتي - Mis Estadísticas', 300, 45);
+
+    // Username
+    ctx.fillStyle = '#00ffff';
+    ctx.font = '16px monospace';
+    ctx.fillText(`🎮 ${state.username}`, 300, 75);
+
+    // Stats grid
+    const stats = [
+      { icon: '📚', value: `${state.completedLessons.length}`, label: 'دروس' },
+      { icon: '🎮', value: `${state.completedGames.length}`, label: 'ألعاب' },
+      { icon: '📝', value: `${state.completedLessons.length * 8}`, label: 'كلمات' },
+      { icon: '⭐', value: `${state.totalXpEarned}`, label: 'XP' },
+      { icon: '🔥', value: `${state.streak}`, label: 'أيام' },
+      { icon: '🏆', value: `${state.achievements.length}`, label: 'إنجازات' },
+    ];
+
+    stats.forEach((s, i) => {
+      const col = i % 3;
+      const row = Math.floor(i / 3);
+      const x = 80 + col * 180;
+      const y = 120 + row * 130;
+
+      ctx.fillStyle = 'rgba(255,0,255,0.08)';
+      ctx.fillRect(x - 60, y - 20, 150, 100);
+      ctx.strokeStyle = 'rgba(255,0,255,0.3)';
+      ctx.strokeRect(x - 60, y - 20, 150, 100);
+
+      ctx.font = '28px serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#fff';
+      ctx.fillText(s.icon, x + 15, y + 15);
+      
+      ctx.fillStyle = '#00ffff';
+      ctx.font = 'bold 24px monospace';
+      ctx.fillText(s.value, x + 15, y + 48);
+      
+      ctx.fillStyle = '#aaa';
+      ctx.font = '12px monospace';
+      ctx.fillText(s.label, x + 15, y + 68);
+    });
+
+    // Footer
+    ctx.fillStyle = '#555';
+    ctx.font = '11px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('HaSli Spain 🇪🇸 — تعلّم الإسبانية بأسلوب RPG', 300, 385);
+
+    canvas.toBlob(async (blob) => {
+      if (!blob) return;
+      const file = new File([blob], 'my-stats.png', { type: 'image/png' });
+      
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title: 'إحصائياتي في HaSli Spain', text: '🎮 شاهد تقدمي في تعلّم الإسبانية!' });
+          return;
+        } catch {}
+      }
+      
+      // Fallback: download
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'my-stats.png';
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success('تم تحميل صورة الإحصائيات! 📊');
+    }, 'image/png');
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -156,8 +254,13 @@ export default function ProfilePage() {
 
         {/* ─── Statistics Section ─── */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="pixel-card p-5 mb-6">
-          <h3 className="font-pixel text-[0.6rem] text-gradient-vapor mb-4">الإحصائيات - Estadísticas</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-pixel text-[0.6rem] text-gradient-vapor">الإحصائيات - Estadísticas</h3>
+            <button onClick={shareStats} className="flex items-center gap-1.5 px-3 py-1.5 font-pixel text-[0.4rem] text-primary border-2 border-primary/40 hover:border-primary hover:bg-primary/10 hover:shadow-[0_0_12px_hsl(var(--primary)/0.3)] transition-all">
+              <Share2 size={12} /> مشاركة
+            </button>
+          </div>
+          <div id="stats-share-area" className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {[
               { icon: '📚', value: state.completedLessons.length, label: 'دروس مكتملة', labelEs: 'Lecciones' },
               { icon: '🎮', value: state.completedGames.length, label: 'ألعاب مكتملة', labelEs: 'Juegos' },

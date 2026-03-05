@@ -7,7 +7,6 @@ interface PixelAvatarProps {
   frameStyle?: string;
 }
 
-// Generate deterministic pixel art avatar from seed
 function hashCode(str: string): number {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -47,105 +46,142 @@ export default function PixelAvatar({ seed, size = 128, className = '', frameSty
     const hairStyle = HAIR_STYLES[Math.floor(rand() * HAIR_STYLES.length)];
     const accessory = ACCESSORY_TYPES[Math.floor(rand() * ACCESSORY_TYPES.length)];
 
-    // Generate 16x16 pixel grid
+    const skinLight = lighten(skinColor, 25);
+    const skinDark = darken(skinColor, 30);
+    const hairLight = lighten(hairColor, 20);
+    const hairDark = darken(hairColor, 25);
+    const outfitLight = lighten(outfitColor, 20);
+    const outfitDark = darken(outfitColor, 30);
+
     const pixelSize = size / 16;
     const pixels: { x: number; y: number; color: string }[] = [];
 
-    // Background
+    // Background with subtle gradient effect
     for (let y = 0; y < 16; y++) {
       for (let x = 0; x < 16; x++) {
-        pixels.push({ x, y, color: bgColor });
+        const gradientShift = Math.floor(y * 1.5);
+        pixels.push({ x, y, color: darken(bgColor, gradientShift) });
       }
     }
 
-    // Hair based on style
-    const hairPixels: [number, number][] = [];
+    // Hair with shading
+    const hairPixels: [number, number, string][] = [];
     if (hairStyle === 'messy') {
-      for (let x = 4; x <= 11; x++) hairPixels.push([x, 2]);
-      for (let x = 3; x <= 12; x++) hairPixels.push([x, 3]);
-      for (let x = 3; x <= 12; x++) hairPixels.push([x, 4]);
-      hairPixels.push([3, 5], [4, 5], [11, 5], [12, 5]);
+      for (let x = 4; x <= 11; x++) hairPixels.push([x, 2, hairLight]);
+      for (let x = 3; x <= 12; x++) hairPixels.push([x, 3, hairColor]);
+      for (let x = 3; x <= 12; x++) hairPixels.push([x, 4, hairDark]);
+      hairPixels.push([3, 5, hairDark], [4, 5, hairDark], [11, 5, hairDark], [12, 5, hairDark]);
+      // Highlight strands
+      hairPixels.push([5, 2, hairLight], [8, 2, hairLight], [10, 3, hairLight]);
     } else if (hairStyle === 'spiky') {
-      hairPixels.push([5, 1], [7, 1], [9, 1], [11, 1]);
-      for (let x = 4; x <= 11; x++) hairPixels.push([x, 2]);
-      for (let x = 3; x <= 12; x++) hairPixels.push([x, 3]);
-      for (let x = 3; x <= 12; x++) hairPixels.push([x, 4]);
+      hairPixels.push([5, 1, hairLight], [7, 1, hairLight], [9, 1, hairLight], [11, 1, hairLight]);
+      for (let x = 4; x <= 11; x++) hairPixels.push([x, 2, hairColor]);
+      for (let x = 3; x <= 12; x++) hairPixels.push([x, 3, x <= 7 ? hairLight : hairColor]);
+      for (let x = 3; x <= 12; x++) hairPixels.push([x, 4, hairDark]);
     } else if (hairStyle === 'long') {
-      for (let x = 4; x <= 11; x++) hairPixels.push([x, 2]);
-      for (let x = 3; x <= 12; x++) hairPixels.push([x, 3]);
-      for (let x = 3; x <= 12; x++) hairPixels.push([x, 4]);
-      hairPixels.push([3, 5], [3, 6], [3, 7], [3, 8], [12, 5], [12, 6], [12, 7], [12, 8]);
+      for (let x = 4; x <= 11; x++) hairPixels.push([x, 2, hairLight]);
+      for (let x = 3; x <= 12; x++) hairPixels.push([x, 3, hairColor]);
+      for (let x = 3; x <= 12; x++) hairPixels.push([x, 4, hairDark]);
+      for (let y = 5; y <= 9; y++) {
+        hairPixels.push([3, y, y < 7 ? hairColor : hairDark], [12, y, y < 7 ? hairColor : hairDark]);
+      }
     } else if (hairStyle === 'short') {
-      for (let x = 5; x <= 10; x++) hairPixels.push([x, 3]);
-      for (let x = 4; x <= 11; x++) hairPixels.push([x, 4]);
+      for (let x = 5; x <= 10; x++) hairPixels.push([x, 3, hairLight]);
+      for (let x = 4; x <= 11; x++) hairPixels.push([x, 4, hairColor]);
     } else if (hairStyle === 'mohawk') {
-      for (let x = 6; x <= 9; x++) { hairPixels.push([x, 1], [x, 2]); }
-      for (let x = 5; x <= 10; x++) hairPixels.push([x, 3]);
-      for (let x = 4; x <= 11; x++) hairPixels.push([x, 4]);
+      for (let x = 6; x <= 9; x++) { hairPixels.push([x, 1, hairLight], [x, 2, hairColor]); }
+      for (let x = 5; x <= 10; x++) hairPixels.push([x, 3, hairColor]);
+      for (let x = 4; x <= 11; x++) hairPixels.push([x, 4, hairDark]);
     }
 
-    hairPixels.forEach(([x, y]) => {
-      pixels.push({ x, y, color: hairColor });
+    hairPixels.forEach(([x, y, c]) => {
+      pixels.push({ x, y, color: c });
     });
 
-    // Face (skin)
-    const facePixels: [number, number][] = [];
+    // Face with 3D shading
     for (let y = 5; y <= 9; y++) {
       for (let x = 4; x <= 11; x++) {
-        facePixels.push([x, y]);
+        let c = skinColor;
+        // Left edge darker (shadow)
+        if (x === 4) c = skinDark;
+        // Right edge lighter (highlight)
+        else if (x === 11) c = skinLight;
+        // Top lighter
+        else if (y === 5) c = skinLight;
+        // Bottom darker
+        else if (y === 9) c = skinDark;
+        pixels.push({ x, y, color: c });
       }
     }
-    facePixels.push([5, 10], [6, 10], [7, 10], [8, 10], [9, 10], [10, 10]);
-    facePixels.forEach(([x, y]) => {
-      pixels.push({ x, y, color: skinColor });
-    });
+    // Chin with rounding
+    [6, 7, 8, 9].forEach(x => pixels.push({ x, y: 10, color: x === 6 || x === 9 ? skinDark : skinColor }));
 
-    // Eyes
+    // Eyes with depth
     const eyeColor = '#1a1a2e';
+    const eyeWhite = '#e8e8f0';
     if (eyeStyle === 'glasses') {
-      pixels.push({ x: 5, y: 6, color: eyeColor }, { x: 6, y: 6, color: eyeColor });
-      pixels.push({ x: 9, y: 6, color: eyeColor }, { x: 10, y: 6, color: eyeColor });
-      pixels.push({ x: 7, y: 6, color: '#555' }, { x: 8, y: 6, color: '#555' });
-      pixels.push({ x: 5, y: 7, color: '#555' }, { x: 6, y: 7, color: '#333' });
-      pixels.push({ x: 9, y: 7, color: '#555' }, { x: 10, y: 7, color: '#333' });
+      // Frame
+      [5, 6, 9, 10].forEach(x => pixels.push({ x, y: 6, color: '#555' }));
+      pixels.push({ x: 7, y: 6, color: '#666' }, { x: 8, y: 6, color: '#666' });
+      // Lenses
+      pixels.push({ x: 5, y: 7, color: '#334' }, { x: 6, y: 7, color: eyeColor });
+      pixels.push({ x: 9, y: 7, color: '#334' }, { x: 10, y: 7, color: eyeColor });
+      // Glint
+      pixels.push({ x: 5, y: 6, color: '#888' });
     } else if (eyeStyle === 'narrow') {
       pixels.push({ x: 6, y: 7, color: eyeColor }, { x: 10, y: 7, color: eyeColor });
     } else if (eyeStyle === 'wide') {
-      pixels.push({ x: 5, y: 6, color: '#fff' }, { x: 6, y: 6, color: eyeColor });
-      pixels.push({ x: 9, y: 6, color: '#fff' }, { x: 10, y: 6, color: eyeColor });
-      pixels.push({ x: 5, y: 7, color: '#fff' }, { x: 6, y: 7, color: eyeColor });
-      pixels.push({ x: 9, y: 7, color: '#fff' }, { x: 10, y: 7, color: eyeColor });
+      pixels.push({ x: 5, y: 6, color: eyeWhite }, { x: 6, y: 6, color: eyeWhite });
+      pixels.push({ x: 5, y: 7, color: eyeWhite }, { x: 6, y: 7, color: eyeColor });
+      pixels.push({ x: 9, y: 6, color: eyeWhite }, { x: 10, y: 6, color: eyeWhite });
+      pixels.push({ x: 9, y: 7, color: eyeWhite }, { x: 10, y: 7, color: eyeColor });
+      // Highlight dot
+      pixels.push({ x: 5, y: 6, color: '#fff' }, { x: 9, y: 6, color: '#fff' });
     } else {
-      pixels.push({ x: 6, y: 6, color: eyeColor }, { x: 10, y: 6, color: eyeColor });
+      // Normal with white + pupil + glint
+      pixels.push({ x: 5, y: 6, color: eyeWhite }, { x: 6, y: 6, color: eyeColor });
+      pixels.push({ x: 9, y: 6, color: eyeWhite }, { x: 10, y: 6, color: eyeColor });
+      // Tiny highlight
+      pixels.push({ x: 5, y: 6, color: '#fff' }, { x: 9, y: 6, color: '#fff' });
     }
 
-    // Nose
-    pixels.push({ x: 8, y: 8, color: darken(skinColor, 20) });
+    // Eyebrows
+    pixels.push({ x: 5, y: 5, color: darken(hairColor, 10) }, { x: 6, y: 5, color: darken(hairColor, 10) });
+    pixels.push({ x: 9, y: 5, color: darken(hairColor, 10) }, { x: 10, y: 5, color: darken(hairColor, 10) });
+
+    // Nose with highlight
+    pixels.push({ x: 7, y: 8, color: skinDark }, { x: 8, y: 8, color: darken(skinColor, 15) });
 
     // Mouth
-    pixels.push({ x: 7, y: 9, color: '#c0392b' }, { x: 8, y: 9, color: '#c0392b' });
+    pixels.push({ x: 7, y: 9, color: '#c0392b' }, { x: 8, y: 9, color: '#a93226' });
 
-    // Neck
-    pixels.push({ x: 7, y: 11, color: skinColor }, { x: 8, y: 11, color: skinColor });
+    // Neck with shadow
+    pixels.push({ x: 7, y: 11, color: skinDark }, { x: 8, y: 11, color: skinColor });
 
-    // Body/outfit
+    // Body/outfit with 3D shading
     for (let y = 12; y <= 15; y++) {
       for (let x = 4; x <= 11; x++) {
-        pixels.push({ x, y, color: outfitColor });
+        let c = outfitColor;
+        if (x === 4 || x === 5) c = outfitDark;
+        else if (x === 10 || x === 11) c = outfitLight;
+        else if (y === 12) c = outfitLight;
+        else if (y === 15) c = outfitDark;
+        pixels.push({ x, y, color: c });
       }
     }
-    // Collar detail
-    pixels.push({ x: 7, y: 12, color: darken(outfitColor, 30) }, { x: 8, y: 12, color: darken(outfitColor, 30) });
+    // Collar / neckline
+    pixels.push({ x: 7, y: 12, color: darken(outfitColor, 40) }, { x: 8, y: 12, color: darken(outfitColor, 35) });
+    // Shoulder highlight
+    pixels.push({ x: 4, y: 12, color: outfitColor }, { x: 11, y: 12, color: outfitLight });
 
     // Accessories
     if (accessory === 'earring') {
-      pixels.push({ x: 4, y: 7, color: '#ffd700' });
+      pixels.push({ x: 4, y: 7, color: '#ffd700' }, { x: 4, y: 8, color: '#ffed4a' });
     } else if (accessory === 'scar') {
-      pixels.push({ x: 9, y: 8, color: darken(skinColor, 40) });
-      pixels.push({ x: 10, y: 9, color: darken(skinColor, 40) });
+      pixels.push({ x: 9, y: 8, color: darken(skinColor, 40) }, { x: 10, y: 9, color: darken(skinColor, 40) });
     } else if (accessory === 'bandana') {
       for (let x = 4; x <= 11; x++) {
-        pixels.push({ x, y: 5, color: '#e74c3c' });
+        pixels.push({ x, y: 5, color: x % 2 === 0 ? '#e74c3c' : '#c0392b' });
       }
     }
 
@@ -186,6 +222,14 @@ function darken(hex: string, amount: number): string {
   const r = Math.max(0, (num >> 16) - amount);
   const g = Math.max(0, ((num >> 8) & 0x00FF) - amount);
   const b = Math.max(0, (num & 0x0000FF) - amount);
+  return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
+}
+
+function lighten(hex: string, amount: number): string {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const r = Math.min(255, (num >> 16) + amount);
+  const g = Math.min(255, ((num >> 8) & 0x00FF) + amount);
+  const b = Math.min(255, (num & 0x0000FF) + amount);
   return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
 }
 
