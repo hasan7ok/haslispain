@@ -519,36 +519,86 @@ export default function JournalPage() {
         {/* Writing tab */}
         {activeTab === 'write' && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="border-2 border-border border-t-0 bg-card p-4 mb-6">
-            {/* Formatting toolbar */}
-            <div className="flex items-center gap-1.5 mb-3 pb-3 border-b border-border">
-              <button onClick={() => insertTextFormatting('**')} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all" title="غامق">
-                <Bold size={14} />
+            className="border-2 border-border border-t-0 bg-card mb-6 flex">
+            {/* Sidebar toggle & archive */}
+            <div className={`border-l border-border transition-all overflow-hidden ${showSidebar ? 'w-56 min-w-[14rem]' : 'w-10 min-w-[2.5rem]'}`}>
+              <button
+                onClick={() => setShowSidebar(!showSidebar)}
+                className="w-full p-2 text-muted-foreground hover:text-secondary transition-colors border-b border-border flex items-center justify-center"
+                title="الأرشيف"
+              >
+                <FolderOpen size={16} />
               </button>
-              <button onClick={() => insertTextFormatting('*')} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all" title="مائل">
-                <Italic size={14} />
-              </button>
-              <button onClick={() => insertTextFormatting('• ', '')} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all" title="قائمة">
-                <List size={14} />
-              </button>
-              <div className="w-px h-6 bg-border mx-1" />
-              <button onClick={() => { if (textAreaRef.current) textAreaRef.current.style.textAlign = 'right'; }} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
-                <AlignRight size={14} />
-              </button>
-              <button onClick={() => { if (textAreaRef.current) textAreaRef.current.style.textAlign = 'center'; }} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
-                <AlignCenter size={14} />
-              </button>
-              <button onClick={() => { if (textAreaRef.current) textAreaRef.current.style.textAlign = 'left'; }} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
-                <AlignLeft size={14} />
-              </button>
-              <div className="flex-1" />
-              <span className="font-mono text-[0.55rem] text-muted-foreground">{textContent.length} حرف</span>
+              {showSidebar && (
+                <div className="p-2 space-y-1.5 max-h-[400px] overflow-y-auto">
+                  <button onClick={newEntry} className="w-full flex items-center gap-1.5 p-2 text-accent hover:bg-accent/10 border border-accent/30 transition-all font-pixel text-[0.4rem]">
+                    <Plus size={12} /> تدوينة جديدة
+                  </button>
+                  {entries.map(entry => (
+                    <div key={entry.id} className={`p-2 border transition-all cursor-pointer ${currentEntryId === entry.id ? 'border-primary bg-primary/10' : 'border-border hover:border-muted-foreground'}`}>
+                      {editingTitleId === entry.id ? (
+                        <div className="flex gap-1">
+                          <input value={editingTitleValue} onChange={e => setEditingTitleValue(e.target.value)}
+                            onKeyDown={e => e.key === 'Enter' && renameEntry(entry.id, editingTitleValue)}
+                            className="flex-1 bg-background px-1 py-0.5 text-[0.55rem] font-body text-foreground border border-primary focus:outline-none" dir="auto" autoFocus />
+                          <button onClick={() => renameEntry(entry.id, editingTitleValue)} className="text-accent"><Save size={10} /></button>
+                        </div>
+                      ) : (
+                        <button onClick={() => loadEntry(entry)} className="w-full text-right">
+                          <p className="font-pixel text-[0.4rem] text-foreground truncate">{entry.title}</p>
+                          <p className="font-mono text-[0.45rem] text-muted-foreground">{new Date(entry.created_at).toLocaleDateString('ar-EG', { month: 'short', day: 'numeric' })}</p>
+                        </button>
+                      )}
+                      <div className="flex gap-1 mt-1">
+                        <button onClick={() => { setEditingTitleId(entry.id); setEditingTitleValue(entry.title); }} className="text-muted-foreground hover:text-secondary" title="إعادة تسمية">
+                          <Edit3 size={10} />
+                        </button>
+                        <button onClick={() => deleteEntry(entry.id)} className="text-muted-foreground hover:text-destructive" title="حذف">
+                          <Trash2 size={10} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <textarea
-              ref={textAreaRef}
-              value={textContent}
-              onChange={e => setTextContent(e.target.value)}
+            {/* Writing area */}
+            <div className="flex-1 p-4">
+              {/* Formatting toolbar */}
+              <div className="flex items-center gap-1.5 mb-3 pb-3 border-b border-border">
+                <button onClick={() => insertTextFormatting('**')} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all" title="غامق">
+                  <Bold size={14} />
+                </button>
+                <button onClick={() => insertTextFormatting('*')} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all" title="مائل">
+                  <Italic size={14} />
+                </button>
+                <button onClick={() => insertTextFormatting('• ', '')} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all" title="قائمة">
+                  <List size={14} />
+                </button>
+                <div className="w-px h-6 bg-border mx-1" />
+                <button onClick={() => { if (textAreaRef.current) textAreaRef.current.style.textAlign = 'right'; }} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
+                  <AlignRight size={14} />
+                </button>
+                <button onClick={() => { if (textAreaRef.current) textAreaRef.current.style.textAlign = 'center'; }} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
+                  <AlignCenter size={14} />
+                </button>
+                <button onClick={() => { if (textAreaRef.current) textAreaRef.current.style.textAlign = 'left'; }} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
+                  <AlignLeft size={14} />
+                </button>
+                <div className="flex-1" />
+                <button onClick={saveEntry} disabled={saving}
+                  className="flex items-center gap-1 px-2 py-1 border border-primary/50 text-primary hover:bg-primary/10 transition-all font-pixel text-[0.4rem]">
+                  {saving ? <Loader2 size={12} className="animate-spin" /> : <Save size={12} />}
+                  حفظ
+                </button>
+                <span className="font-mono text-[0.55rem] text-muted-foreground">{textContent.length} حرف</span>
+              </div>
+
+              <textarea
+                ref={textAreaRef}
+                value={textContent}
+                onChange={e => setTextContent(e.target.value)}
               placeholder="ابدأ الكتابة هنا... اكتب ملاحظاتك، أفكارك، أو ما تعلمته اليوم ✍️"
               className="w-full min-h-[300px] bg-transparent text-foreground font-body text-sm resize-y focus:outline-none placeholder:text-muted-foreground/40 leading-8"
               style={{
