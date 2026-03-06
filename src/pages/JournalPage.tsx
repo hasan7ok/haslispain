@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Header from '@/components/Header';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, Pen, Eraser, Type, Image as ImageIcon, Trash2, Download, Palette, Undo2, Redo2, Circle, Save, FolderOpen, Plus, Loader2, Brush, Pencil, Highlighter, BookOpen, FileText, Bold, Italic, List, AlignRight, AlignLeft, AlignCenter } from 'lucide-react';
+import { ArrowLeft, Pen, Eraser, Type, Image as ImageIcon, Trash2, Download, Palette, Undo2, Redo2, Circle, Save, FolderOpen, Plus, Loader2, Brush, Pencil, Highlighter, BookOpen, FileText, Bold, Italic, List, AlignRight, AlignLeft, AlignCenter, Edit3 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface DrawPoint { x: number; y: number; }
