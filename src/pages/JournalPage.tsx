@@ -599,15 +599,16 @@ export default function JournalPage() {
                 ref={textAreaRef}
                 value={textContent}
                 onChange={e => setTextContent(e.target.value)}
-              placeholder="ابدأ الكتابة هنا... اكتب ملاحظاتك، أفكارك، أو ما تعلمته اليوم ✍️"
-              className="w-full min-h-[300px] bg-transparent text-foreground font-body text-sm resize-y focus:outline-none placeholder:text-muted-foreground/40 leading-8"
-              style={{
-                backgroundImage: 'repeating-linear-gradient(transparent, transparent 31px, rgba(255,0,255,0.05) 31px, rgba(255,0,255,0.05) 32px)',
-                backgroundSize: '100% 32px',
-                paddingTop: '8px',
-              }}
-              dir="auto"
-            />
+                placeholder="ابدأ الكتابة هنا... اكتب ملاحظاتك، أفكارك، أو ما تعلمته اليوم ✍️"
+                className="w-full min-h-[300px] bg-transparent text-foreground font-body text-sm resize-y focus:outline-none placeholder:text-muted-foreground/40 leading-8"
+                style={{
+                  backgroundImage: 'repeating-linear-gradient(transparent, transparent 31px, rgba(255,0,255,0.05) 31px, rgba(255,0,255,0.05) 32px)',
+                  backgroundSize: '100% 32px',
+                  paddingTop: '8px',
+                }}
+                dir="auto"
+              />
+            </div>
           </motion.div>
         )}
 
