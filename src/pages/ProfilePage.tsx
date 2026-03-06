@@ -113,7 +113,12 @@ export default function ProfilePage() {
 
       const result = await updateProfile(updates);
       if (result?.error) { setError(result.error.message || 'حدث خطأ أثناء الحفظ'); }
-      else { setSuccess('تم حفظ التغييرات بنجاح ✓'); await refreshProfile(); }
+      else {
+        // Sync username to game state (localStorage) so it shows on home page
+        if (updates.username) updateUsername(updates.username as string);
+        setSuccess('تم حفظ التغييرات بنجاح ✓');
+        await refreshProfile();
+      }
     } finally { setSaving(false); }
   };
 
