@@ -72,11 +72,14 @@ export default function JournalPage() {
   // Journal list
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [currentEntryId, setCurrentEntryId] = useState<string | null>(null);
-  const [entryTitle, setEntryTitle] = useState('تدوينة جديدة');
+  const [entryTitle, setEntryTitle] = useState(() => new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }));
   const [saving, setSaving] = useState(false);
   const [showEntries, setShowEntries] = useState(false);
   const [loading, setLoading] = useState(true);
   const [canvasReady, setCanvasReady] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [editingTitleId, setEditingTitleId] = useState<string | null>(null);
+  const [editingTitleValue, setEditingTitleValue] = useState('');
 
   const currentPen = PEN_TYPES.find(p => p.id === selectedPen) || PEN_TYPES[1];
 
@@ -365,11 +368,20 @@ export default function JournalPage() {
 
   const newEntry = () => {
     setCurrentEntryId(null);
-    setEntryTitle('تدوينة جديدة');
+    setEntryTitle(new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }));
     setTextContent('');
     setActions([]);
     setUndoneActions([]);
     setShowEntries(false);
+  };
+
+  const renameEntry = async (id: string, newTitle: string) => {
+    if (!newTitle.trim()) return;
+    await supabase.from('journal_entries').update({ title: newTitle.trim() }).eq('id', id);
+    setEntries(prev => prev.map(e => e.id === id ? { ...e, title: newTitle.trim() } : e));
+    if (currentEntryId === id) setEntryTitle(newTitle.trim());
+    setEditingTitleId(null);
+    toast.success('تم تغيير العنوان');
   };
 
   const deleteEntry = async (id: string) => {
