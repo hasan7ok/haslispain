@@ -180,7 +180,7 @@ export default function SplashScreen({ onComplete }: { onComplete: () => void })
               className="font-body text-sm mt-4"
               style={{ color: 'rgba(224,224,224,0.7)' }}
             >
-              تعلّم الإسبانية بأسلوب RPG
+              طريقك لإتقان الإسبانية يبدأ هنا
             </motion.p>
             <motion.div
               initial={{ opacity: 0 }}

@@ -113,7 +113,12 @@ export default function ProfilePage() {
 
       const result = await updateProfile(updates);
       if (result?.error) { setError(result.error.message || 'حدث خطأ أثناء الحفظ'); }
-      else { setSuccess('تم حفظ التغييرات بنجاح ✓'); await refreshProfile(); }
+      else {
+        // Sync username to game state (localStorage) so it shows on home page
+        if (updates.username) updateUsername(updates.username as string);
+        setSuccess('تم حفظ التغييرات بنجاح ✓');
+        await refreshProfile();
+      }
     } finally { setSaving(false); }
   };
 
@@ -190,7 +195,7 @@ export default function ProfilePage() {
     ctx.fillStyle = '#555';
     ctx.font = '11px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('HaSli Spain 🇪🇸 — تعلّم الإسبانية بأسلوب RPG', 300, 385);
+    ctx.fillText('PIXÑOL 🇪🇸 — طريقك لإتقان الإسبانية يبدأ هنا', 300, 385);
 
     canvas.toBlob(async (blob) => {
       if (!blob) return;
@@ -344,7 +349,7 @@ export default function ProfilePage() {
               boxShadow: '0 0 12px hsl(var(--primary) / 0.4), inset 0 1px 0 hsl(var(--primary-foreground) / 0.1)',
             }}
           >
-            {saving ? <Loader2 size={18} className="animate-spin" /> : <span className="text-lg">💾</span>}
+            {saving ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
             {saving ? 'جاري الحفظ...' : 'حفظ'}
           </button>
         </motion.div>
