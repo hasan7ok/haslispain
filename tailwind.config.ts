@@ -71,6 +71,8 @@ export default {
         },
         xp: "hsl(var(--xp-gold))",
         health: "hsl(var(--health-green))",
+        "gender-m": "hsl(var(--gender-masculine))",
+        "gender-f": "hsl(var(--gender-feminine))",
       },
       borderRadius: {
         lg: "var(--radius)",

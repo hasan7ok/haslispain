@@ -5,7 +5,8 @@ import { useGameState } from '@/hooks/useGameState';
 import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { WORD_HUNT_CHALLENGES } from '@/data/vocabulary';
 import Header from '@/components/Header';
-import { ArrowLeft, Target } from 'lucide-react';
+import { speakSpanish } from '@/components/SpanishWord';
+import { ArrowLeft, Target, Volume2 } from 'lucide-react';
 
 export default function WordHuntPage() {
   const navigate = useNavigate();
@@ -92,9 +93,14 @@ export default function WordHuntPage() {
 
         {/* Sentence */}
         <div className="pixel-card-primary p-6 mb-6 text-center">
-          <p className="font-pixel text-sm text-primary mb-2 leading-relaxed">
-            {current.sentence.replace('___', result ? current.correct : '______')}
-          </p>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <p className="font-pixel text-sm text-primary leading-relaxed">
+              {current.sentence.replace('___', result ? current.correct : '______')}
+            </p>
+            <button onClick={() => speakSpanish(current.sentence.replace('___', current.correct))} className="text-muted-foreground hover:text-primary opacity-60 hover:opacity-100 transition-colors">
+              <Volume2 size={16} />
+            </button>
+          </div>
           <p className="text-muted-foreground font-body text-sm">{current.sentenceAr}</p>
         </div>
 

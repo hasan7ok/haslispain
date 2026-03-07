@@ -5,7 +5,8 @@ import { useGameState } from '@/hooks/useGameState';
 import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { STORIES, StoryChoice } from '@/data/stories';
 import Header from '@/components/Header';
-import { ArrowLeft, ChevronRight } from 'lucide-react';
+import { speakSpanish } from '@/components/SpanishWord';
+import { ArrowLeft, ChevronRight, Volume2 } from 'lucide-react';
 
 export default function StoryPage() {
   const { storyId } = useParams<{ storyId: string }>();
@@ -117,9 +118,14 @@ export default function StoryPage() {
             )}
 
             {/* Text */}
-            <p className="text-primary font-body text-base font-medium mb-2 leading-relaxed" dir="ltr">
-              {currentNode.textEs}
-            </p>
+            <div className="flex items-start gap-2">
+              <p className="text-primary font-body text-base font-medium mb-2 leading-relaxed flex-1" dir="ltr">
+                {currentNode.textEs}
+              </p>
+              <button onClick={() => speakSpanish(currentNode.textEs)} className="text-muted-foreground hover:text-primary opacity-60 hover:opacity-100 transition-colors mt-1 flex-shrink-0">
+                <Volume2 size={16} />
+              </button>
+            </div>
             <p className="text-foreground font-body text-sm leading-relaxed">
               {currentNode.textAr}
             </p>
