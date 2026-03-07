@@ -5,7 +5,8 @@ import { useGameState } from '@/hooks/useGameState';
 import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { LESSONS } from '@/data/vocabulary';
 import Header from '@/components/Header';
-import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw } from 'lucide-react';
+import SpanishWord, { speakSpanish } from '@/components/SpanishWord';
+import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw, Volume2 } from 'lucide-react';
 
 export default function LessonPage() {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -111,14 +112,19 @@ export default function LessonPage() {
               onClick={() => { playSuccess(); setShowTranslation(!showTranslation); }}
             >
               <p className="font-pixel text-[0.5rem] text-muted-foreground mb-4">اضغط لكشف الترجمة</p>
-              <h2 className="font-pixel text-base text-primary mb-2">{vocab[currentCard].word}</h2>
+              <SpanishWord word={vocab[currentCard].word} size="lg" className="font-pixel text-primary mb-2" />
 
               {showTranslation && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center mt-3">
                   <p className="text-foreground font-body text-lg font-bold mb-1">{vocab[currentCard].translationAr}</p>
                   <p className="text-muted-foreground font-body text-sm mb-4">{vocab[currentCard].translation}</p>
                   <div className="p-3 bg-muted/50 border border-border mt-2">
-                    <p className="text-primary font-body text-sm font-medium">{vocab[currentCard].example}</p>
+                    <div className="flex items-center justify-center gap-2">
+                      <p className="text-primary font-body text-sm font-medium">{vocab[currentCard].example}</p>
+                      <button onClick={(e) => { e.stopPropagation(); speakSpanish(vocab[currentCard].example); }} className="text-muted-foreground hover:text-primary opacity-60 hover:opacity-100 transition-colors">
+                        <Volume2 size={14} />
+                      </button>
+                    </div>
                     <p className="text-muted-foreground font-body text-xs mt-1">{vocab[currentCard].exampleTranslation}</p>
                   </div>
                 </motion.div>
