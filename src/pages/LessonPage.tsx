@@ -147,6 +147,18 @@ export default function LessonPage() {
             </button>
           </div>
         )}
+
+        {/* Gender legend */}
+        {!completed && (
+          <div className="flex items-center justify-center gap-4 mt-4 opacity-50">
+            <span className="inline-flex items-center gap-1.5 text-[0.6rem] font-body text-muted-foreground">
+              <span className="w-2 h-2 rounded-full bg-gender-m" /> مذكر (Masculino)
+            </span>
+            <span className="inline-flex items-center gap-1.5 text-[0.6rem] font-body text-muted-foreground">
+              <span className="w-2 h-2 rounded-full bg-gender-f" /> مؤنث (Femenino)
+            </span>
+          </div>
+        )}
       </main>
     </div>
   );
