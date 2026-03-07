@@ -52,6 +52,10 @@
     --neon-orange: 36 100% 50%;
     --sunset-pink: 330 80% 55%;
 
+    /* Gender color tokens */
+    --gender-masculine: 210 80% 60%;
+    --gender-feminine: 340 70% 60%;
+
     --sidebar-background: 270 80% 6%;
     --sidebar-foreground: 0 0% 88%;
     --sidebar-primary: 300 100% 50%;
@@ -108,6 +112,10 @@
     --neon-cyan: 180 70% 35%;
     --neon-orange: 36 90% 48%;
     --sunset-pink: 330 70% 50%;
+
+    /* Gender color tokens */
+    --gender-masculine: 210 60% 50%;
+    --gender-feminine: 340 55% 50%;
 
     --sidebar-background: 0 0% 96%;
     --sidebar-foreground: 240 10% 10%;
