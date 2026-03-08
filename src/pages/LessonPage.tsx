@@ -6,7 +6,8 @@ import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { LESSONS } from '@/data/vocabulary';
 import Header from '@/components/Header';
 import SpanishWord, { speakSpanish } from '@/components/SpanishWord';
-import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw, Volume2 } from 'lucide-react';
+import ImmersiveFlashcard from '@/components/ImmersiveFlashcard';
+import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw, Volume2, Sparkles } from 'lucide-react';
 
 export default function LessonPage() {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -16,6 +17,7 @@ export default function LessonPage() {
   const [currentCard, setCurrentCard] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [immersiveMode, setImmersiveMode] = useState(false);
 
   const lesson = lessonId ? LESSONS[lessonId] : undefined;
   if (!lesson) {
@@ -75,8 +77,17 @@ export default function LessonPage() {
               <Lightbulb size={16} className="text-primary flex-shrink-0 mt-0.5" />
               <p className="text-foreground font-body text-xs">{lesson.tipAr}</p>
             </div>
-          )}
+        )}
         </div>
+
+        {/* Start Practice button */}
+        <button
+          onClick={() => setImmersiveMode(true)}
+          className="w-full mb-6 p-3 rounded-xl border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 transition-all flex items-center justify-center gap-2 group"
+        >
+          <Sparkles size={16} className="text-primary group-hover:scale-110 transition-transform" />
+          <span className="font-pixel text-[0.55rem] text-primary">ابدأ التمرين الشامل</span>
+        </button>
 
         {/* Progress */}
         <div className="flex items-center justify-between mb-4">
@@ -160,6 +171,24 @@ export default function LessonPage() {
           </div>
         )}
       </main>
+
+      {/* Immersive Flashcard Overlay */}
+      <AnimatePresence>
+        {immersiveMode && (
+          <ImmersiveFlashcard
+            vocabulary={vocab}
+            lessonTitle={lesson.introAr}
+            onClose={() => setImmersiveMode(false)}
+            onComplete={() => {
+              if (!isAlreadyCompleted) {
+                const zone = lesson.id.split('-')[0];
+                const xp = zone === 'pueblo' ? 25 : zone === 'ciudad' ? 35 : 40;
+                completeLesson(lesson.id, xp);
+              }
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
