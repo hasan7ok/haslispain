@@ -18,6 +18,8 @@ export default function LessonPage() {
   const [showTranslation, setShowTranslation] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [immersiveMode, setImmersiveMode] = useState(false);
+  const [memoryMode, setMemoryMode] = useState(false);
+  const [revealedCards, setRevealedCards] = useState<Set<number>>(new Set());
 
   const lesson = lessonId ? LESSONS[lessonId] : undefined;
   if (!lesson) {
