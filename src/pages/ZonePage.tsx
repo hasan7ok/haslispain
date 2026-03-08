@@ -5,7 +5,7 @@ import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { ZONES } from '@/data/zones';
 import Header from '@/components/Header';
 import { ArrowLeft, Check, BookOpen, Gamepad2, ChevronRight } from 'lucide-react';
-import NeonProgressBar from '@/components/NeonProgressBar';
+
 
 export default function ZonePage() {
   const { zoneId } = useParams<{ zoneId: string }>();
@@ -53,17 +53,8 @@ export default function ZonePage() {
           </div>
         </motion.div>
 
-        {/* Neon Progress Bar for zone */}
-        {(() => {
-          const completedCount = zone.lessons.filter(l => state.completedLessons.includes(l.id)).length;
-          const totalCount = zone.lessons.length;
-          return (
-            <NeonProgressBar
-              progress={totalCount > 0 ? (completedCount / totalCount) * 100 : 0}
-              className="mb-6"
-            />
-          );
-        })()}
+
+
 
         {/* Lessons */}
         <h2 className="font-pixel text-[0.65rem] text-foreground mb-3 flex items-center gap-2">

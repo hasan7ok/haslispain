@@ -7,7 +7,7 @@ import { LESSONS } from '@/data/vocabulary';
 import Header from '@/components/Header';
 import SpanishWord, { speakSpanish } from '@/components/SpanishWord';
 import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw, Volume2 } from 'lucide-react';
-import NeonProgressBar from '@/components/NeonProgressBar';
+
 
 export default function LessonPage() {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -68,11 +68,8 @@ export default function LessonPage() {
           <ArrowLeft size={16} /> العودة
         </button>
 
-        {/* Neon Progress Bar */}
-        <NeonProgressBar
-          progress={completed ? 100 : ((currentCard + 1) / vocab.length) * 100}
-          className="mb-6"
-        />
+
+
 
         {/* Lesson header */}
         <div className="pixel-card-primary p-4 mb-6">
