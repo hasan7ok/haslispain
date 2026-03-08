@@ -5,7 +5,7 @@ import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { ZONES } from '@/data/zones';
 import Header from '@/components/Header';
 import { ArrowLeft, Check, BookOpen, Gamepad2, ChevronRight } from 'lucide-react';
-import NeonProgressBar from '@/components/NeonProgressBar';
+
 
 export default function ZonePage() {
   const { zoneId } = useParams<{ zoneId: string }>();
