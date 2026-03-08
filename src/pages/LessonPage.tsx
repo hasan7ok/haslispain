@@ -6,7 +6,8 @@ import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { LESSONS } from '@/data/vocabulary';
 import Header from '@/components/Header';
 import SpanishWord, { speakSpanish } from '@/components/SpanishWord';
-import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw, Volume2 } from 'lucide-react';
+import ImmersiveFlashcard from '@/components/ImmersiveFlashcard';
+import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw, Volume2, Sparkles } from 'lucide-react';
 
 export default function LessonPage() {
   const { lessonId } = useParams<{ lessonId: string }>();
