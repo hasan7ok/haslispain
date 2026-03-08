@@ -17,6 +17,7 @@ export default function LessonPage() {
   const [currentCard, setCurrentCard] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [immersiveMode, setImmersiveMode] = useState(false);
 
   const lesson = lessonId ? LESSONS[lessonId] : undefined;
   if (!lesson) {
