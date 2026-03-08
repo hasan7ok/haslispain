@@ -77,8 +77,17 @@ export default function LessonPage() {
               <Lightbulb size={16} className="text-primary flex-shrink-0 mt-0.5" />
               <p className="text-foreground font-body text-xs">{lesson.tipAr}</p>
             </div>
-          )}
+        )}
         </div>
+
+        {/* Start Practice button */}
+        <button
+          onClick={() => setImmersiveMode(true)}
+          className="w-full mb-6 p-3 rounded-xl border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 transition-all flex items-center justify-center gap-2 group"
+        >
+          <Sparkles size={16} className="text-primary group-hover:scale-110 transition-transform" />
+          <span className="font-pixel text-[0.55rem] text-primary">ابدأ التمرين الشامل</span>
+        </button>
 
         {/* Progress */}
         <div className="flex items-center justify-between mb-4">
