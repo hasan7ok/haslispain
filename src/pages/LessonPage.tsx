@@ -171,6 +171,24 @@ export default function LessonPage() {
           </div>
         )}
       </main>
+
+      {/* Immersive Flashcard Overlay */}
+      <AnimatePresence>
+        {immersiveMode && (
+          <ImmersiveFlashcard
+            vocabulary={vocab}
+            lessonTitle={lesson.introAr}
+            onClose={() => setImmersiveMode(false)}
+            onComplete={() => {
+              if (!isAlreadyCompleted) {
+                const zone = lesson.id.split('-')[0];
+                const xp = zone === 'pueblo' ? 25 : zone === 'ciudad' ? 35 : 40;
+                completeLesson(lesson.id, xp);
+              }
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
