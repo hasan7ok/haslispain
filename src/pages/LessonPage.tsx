@@ -7,7 +7,7 @@ import { LESSONS } from '@/data/vocabulary';
 import Header from '@/components/Header';
 import SpanishWord, { speakSpanish } from '@/components/SpanishWord';
 import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw, Volume2 } from 'lucide-react';
-import NeonProgressBar from '@/components/NeonProgressBar';
+
 
 export default function LessonPage() {
   const { lessonId } = useParams<{ lessonId: string }>();
