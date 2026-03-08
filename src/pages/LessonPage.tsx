@@ -91,13 +91,26 @@ export default function LessonPage() {
           <span className="font-pixel text-[0.55rem] text-primary">ابدأ التمرين الشامل</span>
         </button>
 
-        {/* Progress */}
+        {/* Memory Toggle + Progress */}
         <div className="flex items-center justify-between mb-4">
-          <span className="font-pixel text-[0.5rem] text-muted-foreground">{currentCard + 1} / {vocab.length}</span>
-          <div className="flex gap-1">
-            {vocab.map((_, i) => (
-              <div key={i} className={`w-2 h-2 ${i <= currentCard ? 'bg-primary' : 'bg-muted'}`} />
-            ))}
+          <button
+            onClick={() => { setMemoryMode(!memoryMode); setRevealedCards(new Set()); }}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border transition-all text-[0.55rem] font-pixel ${
+              memoryMode
+                ? 'border-primary/40 bg-primary/10 text-primary'
+                : 'border-border bg-muted/30 text-muted-foreground hover:border-primary/20'
+            }`}
+          >
+            {memoryMode ? <EyeOff size={12} /> : <Eye size={12} />}
+            {memoryMode ? 'وضع الذاكرة: مفعّل' : 'وضع الذاكرة'}
+          </button>
+          <div className="flex items-center gap-2">
+            <span className="font-pixel text-[0.5rem] text-muted-foreground">{currentCard + 1} / {vocab.length}</span>
+            <div className="flex gap-1">
+              {vocab.map((_, i) => (
+                <div key={i} className={`w-2 h-2 ${i <= currentCard ? 'bg-primary' : 'bg-muted'}`} />
+              ))}
+            </div>
           </div>
         </div>
 
