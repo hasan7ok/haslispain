@@ -53,17 +53,8 @@ export default function ZonePage() {
           </div>
         </motion.div>
 
-        {/* Neon Progress Bar for zone */}
-        {(() => {
-          const completedCount = zone.lessons.filter(l => state.completedLessons.includes(l.id)).length;
-          const totalCount = zone.lessons.length;
-          return (
-            <NeonProgressBar
-              progress={totalCount > 0 ? (completedCount / totalCount) * 100 : 0}
-              className="mb-6"
-            />
-          );
-        })()}
+
+
 
         {/* Lessons */}
         <h2 className="font-pixel text-[0.65rem] text-foreground mb-3 flex items-center gap-2">

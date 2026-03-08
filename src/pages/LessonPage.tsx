@@ -68,11 +68,8 @@ export default function LessonPage() {
           <ArrowLeft size={16} /> العودة
         </button>
 
-        {/* Neon Progress Bar */}
-        <NeonProgressBar
-          progress={completed ? 100 : ((currentCard + 1) / vocab.length) * 100}
-          className="mb-6"
-        />
+
+
 
         {/* Lesson header */}
         <div className="pixel-card-primary p-4 mb-6">
