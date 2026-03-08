@@ -6,8 +6,7 @@ import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { LESSONS } from '@/data/vocabulary';
 import Header from '@/components/Header';
 import SpanishWord, { speakSpanish } from '@/components/SpanishWord';
-import ImmersiveFlashcard from '@/components/ImmersiveFlashcard';
-import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw, Volume2, Sparkles, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw, Volume2 } from 'lucide-react';
 
 export default function LessonPage() {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -17,9 +16,6 @@ export default function LessonPage() {
   const [currentCard, setCurrentCard] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
   const [completed, setCompleted] = useState(false);
-  const [immersiveMode, setImmersiveMode] = useState(false);
-  const [memoryMode, setMemoryMode] = useState(false);
-  const [revealedCards, setRevealedCards] = useState<Set<number>>(new Set());
 
   const lesson = lessonId ? LESSONS[lessonId] : undefined;
   if (!lesson) {
@@ -79,38 +75,16 @@ export default function LessonPage() {
               <Lightbulb size={16} className="text-primary flex-shrink-0 mt-0.5" />
               <p className="text-foreground font-body text-xs">{lesson.tipAr}</p>
             </div>
-        )}
+          )}
         </div>
 
-        {/* Start Practice button */}
-        <button
-          onClick={() => setImmersiveMode(true)}
-          className="w-full mb-6 p-3 rounded-xl border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 transition-all flex items-center justify-center gap-2 group"
-        >
-          <Sparkles size={16} className="text-primary group-hover:scale-110 transition-transform" />
-          <span className="font-pixel text-[0.55rem] text-primary">ابدأ التمرين الشامل</span>
-        </button>
-
-        {/* Memory Toggle + Progress */}
+        {/* Progress */}
         <div className="flex items-center justify-between mb-4">
-          <button
-            onClick={() => { setMemoryMode(!memoryMode); setRevealedCards(new Set()); }}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border transition-all text-[0.55rem] font-pixel ${
-              memoryMode
-                ? 'border-primary/40 bg-primary/10 text-primary'
-                : 'border-border bg-muted/30 text-muted-foreground hover:border-primary/20'
-            }`}
-          >
-            {memoryMode ? <EyeOff size={12} /> : <Eye size={12} />}
-            {memoryMode ? 'وضع الذاكرة: مفعّل' : 'وضع الذاكرة'}
-          </button>
-          <div className="flex items-center gap-2">
-            <span className="font-pixel text-[0.5rem] text-muted-foreground">{currentCard + 1} / {vocab.length}</span>
-            <div className="flex gap-1">
-              {vocab.map((_, i) => (
-                <div key={i} className={`w-2 h-2 ${i <= currentCard ? 'bg-primary' : 'bg-muted'}`} />
-              ))}
-            </div>
+          <span className="font-pixel text-[0.5rem] text-muted-foreground">{currentCard + 1} / {vocab.length}</span>
+          <div className="flex gap-1">
+            {vocab.map((_, i) => (
+              <div key={i} className={`w-2 h-2 ${i <= currentCard ? 'bg-primary' : 'bg-muted'}`} />
+            ))}
           </div>
         </div>
 
@@ -135,37 +109,26 @@ export default function LessonPage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -30 }}
               className="pixel-card-primary p-6 min-h-[250px] flex flex-col items-center justify-center cursor-pointer"
-              onClick={() => {
-                playSuccess();
-                if (memoryMode) {
-                  setRevealedCards(prev => { const s = new Set(prev); s.has(currentCard) ? s.delete(currentCard) : s.add(currentCard); return s; });
-                } else {
-                  setShowTranslation(!showTranslation);
-                }
-              }}
+              onClick={() => { playSuccess(); setShowTranslation(!showTranslation); }}
             >
-              <p className="font-pixel text-[0.5rem] text-muted-foreground mb-4">
-                {memoryMode ? 'اضغط لاختبار ذاكرتك' : 'اضغط لكشف الترجمة'}
-              </p>
+              <p className="font-pixel text-[0.5rem] text-muted-foreground mb-4">اضغط لكشف الترجمة</p>
               <SpanishWord word={vocab[currentCard].word} size="lg" className="font-pixel text-primary mb-2" />
 
-              <AnimatePresence>
-                {(memoryMode ? revealedCards.has(currentCard) : showTranslation) && (
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="text-center mt-3">
-                    <p className="text-foreground font-body text-lg font-bold mb-1">{vocab[currentCard].translationAr}</p>
-                    <p className="text-muted-foreground font-body text-sm mb-4">{vocab[currentCard].translation}</p>
-                    <div className="p-3 bg-muted/50 border border-border mt-2">
-                      <div className="flex items-center justify-center gap-2">
-                        <p className="text-primary font-body text-sm font-medium">{vocab[currentCard].example}</p>
-                        <button onClick={(e) => { e.stopPropagation(); speakSpanish(vocab[currentCard].example); }} className="text-muted-foreground hover:text-primary opacity-60 hover:opacity-100 transition-colors">
-                          <Volume2 size={14} />
-                        </button>
-                      </div>
-                      <p className="text-muted-foreground font-body text-xs mt-1">{vocab[currentCard].exampleTranslation}</p>
+              {showTranslation && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center mt-3">
+                  <p className="text-foreground font-body text-lg font-bold mb-1">{vocab[currentCard].translationAr}</p>
+                  <p className="text-muted-foreground font-body text-sm mb-4">{vocab[currentCard].translation}</p>
+                  <div className="p-3 bg-muted/50 border border-border mt-2">
+                    <div className="flex items-center justify-center gap-2">
+                      <p className="text-primary font-body text-sm font-medium">{vocab[currentCard].example}</p>
+                      <button onClick={(e) => { e.stopPropagation(); speakSpanish(vocab[currentCard].example); }} className="text-muted-foreground hover:text-primary opacity-60 hover:opacity-100 transition-colors">
+                        <Volume2 size={14} />
+                      </button>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    <p className="text-muted-foreground font-body text-xs mt-1">{vocab[currentCard].exampleTranslation}</p>
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
           </AnimatePresence>
         )}
@@ -197,24 +160,6 @@ export default function LessonPage() {
           </div>
         )}
       </main>
-
-      {/* Immersive Flashcard Overlay */}
-      <AnimatePresence>
-        {immersiveMode && (
-          <ImmersiveFlashcard
-            vocabulary={vocab}
-            lessonTitle={lesson.introAr}
-            onClose={() => setImmersiveMode(false)}
-            onComplete={() => {
-              if (!isAlreadyCompleted) {
-                const zone = lesson.id.split('-')[0];
-                const xp = zone === 'pueblo' ? 25 : zone === 'ciudad' ? 35 : 40;
-                completeLesson(lesson.id, xp);
-              }
-            }}
-          />
-        )}
-      </AnimatePresence>
     </div>
   );
 }
