@@ -136,6 +136,7 @@ function AppContent() {
         <Route path="/boss-fights" element={<BossFightsListPage />} />
         <Route path="/boss/:bossId" element={<GrammarBossPage />} />
         <Route path="/settings" element={<ProfilePage />} />
+        <Route path="/cultura/:cultureId" element={<CultureDetailPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
