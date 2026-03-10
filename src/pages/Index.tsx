@@ -8,6 +8,7 @@ import XPBar from '@/components/XPBar';
 import Header from '@/components/Header';
 import rpgMapBg from '@/assets/rpg-map-bg.png';
 import { Lock, Sparkles, ChevronRight, Flame, BookOpen, Swords, PenLine } from 'lucide-react';
+import CulturaSection from '@/components/CulturaSection';
 
 export default function Index() {
   const { state, xpToNextLevel } = useGameState();
