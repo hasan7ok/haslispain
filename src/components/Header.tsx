@@ -3,7 +3,7 @@ import { useGameState } from '@/hooks/useGameState';
 import { useAuth } from '@/hooks/useAuth';
 import PixelCharacter from './PixelCharacter';
 import XPBar from './XPBar';
-import { Map, User, MessageCircle, Trophy, Menu, X, LogOut } from 'lucide-react';
+import { Map, User, MessageCircle, Trophy, Menu, X, LogOut, PenLine } from 'lucide-react';
 import { useState } from 'react';
 import logo from '@/assets/logo.png';
 
