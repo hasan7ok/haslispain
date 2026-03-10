@@ -23,6 +23,7 @@ import StoryPage from "./pages/StoryPage";
 import BossFightsListPage from "./pages/BossFightsListPage";
 import GrammarBossPage from "./pages/GrammarBossPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
+import CultureDetailPage from "./pages/CultureDetailPage";
 
 import NotFound from "./pages/NotFound";
 import { useAuth } from "@/hooks/useAuth";
