@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { path: '/profile', label: 'الملف', labelEs: 'Perfil', icon: User },
   { path: '/ai-chat', label: 'AI مساعد', labelEs: 'Chat AI', icon: MessageCircle },
   { path: '/achievements', label: 'الإنجازات', labelEs: 'Logros', icon: Trophy },
+  { path: '/journal', label: 'التدوين', labelEs: 'Diario', icon: PenLine },
 ];
 
 export default function Header() {
