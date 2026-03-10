@@ -3,7 +3,7 @@ import { useGameState } from '@/hooks/useGameState';
 import { useAuth } from '@/hooks/useAuth';
 import PixelCharacter from './PixelCharacter';
 import XPBar from './XPBar';
-import { Map, User, MessageCircle, Trophy, Menu, X, LogOut } from 'lucide-react';
+import { Map, User, MessageCircle, Trophy, Menu, X, LogOut, PenLine } from 'lucide-react';
 import { useState } from 'react';
 import logo from '@/assets/logo.png';
 
@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { path: '/profile', label: 'الملف', labelEs: 'Perfil', icon: User },
   { path: '/ai-chat', label: 'AI مساعد', labelEs: 'Chat AI', icon: MessageCircle },
   { path: '/achievements', label: 'الإنجازات', labelEs: 'Logros', icon: Trophy },
+  { path: '/journal', label: 'التدوين', labelEs: 'Diario', icon: PenLine },
 ];
 
 export default function Header() {
