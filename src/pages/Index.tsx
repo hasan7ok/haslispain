@@ -158,6 +158,9 @@ export default function Index() {
           })}
         </div>
 
+        {/* Cultura Section */}
+        <CulturaSection />
+
         {/* Journal Section - after zones */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
