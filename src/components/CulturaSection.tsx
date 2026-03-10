@@ -1,94 +1,13 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Volume2 } from 'lucide-react';
 import { speakSpanish } from '@/components/SpanishWord';
-import cultureFlamenco from '@/assets/culture-flamenco.jpg';
-import culturePaella from '@/assets/culture-paella.jpg';
-import cultureSagrada from '@/assets/culture-sagrada.jpg';
-import cultureFiesta from '@/assets/culture-fiesta.jpg';
-import cultureAlhambra from '@/assets/culture-alhambra.jpg';
-
-interface VocabItem {
-  es: string;
-  ar: string;
-  example?: string;
-}
-
-const CULTURE_CARDS = [
-  {
-    id: 'flamenco',
-    titleEs: 'El Flamenco',
-    titleEn: 'Flamenco Dance',
-    snippet: 'اكتشف فن الفلامنكو — رقص العاطفة والإيقاع الأندلسي الأصيل',
-    image: cultureFlamenco,
-    vocab: [
-      { es: 'El baile', ar: 'الرقص', example: 'El baile flamenco es apasionante.' },
-      { es: 'El ritmo', ar: 'الإيقاع', example: 'El ritmo del flamenco es único.' },
-      { es: 'La guitarra', ar: 'القيثارة', example: 'Toca la guitarra española.' },
-      { es: 'El cantaor', ar: 'المغني', example: 'El cantaor tiene una voz profunda.' },
-      { es: 'Las palmas', ar: 'التصفيق', example: '¡Dale palmas al compás!' },
-    ] as VocabItem[],
-  },
-  {
-    id: 'gastronomia',
-    titleEs: 'La Gastronomía',
-    titleEn: 'Spanish Cuisine',
-    snippet: 'من الباييلا إلى التاباس، تعرّف على أشهر الأطباق الإسبانية',
-    image: culturePaella,
-    vocab: [
-      { es: 'La paella', ar: 'الباييلا', example: 'La paella valenciana lleva azafrán.' },
-      { es: 'Las tapas', ar: 'التاباس', example: 'Vamos a tomar unas tapas.' },
-      { es: 'El aceite de oliva', ar: 'زيت الزيتون', example: 'España produce el mejor aceite de oliva.' },
-      { es: 'El jamón', ar: 'لحم الخنزير المقدد', example: 'El jamón ibérico es un manjar.' },
-      { es: 'La tortilla', ar: 'التورتيلا', example: 'La tortilla española lleva huevo y patata.' },
-    ] as VocabItem[],
-  },
-  {
-    id: 'arquitectura',
-    titleEs: 'La Arquitectura',
-    titleEn: 'Architecture',
-    snippet: 'روائع غاودي والعمارة الإسبانية التي تأسر العالم',
-    image: cultureSagrada,
-    vocab: [
-      { es: 'La catedral', ar: 'الكاتدرائية', example: 'La catedral de Sevilla es impresionante.' },
-      { es: 'El arco', ar: 'القوس', example: 'Los arcos árabes son hermosos.' },
-      { es: 'El mosaico', ar: 'الفسيفساء', example: 'Gaudí usaba mosaicos de colores.' },
-      { es: 'La torre', ar: 'البرج', example: 'La torre de la Giralda es famosa.' },
-      { es: 'El palacio', ar: 'القصر', example: 'El palacio real es magnífico.' },
-    ] as VocabItem[],
-  },
-  {
-    id: 'fiestas',
-    titleEs: 'Las Fiestas',
-    titleEn: 'Spanish Festivals',
-    snippet: 'لا توماتينا، سان فيرمين — مهرجانات لا مثيل لها',
-    image: cultureFiesta,
-    vocab: [
-      { es: 'La fiesta', ar: 'الحفلة / المهرجان', example: '¡Vamos a la fiesta del pueblo!' },
-      { es: 'Los fuegos artificiales', ar: 'الألعاب النارية', example: 'Los fuegos artificiales iluminan la noche.' },
-      { es: 'El desfile', ar: 'الموكب / الاستعراض', example: 'El desfile pasa por la calle principal.' },
-      { es: 'La música', ar: 'الموسيقى', example: 'La música suena en toda la plaza.' },
-      { es: 'El traje típico', ar: 'الزي التقليدي', example: 'Lleva un traje típico andaluz.' },
-    ] as VocabItem[],
-  },
-  {
-    id: 'historia',
-    titleEs: 'La Historia',
-    titleEn: 'History & Heritage',
-    snippet: 'من قصر الحمراء إلى الأندلس، تاريخ عريق يروي قصصاً خالدة',
-    image: cultureAlhambra,
-    vocab: [
-      { es: 'La historia', ar: 'التاريخ', example: 'España tiene una historia rica.' },
-      { es: 'El castillo', ar: 'القلعة', example: 'El castillo está en la colina.' },
-      { es: 'La conquista', ar: 'الفتح', example: 'La conquista de Granada fue en 1492.' },
-      { es: 'El rey', ar: 'الملك', example: 'El rey Fernando unificó España.' },
-      { es: 'La mezquita', ar: 'المسجد', example: 'La mezquita de Córdoba es única.' },
-    ] as VocabItem[],
-  },
-];
+import { CULTURE_ARTICLES } from '@/data/cultureArticles';
 
 export default function CulturaSection() {
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   return (
     <section className="mt-8">
@@ -98,7 +17,7 @@ export default function CulturaSection() {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {CULTURE_CARDS.map((card, idx) => {
+        {CULTURE_ARTICLES.map((card, idx) => {
           const isExpanded = expandedCard === card.id;
           return (
             <motion.div
@@ -106,22 +25,22 @@ export default function CulturaSection() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 * idx, duration: 0.5 }}
-              className="group relative rounded-2xl overflow-hidden cursor-pointer"
+              className="group relative rounded-2xl overflow-hidden"
               style={{ willChange: 'transform' }}
             >
               {/* Image part */}
               <div
-                className="relative aspect-[3/4] sm:aspect-[4/5]"
+                className="relative aspect-[3/4] sm:aspect-[4/5] cursor-pointer"
                 onClick={() => setExpandedCard(isExpanded ? null : card.id)}
               >
                 <img
-                  src={card.image}
+                  src={card.heroImage}
                   alt={card.titleEs}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent transition-opacity duration-300" />
-                <div className="absolute inset-0 rounded-2xl border border-transparent group-hover:border-primary/40 transition-all duration-300 group-hover:shadow-[inset_0_0_30px_rgba(255,0,255,0.1)]" />
+                <div className="absolute inset-0 rounded-t-2xl border border-transparent group-hover:border-primary/40 transition-all duration-300 group-hover:shadow-[inset_0_0_30px_rgba(255,0,255,0.1)]" />
 
                 <div className="absolute inset-0 flex flex-col justify-end p-5">
                   <p className="font-heading text-xs uppercase tracking-widest text-secondary mb-1 opacity-80 group-hover:opacity-100 transition-opacity"
@@ -163,7 +82,7 @@ export default function CulturaSection() {
                     className="overflow-hidden bg-card border-t border-primary/20"
                   >
                     <div className="p-3 space-y-2">
-                      {card.vocab.map((v, i) => (
+                      {card.vocab.slice(0, 5).map((v, i) => (
                         <motion.div
                           key={i}
                           initial={{ opacity: 0, x: -10 }}
@@ -194,6 +113,17 @@ export default function CulturaSection() {
                           </div>
                         </motion.div>
                       ))}
+                      {/* Explorar button */}
+                      <motion.button
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.35 }}
+                        onClick={() => navigate(`/cultura/${card.id}`)}
+                        className="w-full mt-2 py-2.5 px-4 rounded-lg bg-primary/10 border border-primary/30 hover:bg-primary/20 hover:border-primary/50 transition-all font-pixel text-[0.55rem] text-primary flex items-center justify-center gap-2"
+                        style={{ boxShadow: '0 0 12px rgba(255,0,255,0.15)' }}
+                      >
+                        📰 قراءة المقال الكامل — Leer más →
+                      </motion.button>
                     </div>
                   </motion.div>
                 )}

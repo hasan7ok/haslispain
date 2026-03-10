@@ -23,6 +23,7 @@ import StoryPage from "./pages/StoryPage";
 import BossFightsListPage from "./pages/BossFightsListPage";
 import GrammarBossPage from "./pages/GrammarBossPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
+import CultureDetailPage from "./pages/CultureDetailPage";
 
 import NotFound from "./pages/NotFound";
 import { useAuth } from "@/hooks/useAuth";
@@ -135,6 +136,7 @@ function AppContent() {
         <Route path="/boss-fights" element={<BossFightsListPage />} />
         <Route path="/boss/:bossId" element={<GrammarBossPage />} />
         <Route path="/settings" element={<ProfilePage />} />
+        <Route path="/cultura/:cultureId" element={<CultureDetailPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
