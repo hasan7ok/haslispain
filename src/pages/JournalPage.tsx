@@ -4,7 +4,8 @@ import { motion } from 'framer-motion';
 import Header from '@/components/Header';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, Pen, Eraser, Type, Image as ImageIcon, Trash2, Download, Palette, Undo2, Redo2, Circle, Save, FolderOpen, Plus, Loader2, Brush, Pencil, Highlighter, BookOpen, FileText, Bold, Italic, List, AlignRight, AlignLeft, AlignCenter, Edit3 } from 'lucide-react';
+import { ArrowLeft, Pen, Eraser, Type, Image as ImageIcon, Trash2, Download, Palette, Undo2, Redo2, Circle, Save, FolderOpen, Plus, Brush, Pencil, Highlighter, BookOpen, FileText, Bold, Italic, List, AlignRight, AlignLeft, AlignCenter, Edit3 } from 'lucide-react';
+import { PixelLoader } from '@/components/PixelLoader';
 import { toast } from 'sonner';
 
 interface DrawPoint { x: number; y: number; }
@@ -447,7 +448,7 @@ export default function JournalPage() {
               </button>
               <button onClick={saveEntry} disabled={saving}
                 className="px-4 py-2 border-2 border-primary text-primary hover:bg-primary/10 hover:shadow-[0_0_12px_hsl(var(--primary)/0.3)] transition-all font-pixel text-[0.45rem] flex items-center gap-1.5">
-                {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                {saving ? <PixelLoader size={14} className="text-primary" /> : <Save size={14} />}
                 حفظ
               </button>
             </div>
@@ -462,7 +463,7 @@ export default function JournalPage() {
               <FileText size={14} /> التدوينات المحفوظة ({entries.length})
             </h3>
             {loading ? (
-              <div className="text-center py-4"><Loader2 size={20} className="animate-spin text-muted-foreground mx-auto" /></div>
+              <div className="text-center py-4"><PixelLoader size={20} className="text-muted-foreground mx-auto" /></div>
             ) : entries.length === 0 ? (
               <p className="text-muted-foreground font-body text-xs text-center py-4">لا توجد تدوينات محفوظة بعد</p>
             ) : (
@@ -589,7 +590,7 @@ export default function JournalPage() {
                 <div className="flex-1" />
                 <button onClick={saveEntry} disabled={saving}
                   className="flex items-center gap-1 px-2 py-1 border border-primary/50 text-primary hover:bg-primary/10 transition-all font-pixel text-[0.4rem]">
-                  {saving ? <Loader2 size={12} className="animate-spin" /> : <Save size={12} />}
+                  {saving ? <PixelLoader size={12} className="text-primary" /> : <Save size={12} />}
                   حفظ
                 </button>
                 <span className="font-mono text-[0.55rem] text-muted-foreground">{textContent.length} حرف</span>
