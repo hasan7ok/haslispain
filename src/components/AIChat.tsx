@@ -203,7 +203,6 @@ export default function AIChat() {
               {msg.role === 'assistant' && (
                 <div className="font-pixel text-[0.5rem] text-primary mb-1">PIXÑOL AI</div>
               )}
-              )}
               {msg.role === 'assistant' ? (
                 <div className="prose prose-sm max-w-none dark:prose-invert prose-p:my-1 prose-ul:my-1 prose-li:my-0 prose-headings:my-2" dir="auto">
                   <ReactMarkdown>{msg.content}</ReactMarkdown>

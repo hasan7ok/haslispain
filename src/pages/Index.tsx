@@ -165,6 +165,5 @@ export default function Index() {
       </main>
       <DonationButton />
     </div>
-    </div>
   );
 }
