@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { useGameState } from '@/hooks/useGameState';
 import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { ZONES } from '@/data/zones';
@@ -9,7 +9,40 @@ import Header from '@/components/Header';
 import rpgMapBg from '@/assets/rpg-map-bg.png';
 import { Lock, Sparkles, ChevronRight, Flame, BookOpen, Swords } from 'lucide-react';
 import CulturaSection from '@/components/CulturaSection';
-import DonationButton from '@/components/DonationButton';
+import { useEffect, useRef } from 'react';
+
+function ParallaxGrid() {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const smoothX = useSpring(mouseX, { stiffness: 40, damping: 30 });
+  const smoothY = useSpring(mouseY, { stiffness: 40, damping: 30 });
+  const translateX = useTransform(smoothX, [-1, 1], [-18, 18]);
+  const translateY = useTransform(smoothY, [-1, 1], [-12, 12]);
+
+  useEffect(() => {
+    const handleMove = (e: MouseEvent) => {
+      mouseX.set((e.clientX / window.innerWidth - 0.5) * 2);
+      mouseY.set((e.clientY / window.innerHeight - 0.5) * 2);
+    };
+    window.addEventListener('mousemove', handleMove);
+    return () => window.removeEventListener('mousemove', handleMove);
+  }, [mouseX, mouseY]);
+
+  return (
+    <motion.div
+      ref={gridRef}
+      className="fixed inset-0 pointer-events-none opacity-25"
+      style={{
+        translateX,
+        translateY,
+        scale: 1.08,
+        backgroundImage: 'linear-gradient(transparent 94%, hsl(var(--primary)/0.18) 94%), linear-gradient(90deg, transparent 94%, hsl(var(--primary)/0.18) 94%)',
+        backgroundSize: '52px 52px',
+      }}
+    />
+  );
+}
 
 export default function Index() {
   const { state, xpToNextLevel } = useGameState();
@@ -18,16 +51,11 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background relative">
-      {/* Perspective grid background */}
-      <div className="fixed inset-0 pointer-events-none opacity-30"
-        style={{
-          backgroundImage: 'linear-gradient(transparent 95%, rgba(255,0,255,0.15) 95%), linear-gradient(90deg, transparent 95%, rgba(255,0,255,0.15) 95%)',
-          backgroundSize: '50px 50px',
-        }}
-      />
+      {/* Parallax geometric grid */}
+      <ParallaxGrid />
       {/* Floating sun */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[600px] h-[600px] rounded-full opacity-10 blur-[100px] pointer-events-none"
-        style={{ background: 'linear-gradient(to bottom, #FF9900, #FF00FF)' }}
+        style={{ background: 'linear-gradient(to bottom, hsl(var(--accent)), hsl(var(--primary)))' }}
       />
 
       <Header />
@@ -163,7 +191,6 @@ export default function Index() {
         <CulturaSection />
 
       </main>
-      <DonationButton />
     </div>
   );
 }
