@@ -36,7 +36,7 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const { state, updateCharacter, updateUsername, resetProgress, xpToNextLevel } = useGameState();
   const { profile, user, updateProfile, checkUsernameAvailable, refreshProfile } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setTheme, toggleTheme } = useTheme();
 
   const [editingName, setEditingName] = useState(false);
   const [newName, setNewName] = useState(state.username);
