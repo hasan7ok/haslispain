@@ -6,6 +6,7 @@ import XPBar from './XPBar';
 import { Map, User, MessageCircle, Trophy, Menu, X, LogOut, PenLine } from 'lucide-react';
 import { useState } from 'react';
 import logo from '@/assets/logo.png';
+import ThemeSwitcher from './ThemeSwitcher';
 
 const NAV_ITEMS = [
   { path: '/', label: 'الخريطة', labelEs: 'Mapa', icon: Map },
