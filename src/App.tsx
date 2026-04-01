@@ -28,7 +28,9 @@ import CultureDetailPage from "./pages/CultureDetailPage";
 import NotFound from "./pages/NotFound";
 import { useAuth } from "@/hooks/useAuth";
 import { useGameState } from "@/hooks/useGameState";
-import { Loader2 } from "lucide-react";
+import { PixelLoader } from "@/components/PixelLoader";
+import DonationModal from "@/components/DonationModal";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 const queryClient = new QueryClient();
 
@@ -71,7 +73,7 @@ function AppContent() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <Loader2 size={32} className="animate-spin text-primary mx-auto mb-4" />
+          <PixelLoader size={32} className="text-primary mx-auto mb-4" />
           <p className="font-pixel text-[0.5rem] text-muted-foreground">جاري التحميل...</p>
         </div>
       </div>
@@ -144,13 +146,16 @@ function AppContent() {
 }
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <AppContent />
-    </TooltipProvider>
-  </QueryClientProvider>
+  <ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <AppContent />
+        <DonationModal />
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ThemeProvider>
 );
 
 export default App;
