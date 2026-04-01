@@ -3,14 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGameState, CharacterConfig } from '@/hooks/useGameState';
 import { useAuth } from '@/hooks/useAuth';
-import { useTheme } from '@/hooks/useTheme';
 import PixelCharacter from '@/components/PixelCharacter';
 import PixelAvatar from '@/components/PixelAvatar';
 import NFTCollection, { NFTItem } from '@/components/NFTCollection';
 import XPBar from '@/components/XPBar';
 import Header from '@/components/Header';
-import { ArrowLeft, Edit3, Save, Trash2, RefreshCw, Loader2, Check, Share2 } from 'lucide-react';
-import { THEMES } from '@/hooks/useTheme';
+import { ArrowLeft, Edit3, Save, Trash2, RefreshCw, Check, Share2 } from 'lucide-react';
+import { PixelLoader } from '@/components/PixelLoader';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -36,7 +35,6 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const { state, updateCharacter, updateUsername, resetProgress, xpToNextLevel } = useGameState();
   const { profile, user, updateProfile, checkUsernameAvailable, refreshProfile } = useAuth();
-  const { theme, setTheme, toggleTheme } = useTheme();
 
   const [editingName, setEditingName] = useState(false);
   const [newName, setNewName] = useState(state.username);
@@ -311,34 +309,12 @@ export default function ProfilePage() {
               <input type="text" value={username} onChange={e => handleUsernameChange(e.target.value)} maxLength={20}
                 className="w-full px-4 py-3 bg-background border-b-2 border-primary text-secondary font-mono text-sm placeholder:text-primary/40 focus:outline-none focus:border-secondary focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all" dir="ltr" />
               <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                {checkingUsername && <Loader2 size={14} className="animate-spin text-muted-foreground" />}
+                {checkingUsername && <PixelLoader size={14} className="text-muted-foreground" />}
                 {!checkingUsername && usernameAvailable === true && <Check size={14} className="text-accent" />}
                 {!checkingUsername && usernameAvailable === false && <span className="text-destructive text-xs">✗</span>}
               </div>
             </div>
             <p className="font-mono text-[0.55rem] text-muted-foreground mt-2">3-20 حرف إنجليزي أو أرقام أو _</p>
-          </div>
-
-          {/* Theme selector */}
-          <div className="pixel-card p-6 mb-4">
-            <label className="block font-pixel text-[0.5rem] text-foreground mb-3">المظهر - Tema</label>
-            <div className="flex flex-col gap-2">
-              {THEMES.map((t) => (
-                <button
-                  key={t.id}
-                  onClick={() => setTheme(t.id)}
-                  className={`flex items-center gap-3 px-3 py-2.5 transition-all ${
-                    theme === t.id
-                      ? 'bg-primary/10 border border-primary/40'
-                      : 'border border-transparent hover:bg-primary/5 hover:border-primary/20'
-                  }`}
-                >
-                  <div className="w-4 h-4 rounded-full shrink-0" style={{ background: t.accent, boxShadow: theme === t.id ? `0 0 8px ${t.glow}` : 'none' }} />
-                  <span className="font-pixel text-[0.45rem] text-foreground">{t.label}</span>
-                  <span className="font-body text-[0.6rem] text-muted-foreground">{t.labelAr}</span>
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* Error / Success */}
@@ -357,7 +333,7 @@ export default function ProfilePage() {
               boxShadow: '0 0 12px hsl(var(--primary) / 0.4), inset 0 1px 0 hsl(var(--primary-foreground) / 0.1)',
             }}
           >
-            {saving ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
+            {saving ? <PixelLoader size={18} className="text-primary-foreground" /> : <Check size={18} />}
             {saving ? 'جاري الحفظ...' : 'حفظ'}
           </button>
         </motion.div>
