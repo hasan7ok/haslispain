@@ -15,7 +15,7 @@ export default function AIChatPage() {
             <ArrowLeft size={16} /> العودة
           </button>
           <div className="pixel-card-primary p-3 mb-3 flex items-center gap-3">
-            <span className="text-2xl">🤖</span>
+            <span className="text-2xl font-pixel text-primary" style={{ filter: 'drop-shadow(0 0 8px hsl(var(--primary) / 0.5))' }}>⚡</span>
             <div>
               <h1 className="font-pixel text-[0.65rem] text-primary">PIXÑOL AI</h1>
               <p className="text-muted-foreground font-body text-xs">مساعدك الذكي لتعلم الإسبانية</p>

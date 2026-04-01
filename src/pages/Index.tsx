@@ -163,6 +163,8 @@ export default function Index() {
         <CulturaSection />
 
       </main>
+      <DonationButton />
+    </div>
     </div>
   );
 }

@@ -218,7 +218,7 @@ export default function AIChat() {
         {isLoading && messages[messages.length - 1]?.role === 'user' && (
           <div className="flex justify-start animate-slide-up">
             <div className="pixel-border-muted bg-card p-3">
-              <div className="font-pixel text-[0.5rem] text-primary mb-1">🤖 PIXÑOL AI</div>
+              <div className="font-pixel text-[0.5rem] text-primary mb-1">PIXÑOL AI</div>
               <div className="flex items-center gap-2 text-muted-foreground text-sm font-body">
                 <Loader2 size={14} className="animate-spin" />
                 جاري التفكير...
