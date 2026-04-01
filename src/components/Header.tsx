@@ -6,6 +6,7 @@ import XPBar from './XPBar';
 import { Map, User, MessageCircle, Trophy, Menu, X, LogOut, PenLine } from 'lucide-react';
 import { useState } from 'react';
 import logo from '@/assets/logo.png';
+import ThemeSwitcher from './ThemeSwitcher';
 
 const NAV_ITEMS = [
   { path: '/', label: 'الخريطة', labelEs: 'Mapa', icon: Map },
@@ -67,6 +68,7 @@ export default function Header() {
           <Link to="/profile" className="hover:animate-pixel-bounce">
             <PixelCharacter character={state.character} size={4} />
           </Link>
+          <ThemeSwitcher />
           <button
             onClick={signOut}
             className="p-1.5 text-muted-foreground hover:text-destructive transition-all border border-transparent hover:border-destructive/30 hover:shadow-[0_0_8px_rgba(255,0,0,0.2)]"

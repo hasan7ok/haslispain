@@ -120,7 +120,7 @@ export default function AIChat() {
     {
       id: '0',
       role: 'assistant',
-      content: '¡Hola! 👋 أنا مساعدك الذكي لتعلم الإسبانية. اسألني أي سؤال وسأجيبك! يمكنني:\n\n- 📝 تصحيح جملك بالإسبانية\n- 🔍 ترجمة كلمات وعبارات\n- 📚 شرح قواعد اللغة\n- 🌍 إجابة أي سؤال آخر\n\n¡Vamos a aprender! 🚀',
+      content: '¡Hola! أنا مساعدك لتعلم الإسبانية. اسألني أي سؤال وسأجيبك! يمكنني:\n\n- تصحيح جملك بالإسبانية\n- ترجمة كلمات وعبارات\n- شرح قواعد اللغة\n- إجابة أي سؤال آخر\n\n¡Vamos a aprender!',
     },
   ]);
   const [input, setInput] = useState('');
@@ -201,7 +201,7 @@ export default function AIChat() {
               }`}
             >
               {msg.role === 'assistant' && (
-                <div className="font-pixel text-[0.5rem] text-primary mb-1">🤖 PIXÑOL AI</div>
+                <div className="font-pixel text-[0.5rem] text-primary mb-1">PIXÑOL AI</div>
               )}
               {msg.role === 'assistant' ? (
                 <div className="prose prose-sm max-w-none dark:prose-invert prose-p:my-1 prose-ul:my-1 prose-li:my-0 prose-headings:my-2" dir="auto">
@@ -217,7 +217,7 @@ export default function AIChat() {
         {isLoading && messages[messages.length - 1]?.role === 'user' && (
           <div className="flex justify-start animate-slide-up">
             <div className="pixel-border-muted bg-card p-3">
-              <div className="font-pixel text-[0.5rem] text-primary mb-1">🤖 PIXÑOL AI</div>
+              <div className="font-pixel text-[0.5rem] text-primary mb-1">PIXÑOL AI</div>
               <div className="flex items-center gap-2 text-muted-foreground text-sm font-body">
                 <Loader2 size={14} className="animate-spin" />
                 جاري التفكير...

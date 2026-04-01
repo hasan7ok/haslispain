@@ -9,8 +9,8 @@ import PixelAvatar from '@/components/PixelAvatar';
 import NFTCollection, { NFTItem } from '@/components/NFTCollection';
 import XPBar from '@/components/XPBar';
 import Header from '@/components/Header';
-import { Switch } from '@/components/ui/switch';
-import { ArrowLeft, Edit3, Save, Trash2, RefreshCw, Loader2, Check, Sun, Moon, Share2 } from 'lucide-react';
+import { ArrowLeft, Edit3, Save, Trash2, RefreshCw, Loader2, Check, Share2 } from 'lucide-react';
+import { THEMES } from '@/hooks/useTheme';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -36,7 +36,7 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const { state, updateCharacter, updateUsername, resetProgress, xpToNextLevel } = useGameState();
   const { profile, user, updateProfile, checkUsernameAvailable, refreshProfile } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setTheme, toggleTheme } = useTheme();
 
   const [editingName, setEditingName] = useState(false);
   const [newName, setNewName] = useState(state.username);
@@ -319,17 +319,25 @@ export default function ProfilePage() {
             <p className="font-mono text-[0.55rem] text-muted-foreground mt-2">3-20 حرف إنجليزي أو أرقام أو _</p>
           </div>
 
-          {/* Theme toggle */}
+          {/* Theme selector */}
           <div className="pixel-card p-6 mb-4">
             <label className="block font-pixel text-[0.5rem] text-foreground mb-3">المظهر - Tema</label>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                {theme === 'dark' ? <Moon size={18} className="text-secondary" /> : <Sun size={18} className="text-accent" />}
-                <span className="font-mono text-sm text-foreground">
-                  {theme === 'dark' ? 'الوضع المظلم - Oscuro' : 'الوضع الفاتح - Claro'}
-                </span>
-              </div>
-              <Switch checked={theme === 'light'} onCheckedChange={toggleTheme} />
+            <div className="flex flex-col gap-2">
+              {THEMES.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => setTheme(t.id)}
+                  className={`flex items-center gap-3 px-3 py-2.5 transition-all ${
+                    theme === t.id
+                      ? 'bg-primary/10 border border-primary/40'
+                      : 'border border-transparent hover:bg-primary/5 hover:border-primary/20'
+                  }`}
+                >
+                  <div className="w-4 h-4 rounded-full shrink-0" style={{ background: t.accent, boxShadow: theme === t.id ? `0 0 8px ${t.glow}` : 'none' }} />
+                  <span className="font-pixel text-[0.45rem] text-foreground">{t.label}</span>
+                  <span className="font-body text-[0.6rem] text-muted-foreground">{t.labelAr}</span>
+                </button>
+              ))}
             </div>
           </div>
 

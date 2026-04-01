@@ -9,6 +9,7 @@ import Header from '@/components/Header';
 import rpgMapBg from '@/assets/rpg-map-bg.png';
 import { Lock, Sparkles, ChevronRight, Flame, BookOpen, Swords } from 'lucide-react';
 import CulturaSection from '@/components/CulturaSection';
+import DonationButton from '@/components/DonationButton';
 
 export default function Index() {
   const { state, xpToNextLevel } = useGameState();
@@ -162,6 +163,7 @@ export default function Index() {
         <CulturaSection />
 
       </main>
+      <DonationButton />
     </div>
   );
 }
