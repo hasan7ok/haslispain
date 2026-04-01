@@ -68,6 +68,7 @@ export default function Header() {
           <Link to="/profile" className="hover:animate-pixel-bounce">
             <PixelCharacter character={state.character} size={4} />
           </Link>
+          <ThemeSwitcher />
           <button
             onClick={signOut}
             className="p-1.5 text-muted-foreground hover:text-destructive transition-all border border-transparent hover:border-destructive/30 hover:shadow-[0_0_8px_rgba(255,0,0,0.2)]"
