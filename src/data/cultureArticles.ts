@@ -8,6 +8,9 @@ import cultureFiesta from '@/assets/culture-fiesta.jpg';
 import cultureTomatina from '@/assets/culture-tomatina.jpg';
 import cultureAlhambra from '@/assets/culture-alhambra.jpg';
 import cultureAlhambraInterior from '@/assets/culture-alhambra-interior.jpg';
+import cultureSiesta from '@/assets/culture-siesta.jpg';
+import cultureMercado from '@/assets/culture-mercado.jpg';
+import cultureSobremesa from '@/assets/culture-sobremesa.jpg';
 
 export interface VocabItem {
   es: string;
