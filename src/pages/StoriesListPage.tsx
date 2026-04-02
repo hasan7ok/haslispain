@@ -1,11 +1,27 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { STORIES } from '@/data/stories';
 import Header from '@/components/Header';
 import { ArrowLeft, BookOpen, ChevronRight } from 'lucide-react';
+import storyCafe from '@/assets/story-cafe.jpg';
+import storyHotel from '@/assets/story-hotel.jpg';
+import storyMarket from '@/assets/story-market.jpg';
+
+const STORY_IMAGES: Record<string, string> = {
+  'story-cafe': storyCafe,
+  'story-hotel': storyHotel,
+  'story-market': storyMarket,
+};
 
 export default function StoriesListPage() {
   const navigate = useNavigate();
+  const [zoomedId, setZoomedId] = useState<string | null>(null);
+
+  const toggleZoom = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    setZoomedId(prev => prev === id ? null : id);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -34,7 +50,17 @@ export default function StoriesListPage() {
                 onClick={() => navigate(`/story/${story.id}`)}
                 className="w-full pixel-card p-4 hover:border-primary hover:translate-y-[-1px] transition-all group flex items-center gap-4"
               >
-                <span className="text-3xl">{story.icon}</span>
+                <div className="relative flex-shrink-0 overflow-hidden" style={{ width: 80, height: 60 }}>
+                  <img
+                    src={STORY_IMAGES[story.id] || storyCafe}
+                    alt={story.titleAr}
+                    width={80}
+                    height={60}
+                    loading="lazy"
+                    onClick={(e) => toggleZoom(e, story.id)}
+                    className={`w-full h-full object-cover rounded story-image-zoom ${zoomedId === story.id ? 'zoomed' : ''}`}
+                  />
+                </div>
                 <div className="flex-1 min-w-0 text-right">
                   <h3 className="font-pixel text-[0.6rem] text-primary">{story.title}</h3>
                   <p className="text-foreground font-body text-sm mt-0.5">{story.titleAr}</p>
@@ -42,7 +68,7 @@ export default function StoriesListPage() {
                 </div>
                 <div className="flex flex-col items-center gap-1">
                   <span className="font-pixel text-[0.4rem] text-muted-foreground border border-border px-2 py-0.5">{story.level}</span>
-                  <span className="font-pixel text-[0.4rem] text-xp">+{story.xpReward} XP</span>
+                  <span className="font-pixel text-[0.4rem] text-accent">+{story.xpReward} XP</span>
                   <ChevronRight size={14} className="text-muted-foreground group-hover:text-primary" />
                 </div>
               </button>
