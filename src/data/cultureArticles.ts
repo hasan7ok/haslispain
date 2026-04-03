@@ -11,6 +11,10 @@ import cultureAlhambraInterior from '@/assets/culture-alhambra-interior.jpg';
 import cultureSiesta from '@/assets/culture-siesta.jpg';
 import cultureMercado from '@/assets/culture-mercado.jpg';
 import cultureSobremesa from '@/assets/culture-sobremesa.jpg';
+import cultureCorrida from '@/assets/culture-corrida.jpg';
+import cultureFutbol from '@/assets/culture-futbol.jpg';
+import cultureVino from '@/assets/culture-vino.jpg';
+import cultureLiteratura from '@/assets/culture-literatura.jpg';
 
 export interface VocabItem {
   es: string;
