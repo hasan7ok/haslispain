@@ -35,21 +35,6 @@ export default function SplashScreen({ onComplete }: { onComplete: () => void })
             style={{ background: 'linear-gradient(to bottom, #FF9900, #FF00FF)' }} />
 
           <div className="relative z-10 text-center px-8 w-full max-w-md">
-            <motion.div
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
-            >
-              <img
-                src={logo}
-                alt="PixÑol"
-                className="h-16 md:h-20 w-auto mx-auto mb-2"
-                style={{
-                  imageRendering: 'pixelated',
-                  animation: 'intro-pulse-glow 2s ease-in-out infinite',
-                }}
-              />
-            </motion.div>
 
             <motion.h1
               initial={{ scale: 0.5, opacity: 0 }}
