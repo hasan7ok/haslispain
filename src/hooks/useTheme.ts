@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 
-export type ThemeName = 'cyber-sunset' | 'arctic-neon' | 'forest-matrix';
+export type ThemeName = 'cyber-sunset' | 'arctic-neon' | 'forest-matrix' | 'royal-amethyst' | 'sakura-bloom' | 'desert-gold';
 
 export const THEMES: { id: ThemeName; label: string; labelAr: string; accent: string; bg: string; glow: string }[] = [
   { id: 'cyber-sunset', label: 'Cyber Sunset', labelAr: 'غروب سايبر', accent: '#ff6b00', bg: '#1a0a2e', glow: '#ff6b0088' },
   { id: 'arctic-neon', label: 'Arctic Neon', labelAr: 'نيون قطبي', accent: '#00f5ff', bg: '#020d1f', glow: '#00f5ff88' },
   { id: 'forest-matrix', label: 'Forest Matrix', labelAr: 'غابة ماتريكس', accent: '#00c853', bg: '#050f05', glow: '#00c85388' },
+  { id: 'royal-amethyst', label: 'Royal Amethyst', labelAr: 'جمشت ملكي', accent: '#b388ff', bg: '#120826', glow: '#b388ff88' },
+  { id: 'sakura-bloom', label: 'Sakura Bloom', labelAr: 'زهر الساكورا', accent: '#ff6b9d', bg: '#1a0a14', glow: '#ff6b9d88' },
+  { id: 'desert-gold', label: 'Desert Gold', labelAr: 'ذهب الصحراء', accent: '#ffd700', bg: '#1a1400', glow: '#ffd70088' },
 ];
 
-// Convert hex to HSL string for CSS variables
 function hexToHsl(hex: string): string {
   let r = parseInt(hex.slice(1, 3), 16) / 255;
   let g = parseInt(hex.slice(3, 5), 16) / 255;
@@ -45,46 +47,29 @@ function hexToHslDarker(hex: string, factor = 0.4): string {
   return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * factor * 100)}%`;
 }
 
+function buildThemeVars(accent: string, bg: string, secondary: string, accentAlt: string): Record<string, string> {
+  return {
+    '--background': hexToHsl(bg),
+    '--primary': hexToHsl(accent),
+    '--secondary': hexToHsl(secondary),
+    '--accent': hexToHsl(accentAlt),
+    '--neon-magenta': hexToHsl(secondary),
+    '--neon-cyan': hexToHsl(accent),
+    '--neon-orange': hexToHsl(accentAlt),
+    '--card': hexToHslDarker(bg, 1.2),
+    '--muted': hexToHslDarker(bg, 1.1),
+    '--border': hexToHslDarker(accent, 0.3),
+    '--ring': hexToHsl(accent),
+  };
+}
+
 const THEME_CSS_MAP: Record<ThemeName, Record<string, string>> = {
-  'cyber-sunset': {
-    '--background': hexToHsl('#1a0a2e'),
-    '--primary': hexToHsl('#ff6b00'),
-    '--secondary': hexToHsl('#ff3d7f'),
-    '--accent': hexToHsl('#ffaa00'),
-    '--neon-magenta': hexToHsl('#ff3d7f'),
-    '--neon-cyan': hexToHsl('#ff6b00'),
-    '--neon-orange': hexToHsl('#ffaa00'),
-    '--card': hexToHslDarker('#1a0a2e', 1.2),
-    '--muted': hexToHslDarker('#1a0a2e', 1.1),
-    '--border': hexToHslDarker('#ff6b00', 0.3),
-    '--ring': hexToHsl('#ff6b00'),
-  },
-  'arctic-neon': {
-    '--background': hexToHsl('#020d1f'),
-    '--primary': hexToHsl('#00f5ff'),
-    '--secondary': hexToHsl('#7b61ff'),
-    '--accent': hexToHsl('#00f5ff'),
-    '--neon-magenta': hexToHsl('#7b61ff'),
-    '--neon-cyan': hexToHsl('#00f5ff'),
-    '--neon-orange': hexToHsl('#00f5ff'),
-    '--card': hexToHslDarker('#020d1f', 1.3),
-    '--muted': hexToHslDarker('#020d1f', 1.2),
-    '--border': hexToHslDarker('#00f5ff', 0.25),
-    '--ring': hexToHsl('#00f5ff'),
-  },
-  'forest-matrix': {
-    '--background': hexToHsl('#050f05'),
-    '--primary': hexToHsl('#00c853'),
-    '--secondary': hexToHsl('#76ff03'),
-    '--accent': hexToHsl('#00e676'),
-    '--neon-magenta': hexToHsl('#00c853'),
-    '--neon-cyan': hexToHsl('#76ff03'),
-    '--neon-orange': hexToHsl('#00e676'),
-    '--card': hexToHslDarker('#050f05', 1.3),
-    '--muted': hexToHslDarker('#050f05', 1.2),
-    '--border': hexToHslDarker('#00c853', 0.25),
-    '--ring': hexToHsl('#00c853'),
-  },
+  'cyber-sunset': buildThemeVars('#ff6b00', '#1a0a2e', '#ff3d7f', '#ffaa00'),
+  'arctic-neon': buildThemeVars('#00f5ff', '#020d1f', '#7b61ff', '#00f5ff'),
+  'forest-matrix': buildThemeVars('#00c853', '#050f05', '#76ff03', '#00e676'),
+  'royal-amethyst': buildThemeVars('#b388ff', '#120826', '#ea80fc', '#7c4dff'),
+  'sakura-bloom': buildThemeVars('#ff6b9d', '#1a0a14', '#ff4081', '#ffab91'),
+  'desert-gold': buildThemeVars('#ffd700', '#1a1400', '#ff8f00', '#ffe082'),
 };
 
 export function useTheme() {
@@ -96,7 +81,6 @@ export function useTheme() {
 
   useEffect(() => {
     const root = document.documentElement;
-    // Remove light class
     root.classList.remove('light');
 
     const vars = THEME_CSS_MAP[theme];
@@ -106,7 +90,6 @@ export function useTheme() {
       });
     }
 
-    // Smooth transition
     root.style.transition = 'all 0.4s ease';
     setTimeout(() => { root.style.transition = ''; }, 500);
 

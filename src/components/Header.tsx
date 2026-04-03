@@ -31,12 +31,10 @@ export default function Header() {
       }}
     >
       <div className="container mx-auto flex items-center justify-between px-3 py-2">
-        {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group">
           <img src={logo} alt="PixÑol" className="h-8 md:h-10 w-auto" style={{ imageRendering: 'pixelated' }} />
         </Link>
 
-        {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1">
           {NAV_ITEMS.map(item => {
             const Icon = item.icon;
@@ -58,7 +56,6 @@ export default function Header() {
           })}
         </nav>
 
-        {/* XP & Character */}
         <div className="hidden md:flex items-center gap-3">
           <div className="flex items-center gap-1 px-2 py-1 border border-accent/30"
             style={{ boxShadow: '0 0 8px rgba(255,153,0,0.15)' }}>
@@ -78,8 +75,9 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Mobile menu button */}
+        {/* Mobile: theme + menu */}
         <div className="flex md:hidden items-center gap-2">
+          <ThemeSwitcher />
           <span className="font-pixel text-[0.5rem] text-secondary" style={{ filter: 'drop-shadow(0 0 4px rgba(0,255,255,0.4))' }}>Lv.{state.level}</span>
           <span className="font-pixel text-[0.5rem] text-accent">🔥{state.streak}</span>
           <button
@@ -91,7 +89,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {mobileMenuOpen && (
         <nav className="md:hidden border-t-2 border-primary/30 animate-slide-up"
           style={{ background: 'rgba(9,0,20,0.97)' }}>
