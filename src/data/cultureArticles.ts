@@ -11,6 +11,10 @@ import cultureAlhambraInterior from '@/assets/culture-alhambra-interior.jpg';
 import cultureSiesta from '@/assets/culture-siesta.jpg';
 import cultureMercado from '@/assets/culture-mercado.jpg';
 import cultureSobremesa from '@/assets/culture-sobremesa.jpg';
+import cultureCorrida from '@/assets/culture-corrida.jpg';
+import cultureFutbol from '@/assets/culture-futbol.jpg';
+import cultureVino from '@/assets/culture-vino.jpg';
+import cultureLiteratura from '@/assets/culture-literatura.jpg';
 
 export interface VocabItem {
   es: string;
@@ -282,5 +286,97 @@ export const CULTURE_ARTICLES: CultureArticle[] = [
       { heading: 'كيف تعيش السوبريميسا؟', headingEs: 'Cómo Vivir la Sobremesa', body: 'لتعيش السوبريميسا كالإسبان: اجلس بعد الطعام، اطلب قهوة أو حلوى، وابدأ بالحديث عن أي شيء — السياسة، كرة القدم، الذكريات. لا تنظر للساعة ولا تستعجل. الهدف هو الاستمتاع باللحظة.' },
     ],
     funFact: '☕ هل تعلم؟ كلمة "sobremesa" لا يوجد لها ترجمة في أي لغة أخرى! هي كلمة إسبانية فريدة.',
+  },
+  {
+    id: 'corrida',
+    titleEs: 'La Corrida de Toros',
+    titleEn: 'Bullfighting Culture',
+    titleAr: 'مصارعة الثيران',
+    snippet: 'تقليد مثير للجدل يعكس جزءاً عميقاً من الهوية الإسبانية',
+    heroImage: cultureCorrida,
+    images: [cultureCorrida, cultureFiesta],
+    vocab: [
+      { es: 'El torero', ar: 'المصارع', example: 'El torero entró en la plaza con valentía.' },
+      { es: 'La plaza de toros', ar: 'حلبة المصارعة', example: 'La plaza de toros de Madrid es famosa.' },
+      { es: 'El capote', ar: 'الرداء', example: 'El torero usa el capote rojo.' },
+      { es: 'La muleta', ar: 'القماشة الحمراء', example: 'La muleta se usa en el último tercio.' },
+      { es: 'El traje de luces', ar: 'بذلة الأنوار', example: 'El traje de luces brilla bajo el sol.' },
+      { es: 'La faena', ar: 'العرض / المهمة', example: 'La faena fue espectacular.' },
+    ],
+    sections: [
+      { heading: 'تاريخ مصارعة الثيران', headingEs: 'Historia de la Corrida', body: 'تعود مصارعة الثيران إلى القرن الثامن عشر كطقس ثقافي إسباني. كانت في الأصل مخصصة للنبلاء على ظهور الخيل، ثم تحولت إلى فن شعبي يمارسه المصارعون على الأقدام. ساحة "لاس بينتاس" (Las Ventas) في مدريد هي الأشهر في العالم.' },
+      { heading: 'فن أم قسوة؟', headingEs: '¿Arte o Crueldad?', body: 'تُعد مصارعة الثيران من أكثر التقاليد إثارة للجدل في إسبانيا. مؤيدوها يعتبرونها فناً وتراثاً ثقافياً لا يُقدَّر بثمن، بينما يراها المعارضون قسوة تجاه الحيوانات. حُظرت في كاتالونيا عام 2010 لكنها لا تزال تقام في معظم المناطق الإسبانية.' },
+      { heading: 'مفردات الحلبة', headingEs: 'Vocabulario de la Plaza', body: 'العرض يُقسم إلى ثلاثة أجزاء (tercios): الأول "tercio de varas" حيث يُختبر الثور، والثاني "tercio de banderillas" حيث تُغرس الأعلام الملونة، والثالث "tercio de muleta" حيث يواجه المصارع الثور وجهاً لوجه في لحظات درامية مكثفة.' },
+    ],
+    funFact: '🐂 هل تعلم؟ الثور لا يتفاعل مع اللون الأحمر! هو مصاب بعمى الألوان ويتفاعل مع حركة القماش فقط.',
+  },
+  {
+    id: 'futbol',
+    titleEs: 'El Fútbol Español',
+    titleEn: 'Spanish Football',
+    titleAr: 'كرة القدم الإسبانية',
+    snippet: 'أكثر من رياضة — ثقافة وشغف يوحّد ملايين الإسبان',
+    heroImage: cultureFutbol,
+    images: [cultureFutbol, cultureCorrida],
+    vocab: [
+      { es: 'El gol', ar: 'الهدف', example: '¡Gooool! ¡Qué golazo!' },
+      { es: 'El estadio', ar: 'الملعب', example: 'El estadio está lleno de aficionados.' },
+      { es: 'El partido', ar: 'المباراة', example: 'El partido empieza a las nueve.' },
+      { es: 'El entrenador', ar: 'المدرب', example: 'El entrenador prepara la táctica.' },
+      { es: 'La afición', ar: 'الجمهور', example: 'La afición anima al equipo.' },
+      { es: 'El clásico', ar: 'الكلاسيكو', example: 'El Clásico es el partido más visto del mundo.' },
+    ],
+    sections: [
+      { heading: 'لا ليغا — أقوى دوري', headingEs: 'La Liga — La Mejor Liga', body: 'الدوري الإسباني "لا ليغا" (La Liga) يُعد من أقوى دوريات كرة القدم في العالم. يضم أندية أسطورية مثل ريال مدريد وبرشلونة وأتلتيكو مدريد. الكلاسيكو (El Clásico) بين ريال مدريد وبرشلونة يشاهده أكثر من 650 مليون شخص حول العالم!' },
+      { heading: 'ثقافة الكرة', headingEs: 'Cultura del Fútbol', body: 'كرة القدم في إسبانيا ليست مجرد رياضة بل هوية. كل حي له فريقه المفضل، وكل عائلة لها ولاؤها الكروي الذي يتوارثه الأجيال. المقاهي تمتلئ أيام المباريات والجميع يتحدث عن الكرة — في العمل والمدرسة والشارع.' },
+      { heading: 'المنتخب الإسباني', headingEs: 'La Selección Española', body: 'حقق المنتخب الإسباني "لا روخا" (La Roja) إنجازات تاريخية: كأس العالم 2010 وكأس أوروبا 2008 و2012. أسلوب "تيكي-تاكا" (Tiki-Taka) القائم على التمرير السريع أصبح مدرسة عالمية في كرة القدم غيّرت مفاهيم اللعبة.' },
+    ],
+    funFact: '⚽ هل تعلم؟ ملعب سانتياغو برنابيو الجديد يحتوي سقفاً قابلاً للطي وأرضية قابلة للسحب!',
+  },
+  {
+    id: 'vino',
+    titleEs: 'El Vino Español',
+    titleEn: 'Spanish Wine Culture',
+    titleAr: 'ثقافة النبيذ الإسباني',
+    snippet: 'من كروم لا ريوخا إلى موائد الأندلس — رحلة في عالم العنب',
+    heroImage: cultureVino,
+    images: [cultureVino, cultureSobremesa],
+    vocab: [
+      { es: 'La uva', ar: 'العنب', example: 'Las uvas están maduras en septiembre.' },
+      { es: 'La bodega', ar: 'القبو / مصنع النبيذ', example: 'Visitamos una bodega en La Rioja.' },
+      { es: 'El viñedo', ar: 'كرم العنب', example: 'El viñedo se extiende por la colina.' },
+      { es: 'La cosecha', ar: 'الحصاد', example: 'La cosecha de este año fue excelente.' },
+      { es: 'El brindis', ar: 'النخب', example: '¡Hagamos un brindis por la amistad!' },
+      { es: 'La vendimia', ar: 'موسم القطاف', example: 'La vendimia es una fiesta en muchos pueblos.' },
+    ],
+    sections: [
+      { heading: 'مناطق النبيذ', headingEs: 'Regiones Vinícolas', body: 'إسبانيا تملك أكبر مساحة مزروعة بالكروم في العالم. أشهر المناطق هي لا ريوخا (La Rioja) المعروفة بنبيذها الأحمر الفاخر، وريبيرا ديل دويرو (Ribera del Duero) ذات الطابع القوي، وخيريز (Jerez) في الأندلس الشهيرة بنبيذ الشيري.' },
+      { heading: 'طقوس النبيذ', headingEs: 'Rituales del Vino', body: 'شرب النبيذ في إسبانيا طقس اجتماعي لا ينفصل عن الطعام والصحبة. "النخب" (El Brindis) تقليد أساسي في المناسبات. في ليلة رأس السنة، يأكل الإسبان 12 حبة عنب مع كل دقة ساعة — واحدة لكل شهر من السنة الجديدة.' },
+      { heading: 'الفيندميا — موسم القطاف', headingEs: 'La Vendimia', body: 'موسم قطاف العنب (La Vendimia) في سبتمبر وأكتوبر يتحول إلى احتفال شعبي في كثير من المدن الإسبانية. أشهرها مهرجان الفيندميا في خيريز حيث يُداس العنب بالأقدام تقليدياً وتُقام عروض فلامنكو وسباقات خيل.' },
+    ],
+    funFact: '🍇 هل تعلم؟ إسبانيا فيها أكثر من 400 نوع محلي من العنب! أكثر من أي بلد آخر.',
+  },
+  {
+    id: 'literatura',
+    titleEs: 'La Literatura Española',
+    titleEn: 'Spanish Literature',
+    titleAr: 'الأدب الإسباني',
+    snippet: 'من دون كيخوته إلى لوركا — أعظم الأعمال الأدبية الإسبانية',
+    heroImage: cultureLiteratura,
+    images: [cultureLiteratura, cultureAlhambra],
+    vocab: [
+      { es: 'El escritor', ar: 'الكاتب', example: 'Cervantes es el escritor más famoso de España.' },
+      { es: 'La novela', ar: 'الرواية', example: 'Don Quijote es la primera novela moderna.' },
+      { es: 'El poema', ar: 'القصيدة', example: 'Lorca escribió poemas hermosos.' },
+      { es: 'La biblioteca', ar: 'المكتبة', example: 'La biblioteca tiene miles de libros.' },
+      { es: 'El personaje', ar: 'الشخصية', example: 'Don Quijote es un personaje inolvidable.' },
+      { es: 'La obra maestra', ar: 'التحفة الفنية', example: 'Don Quijote es una obra maestra universal.' },
+    ],
+    sections: [
+      { heading: 'دون كيخوته — أول رواية حديثة', headingEs: 'Don Quijote — La Primera Novela Moderna', body: 'نشر ميغيل دي ثيربانتس (Miguel de Cervantes) رواية "دون كيخوته دي لا مانتشا" عام 1605، وتُعتبر أول رواية حديثة في التاريخ. تحكي قصة فارس حالم يقاتل طواحين الهواء ظناً أنها عمالقة. تُرجمت إلى أكثر من 140 لغة وهي ثاني أكثر كتاب تُرجم بعد الكتاب المقدس.' },
+      { heading: 'العصر الذهبي', headingEs: 'El Siglo de Oro', body: 'شهدت إسبانيا في القرنين السادس والسابع عشر "العصر الذهبي" (El Siglo de Oro) حيث ازدهر الأدب والمسرح. كتّاب مثل لوبي دي بيغا (Lope de Vega) وكالديرون دي لا باركا (Calderón de la Barca) أنتجوا مئات المسرحيات التي لا تزال تُعرض حتى اليوم.' },
+      { heading: 'جيل الـ 27 ولوركا', headingEs: 'La Generación del 27 y Lorca', body: 'في عشرينيات القرن العشرين، ظهرت مجموعة أدبية رائعة عُرفت بـ"جيل الـ 27" (Generación del 27). أبرزهم فيديريكو غارثيا لوركا (Federico García Lorca) الذي مزج الشعر بالموسيقى الشعبية والفلامنكو. قصائده مثل "Romancero Gitano" تُعد من أجمل ما كُتب بالإسبانية.' },
+    ],
+    funFact: '📚 هل تعلم؟ يوم الكتاب العالمي (23 أبريل) اختير لأنه يوم وفاة ثيربانتس وشكسبير في نفس العام 1616!',
   },
 ];
