@@ -113,19 +113,6 @@ export default function DonationButton() {
         )}
       </AnimatePresence>
 
-      <style>{`
-        .donate-btn {
-          image-rendering: pixelated;
-          border: 3px solid #FFD700;
-          background: #2d0a4e;
-          color: #FFD700;
-          font-family: 'Press Start 2P', monospace;
-          box-shadow: 0 0 12px rgba(255, 215, 0, 0.3), inset 0 0 8px rgba(255, 215, 0, 0.1);
-        }
-        .donate-btn:hover {
-          box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), inset 0 0 12px rgba(255, 215, 0, 0.2);
-        }
-      `}</style>
     </>
   );
 }
