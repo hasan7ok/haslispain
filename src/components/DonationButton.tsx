@@ -16,15 +16,51 @@ export default function DonationButton() {
 
   return (
     <>
-      {/* Pixel-styled donate button */}
+      {/* Floating realistic coffee cup — no background, no border */}
       <motion.button
         onClick={() => setShowModal(true)}
-        className="donate-btn fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-2.5"
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.95 }}
+        className="fixed bottom-6 right-6 z-50 bg-transparent border-none p-0 cursor-pointer"
+        whileHover={{ scale: 1.15, rotate: -5 }}
+        whileTap={{ scale: 0.9 }}
+        title="ادعمنا"
       >
-        <span className="text-base">☕</span>
-        <span className="text-[0.5rem] leading-none">ادعمنا</span>
+        <svg width="52" height="52" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Steam */}
+          <path d="M22 16c0-4 2-6 0-10" stroke="#FFD700" strokeWidth="1.5" strokeLinecap="round" opacity="0.5">
+            <animate attributeName="d" values="M22 16c0-4 2-6 0-10;M22 16c0-4-2-6 0-10;M22 16c0-4 2-6 0-10" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" repeatCount="indefinite"/>
+          </path>
+          <path d="M30 14c0-3 1.5-5 0-8" stroke="#FFD700" strokeWidth="1.5" strokeLinecap="round" opacity="0.4">
+            <animate attributeName="d" values="M30 14c0-3 1.5-5 0-8;M30 14c0-3-1.5-5 0-8;M30 14c0-3 1.5-5 0-8" dur="2.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.2;0.6;0.2" dur="2.5s" repeatCount="indefinite"/>
+          </path>
+          <path d="M38 16c0-4 2-6 0-10" stroke="#FFD700" strokeWidth="1.5" strokeLinecap="round" opacity="0.5">
+            <animate attributeName="d" values="M38 16c0-4-2-6 0-10;M38 16c0-4 2-6 0-10;M38 16c0-4-2-6 0-10" dur="1.8s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.3;0.7;0.3" dur="1.8s" repeatCount="indefinite"/>
+          </path>
+          {/* Cup body */}
+          <path d="M12 22h36l-4 30a4 4 0 01-4 3.5H20a4 4 0 01-4-3.5L12 22z" fill="url(#cupGrad)" stroke="#FFD700" strokeWidth="1.5"/>
+          {/* Coffee liquid */}
+          <ellipse cx="30" cy="26" rx="16" ry="3.5" fill="#3B1A08" opacity="0.9"/>
+          <ellipse cx="30" cy="25.5" rx="14" ry="2.5" fill="#5C2E0E" opacity="0.7"/>
+          {/* Highlight on cup */}
+          <path d="M16 28c0 0 1 18 4 24" stroke="rgba(255,255,255,0.15)" strokeWidth="2" strokeLinecap="round"/>
+          {/* Handle */}
+          <path d="M48 26c6 0 8 4 8 9s-2 9-8 9" fill="none" stroke="#FFD700" strokeWidth="2" strokeLinecap="round"/>
+          {/* Saucer */}
+          <ellipse cx="30" cy="56" rx="22" ry="4" fill="url(#saucerGrad)" stroke="#FFD700" strokeWidth="1"/>
+          <defs>
+            <linearGradient id="cupGrad" x1="12" y1="22" x2="48" y2="56" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#F5F0E8"/>
+              <stop offset="1" stopColor="#D4C9B8"/>
+            </linearGradient>
+            <linearGradient id="saucerGrad" x1="8" y1="56" x2="52" y2="56" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#E8E0D4"/>
+              <stop offset="0.5" stopColor="#F5F0E8"/>
+              <stop offset="1" stopColor="#D4C9B8"/>
+            </linearGradient>
+          </defs>
+        </svg>
       </motion.button>
 
       {/* Modal */}
