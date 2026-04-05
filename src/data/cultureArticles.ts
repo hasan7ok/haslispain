@@ -19,6 +19,10 @@ import cultureMusica from '@/assets/culture-musica.jpg';
 import cultureBoda from '@/assets/culture-boda.jpg';
 import cultureCamino from '@/assets/culture-camino.jpg';
 import cultureCarnaval from '@/assets/culture-carnaval.jpg';
+import cultureSemanaSanta from '@/assets/culture-semana-santa.jpg';
+import cultureModa from '@/assets/culture-moda.jpg';
+import cultureArtesania from '@/assets/culture-artesania.jpg';
+import cultureCine from '@/assets/culture-cine.jpg';
 
 export interface VocabItem {
   es: string;
