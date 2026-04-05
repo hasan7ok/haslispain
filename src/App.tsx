@@ -152,7 +152,6 @@ const App = () => (
         <Toaster />
         <Sonner />
         <AppContent />
-        <DonationModal />
       </TooltipProvider>
     </QueryClientProvider>
   </ThemeProvider>

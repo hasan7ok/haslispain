@@ -76,7 +76,7 @@ export function useTheme() {
   const [theme, setTheme] = useState<ThemeName>(() => {
     const saved = localStorage.getItem('pixnol-theme');
     if (saved && THEMES.some(t => t.id === saved)) return saved as ThemeName;
-    return 'cyber-sunset';
+    return 'arctic-neon';
   });
 
   useEffect(() => {
