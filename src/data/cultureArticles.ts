@@ -19,6 +19,10 @@ import cultureMusica from '@/assets/culture-musica.jpg';
 import cultureBoda from '@/assets/culture-boda.jpg';
 import cultureCamino from '@/assets/culture-camino.jpg';
 import cultureCarnaval from '@/assets/culture-carnaval.jpg';
+import cultureSemanaSanta from '@/assets/culture-semana-santa.jpg';
+import cultureModa from '@/assets/culture-moda.jpg';
+import cultureArtesania from '@/assets/culture-artesania.jpg';
+import cultureCine from '@/assets/culture-cine.jpg';
 
 export interface VocabItem {
   es: string;
@@ -478,5 +482,101 @@ export const CULTURE_ARTICLES: CultureArticle[] = [
       { heading: 'تقاليد الكرنفال', headingEs: 'Tradiciones del Carnaval', body: 'ينتهي الكرنفال بطقس "دفن السردينة" (El Entierro de la Sardina) حيث يُحمل نعش ورقي على شكل سمكة سردين في موكب جنائزي ساخر مع بكاء مصطنع ثم يُحرق. يرمز لنهاية المرح وبداية الصوم. "أربعاء الرماد" (Miércoles de Ceniza) يُنهي الاحتفالات رسمياً.' },
     ],
     funFact: '🎭 هل تعلم؟ في كرنفال قادس، يُسمح بالسخرية من أي شخص بما فيهم الملك! حرية التعبير الساخر تقليد مقدس في هذا المهرجان.',
+  },
+  {
+    id: 'semana-santa',
+    titleEs: 'La Semana Santa',
+    titleEn: 'Holy Week',
+    titleAr: 'الأسبوع المقدس',
+    snippet: 'مواكب ليلية مهيبة وتقاليد عريقة تحبس الأنفاس في شوارع إسبانيا',
+    heroImage: cultureSemanaSanta,
+    images: [cultureSemanaSanta, cultureFiesta],
+    vocab: [
+      { es: 'La procesión', ar: 'الموكب', example: 'La procesión pasa por el centro.' },
+      { es: 'El nazareno', ar: 'التائب المقنّع', example: 'Los nazarenos llevan capirotes.' },
+      { es: 'El paso', ar: 'المنصة الدينية', example: 'El paso pesa más de 5.000 kilos.' },
+      { es: 'La cofradía', ar: 'الأخوية الدينية', example: 'Mi abuelo pertenece a una cofradía.' },
+      { es: 'El capirote', ar: 'القبعة المخروطية', example: 'El capirote es un símbolo de penitencia.' },
+      { es: 'La saeta', ar: 'الأغنية الدينية', example: 'Cantó una saeta desde el balcón.' },
+      { es: 'El cirio', ar: 'الشمعة الكبيرة', example: 'Los cirios iluminan la noche.' },
+    ],
+    sections: [
+      { heading: 'ما هي سيمانا سانتا؟', headingEs: '¿Qué es la Semana Santa?', body: 'الأسبوع المقدس (Semana Santa) هو الأسبوع الذي يسبق عيد الفصح المسيحي، وهو من أهم التقاليد الدينية والثقافية في إسبانيا. تخرج مواكب ضخمة في شوارع المدن تحمل تماثيل دينية مزخرفة على منصات خشبية (Pasos) يحملها عشرات الرجال على أكتافهم. أشهر الاحتفالات في إشبيلية ومالقة وبلد الوليد.' },
+      { heading: 'إشبيلية — قلب الاحتفال', headingEs: 'Sevilla — El Corazón de la Celebración', body: 'تُعد إشبيلية عاصمة سيمانا سانتا بلا منازع. أكثر من 60 أخوية (Cofradía) تنظم مواكب تمتد من أحد الشعانين حتى أحد الفصح. المشهد الأكثر إثارة هو "المدروغادا" (Madrugada) فجر الجمعة العظيمة، حيث تخرج أشهر المواكب في ظلام الليل بين الشموع والبخور والصمت المهيب.' },
+      { heading: 'السايتا — صرخة الروح', headingEs: 'La Saeta — El Grito del Alma', body: 'من أجمل لحظات سيمانا سانتا عندما يتوقف الموكب فجأة ويغني شخص من شرفة "السايتا" (Saeta) — أغنية دينية عفوية بأسلوب الفلامنكو. صوت المغني يصدح في الصمت الكامل بينما يقف الآلاف ساكنين. هذا التقليد يجمع بين الإيمان الشعبي وفن الفلامنكو بطريقة لا تُنسى.' },
+    ],
+    funFact: '🕯️ هل تعلم؟ بعض المنصات الدينية في إشبيلية يبلغ وزنها 5 أطنان ويحملها أكثر من 48 رجلاً يسمون "كوستاليروس" (Costaleros)!',
+  },
+  {
+    id: 'moda',
+    titleEs: 'La Moda Española',
+    titleEn: 'Spanish Fashion',
+    titleAr: 'الأزياء الإسبانية',
+    snippet: 'من المانتيلا التقليدية إلى زارا — إسبانيا تلبس العالم',
+    heroImage: cultureModa,
+    images: [cultureModa, cultureFlamenco],
+    vocab: [
+      { es: 'El vestido', ar: 'الفستان', example: 'El vestido de flamenca es precioso.' },
+      { es: 'La mantilla', ar: 'المانتيلا (غطاء الرأس)', example: 'La mantilla es de encaje negro.' },
+      { es: 'El abanico', ar: 'المروحة', example: 'El abanico es un accesorio típico.' },
+      { es: 'La tela', ar: 'القماش', example: 'Esta tela es de seda española.' },
+      { es: 'El diseñador', ar: 'المصمم', example: 'Balenciaga fue un gran diseñador español.' },
+      { es: 'La pasarela', ar: 'منصة العرض', example: 'Los modelos desfilan por la pasarela.' },
+      { es: 'El traje', ar: 'البذلة / الزي', example: 'El traje de luces es muy elaborado.' },
+    ],
+    sections: [
+      { heading: 'الأزياء التقليدية', headingEs: 'La Moda Tradicional', body: 'لكل منطقة إسبانية أزياءها التقليدية المميزة. فستان الفلامنكو (Traje de Flamenca) بألوانه الزاهية وكشكشه المتدرجة رمز أندلسي عالمي. المانتيلا (Mantilla) — غطاء الرأس من الدانتيل الأسود — تُلبس في المناسبات الرسمية والأعياد الدينية. المروحة (Abanico) ليست مجرد أداة تبريد بل لغة صامتة كاملة!' },
+      { heading: 'عمالقة الموضة الإسبانية', headingEs: 'Gigantes de la Moda Española', body: 'كريستوبال بالينسياغا (Cristóbal Balenciaga) يُلقب بـ"ملك الموضة" ومعلم المعلمين. أسس داره في باريس عام 1937 وأثّر في كل مصمم بعده. اليوم، زارا (Zara) التي أسسها أمانسيو أورتيغا (Amancio Ortega) في غاليسيا عام 1975 أصبحت أكبر علامة أزياء في العالم بأكثر من 7,000 متجر!' },
+      { heading: 'لغة المروحة', headingEs: 'El Lenguaje del Abanico', body: 'في القرن الثامن عشر، طوّرت النساء الإسبانيات "لغة المروحة" للتواصل السري. فتح المروحة بالكامل يعني "أنتظرك"، إغلاقها ببطء يعني "نعم"، تحريكها بسرعة يعني "أحبك"، وضعها على الخد الأيمن يعني "نعم"، والأيسر "لا". نظام تواصل كامل في عصر ما قبل الهاتف!' },
+    ],
+    funFact: '👗 هل تعلم؟ أمانسيو أورتيغا مؤسس زارا كان سادس أغنى شخص في العالم! بدأ كعامل في متجر ملابس بعمر 14 سنة.',
+  },
+  {
+    id: 'artesania',
+    titleEs: 'La Artesanía Española',
+    titleEn: 'Spanish Crafts',
+    titleAr: 'الحرف اليدوية الإسبانية',
+    snippet: 'من الخزف المزخرف إلى الجلود المدبوغة — إبداع يدوي أصيل',
+    heroImage: cultureArtesania,
+    images: [cultureArtesania, cultureMercado],
+    vocab: [
+      { es: 'La cerámica', ar: 'الخزف', example: 'La cerámica de Talavera es famosa.' },
+      { es: 'El azulejo', ar: 'البلاط المزخرف', example: 'Los azulejos decoran las paredes.' },
+      { es: 'El cuero', ar: 'الجلد', example: 'Los artesanos trabajan el cuero a mano.' },
+      { es: 'El bordado', ar: 'التطريز', example: 'El bordado del mantón es exquisito.' },
+      { es: 'El artesano', ar: 'الحرفي', example: 'El artesano hace cada pieza a mano.' },
+      { es: 'El taller', ar: 'الورشة', example: 'Visitamos un taller de cerámica.' },
+      { es: 'La joya', ar: 'المجوهرات', example: 'Las joyas de filigrana son delicadas.' },
+    ],
+    sections: [
+      { heading: 'خزف تالابيرا', headingEs: 'La Cerámica de Talavera', body: 'تشتهر مدينة تالابيرا دي لا رينا (Talavera de la Reina) بخزفها المزخرف منذ القرن الخامس عشر. تتميز القطع بزخارف زرقاء وبيضاء مستوحاة من التأثيرات العربية والصينية. كل قطعة تُرسم يدوياً وتُحرق في أفران تقليدية. أُدرج هذا الفن في قائمة اليونسكو للتراث غير المادي عام 2019.' },
+      { heading: 'الأزوليخوس — فن البلاط', headingEs: 'Los Azulejos — Arte en Baldosas', body: 'كلمة "أزوليخو" (Azulejo) تأتي من العربية "الزليج". هذا الفن وصل إسبانيا مع المسلمين وتطور ليصبح سمة مميزة للعمارة الإسبانية والبرتغالية. ستجد البلاط المزخرف في كل مكان: محطات القطار، المطاعم، الحمامات، والقصور. كل منطقة لها أنماطها وألوانها المميزة.' },
+      { heading: 'حرف مهددة بالانقراض', headingEs: 'Oficios en Peligro', body: 'كثير من الحرف التقليدية تواجه خطر الاندثار. صناعة المراوح اليدوية في بلنسية، والتطريز بالذهب في طليطلة (Damasquinado)، وصناعة القيثارات في غرناطة — كلها فنون تحتاج جيلاً جديداً من الحرفيين. مبادرات حكومية وجمعيات أهلية تعمل على توثيق هذه الحرف وتعليمها للشباب.' },
+    ],
+    funFact: '🏺 هل تعلم؟ فن "الدمشقة" (Damasquinado) في طليطلة يعني تطعيم الفولاذ بخيوط الذهب والفضة — تقنية عربية عمرها أكثر من 1000 سنة!',
+  },
+  {
+    id: 'cine',
+    titleEs: 'El Cine Español',
+    titleEn: 'Spanish Cinema',
+    titleAr: 'السينما الإسبانية',
+    snippet: 'من ألمودوبار إلى بانديراس — عالم السينما الإسبانية الساحر',
+    heroImage: cultureCine,
+    images: [cultureCine, cultureLiteratura],
+    vocab: [
+      { es: 'La película', ar: 'الفيلم', example: 'Esta película ganó un Óscar.' },
+      { es: 'El director', ar: 'المخرج', example: 'Almodóvar es un director genial.' },
+      { es: 'El actor', ar: 'الممثل', example: 'Bardem es un actor muy versátil.' },
+      { es: 'La actriz', ar: 'الممثلة', example: 'Penélope Cruz es una actriz internacional.' },
+      { es: 'El guion', ar: 'السيناريو', example: 'El guion de esta película es brillante.' },
+      { es: 'La escena', ar: 'المشهد', example: 'La escena final es emocionante.' },
+      { es: 'El premio', ar: 'الجائزة', example: 'Ganó el premio Goya al mejor director.' },
+    ],
+    sections: [
+      { heading: 'بيدرو ألمودوبار — سيد السينما', headingEs: 'Pedro Almodóvar — El Maestro', body: 'بيدرو ألمودوبار (Pedro Almodóvar) هو أشهر مخرج إسباني معاصر. أفلامه تتميز بألوان صارخة وقصص جريئة عن المرأة والهوية والعاطفة. فاز بأوسكارين عن "كل شيء عن أمي" (Todo sobre mi madre) و"تحدث إليها" (Hable con ella). أسلوبه الفريد جعل السينما الإسبانية معروفة عالمياً.' },
+      { heading: 'نجوم عالميون', headingEs: 'Estrellas Internacionales', body: 'أنجبت إسبانيا نجوماً غزوا هوليوود: أنطونيو بانديراس (Antonio Banderas) من مالقة أصبح نجماً عالمياً في أفلام مثل "قناع زورو". بينيلوبي كروث (Penélope Cruz) أول ممثلة إسبانية تفوز بالأوسكار. خافيير بارديم (Javier Bardem) فاز بأوسكار أفضل ممثل مساعد عن "لا بلد للعجائز" (No Country for Old Men).' },
+      { heading: 'جوائز غويا', headingEs: 'Los Premios Goya', body: 'جوائز غويا (Premios Goya) هي أعلى تكريم سينمائي في إسبانيا، سُميت تكريماً للرسام فرانثيسكو دي غويا. تُقام سنوياً منذ 1987 وتغطي جميع فئات السينما. حفل غويا يُعتبر "الأوسكار الإسباني" ويُبث مباشرة على التلفزيون ويشاهده ملايين الإسبان.' },
+    ],
+    funFact: '🎬 هل تعلم؟ فيلم "الآخرون" (Los Otros) لأليخاندرو أمينابار مع نيكول كيدمان صُوِّر بالكامل في كانتابريا بإسبانيا!',
   },
 ];

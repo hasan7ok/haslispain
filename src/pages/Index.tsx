@@ -9,6 +9,7 @@ import Header from '@/components/Header';
 import rpgMapBg from '@/assets/rpg-map-bg.png';
 import { Lock, Sparkles, ChevronRight, Flame, BookOpen, Swords } from 'lucide-react';
 import CulturaSection from '@/components/CulturaSection';
+import DonationModal from '@/components/DonationModal';
 import { useEffect, useRef } from 'react';
 
 function ParallaxGrid() {
@@ -191,6 +192,7 @@ export default function Index() {
         <CulturaSection />
 
       </main>
+      <DonationModal />
     </div>
   );
 }

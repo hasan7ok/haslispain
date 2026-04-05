@@ -29,7 +29,7 @@ import NotFound from "./pages/NotFound";
 import { useAuth } from "@/hooks/useAuth";
 import { useGameState } from "@/hooks/useGameState";
 import { PixelLoader } from "@/components/PixelLoader";
-import DonationModal from "@/components/DonationModal";
+
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
 const queryClient = new QueryClient();
@@ -152,7 +152,6 @@ const App = () => (
         <Toaster />
         <Sonner />
         <AppContent />
-        <DonationModal />
       </TooltipProvider>
     </QueryClientProvider>
   </ThemeProvider>
