@@ -32,7 +32,7 @@ export default function Header() {
     >
       <div className="container mx-auto flex items-center justify-between px-3 py-2">
         <Link to="/" className="flex items-center gap-2 group">
-          <img src={logo} alt="PixÑol" className="h-8 md:h-10 w-auto" style={{ imageRendering: 'pixelated' }} />
+          <img src={logo} alt="PixÑol" className="h-12 w-auto" style={{ imageRendering: 'pixelated' }} />
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
