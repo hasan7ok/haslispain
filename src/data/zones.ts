@@ -61,7 +61,7 @@ export const ZONES: Zone[] = [
     description: 'Intermediate (A2–B1)',
     descriptionAr: 'متوسط - وسّع مفرداتك',
     level: 'A2-B1',
-    requiredLevel: 3,
+    requiredLevel: 2,
     glowClass: 'zone-glow-gold',
     lessons: [
       { id: 'ciudad-1', title: 'Rutina Diaria', titleAr: 'الروتين اليومي', type: 'vocabulary', xpReward: 35, icon: '☀️' },
