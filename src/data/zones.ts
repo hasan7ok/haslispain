@@ -121,7 +121,7 @@ export const ZONES: Zone[] = [
     description: 'Advanced (B2–C1)',
     descriptionAr: 'متقدم - النقاش والجدال',
     level: 'B2-C1',
-    requiredLevel: 10,
+    requiredLevel: 5,
     glowClass: 'zone-glow-purple',
     lessons: [
       { id: 'deb-1', title: 'Opiniones y Argumentos', titleAr: 'الآراء والحجج', type: 'conversation', xpReward: 50, icon: '💡' },
