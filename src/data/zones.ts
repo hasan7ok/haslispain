@@ -61,7 +61,7 @@ export const ZONES: Zone[] = [
     description: 'Intermediate (A2–B1)',
     descriptionAr: 'متوسط - وسّع مفرداتك',
     level: 'A2-B1',
-    requiredLevel: 3,
+    requiredLevel: 2,
     glowClass: 'zone-glow-gold',
     lessons: [
       { id: 'ciudad-1', title: 'Rutina Diaria', titleAr: 'الروتين اليومي', type: 'vocabulary', xpReward: 35, icon: '☀️' },
@@ -83,7 +83,7 @@ export const ZONES: Zone[] = [
     description: 'Culture & History',
     descriptionAr: 'ثقافة وتاريخ إسبانيا',
     level: 'Culture',
-    requiredLevel: 5,
+    requiredLevel: 3,
     glowClass: 'zone-glow-orange',
     lessons: [
       { id: 'hist-1', title: 'Fiestas Españolas', titleAr: 'الأعياد الإسبانية', type: 'culture', xpReward: 30, icon: '🎉' },
@@ -102,7 +102,7 @@ export const ZONES: Zone[] = [
     description: 'Latin America',
     descriptionAr: 'اكتشف أمريكا اللاتينية',
     level: 'B1-B2',
-    requiredLevel: 7,
+    requiredLevel: 4,
     glowClass: 'zone-glow-blue',
     lessons: [
       { id: 'lat-1', title: 'España vs Latinoamérica', titleAr: 'إسبانيا مقابل أمريكا اللاتينية', type: 'vocabulary', xpReward: 40, icon: '🗺️' },
@@ -121,7 +121,7 @@ export const ZONES: Zone[] = [
     description: 'Advanced (B2–C1)',
     descriptionAr: 'متقدم - النقاش والجدال',
     level: 'B2-C1',
-    requiredLevel: 10,
+    requiredLevel: 5,
     glowClass: 'zone-glow-purple',
     lessons: [
       { id: 'deb-1', title: 'Opiniones y Argumentos', titleAr: 'الآراء والحجج', type: 'conversation', xpReward: 50, icon: '💡' },
