@@ -102,7 +102,7 @@ export const ZONES: Zone[] = [
     description: 'Latin America',
     descriptionAr: 'اكتشف أمريكا اللاتينية',
     level: 'B1-B2',
-    requiredLevel: 7,
+    requiredLevel: 4,
     glowClass: 'zone-glow-blue',
     lessons: [
       { id: 'lat-1', title: 'España vs Latinoamérica', titleAr: 'إسبانيا مقابل أمريكا اللاتينية', type: 'vocabulary', xpReward: 40, icon: '🗺️' },
