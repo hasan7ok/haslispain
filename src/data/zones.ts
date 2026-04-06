@@ -83,7 +83,7 @@ export const ZONES: Zone[] = [
     description: 'Culture & History',
     descriptionAr: 'ثقافة وتاريخ إسبانيا',
     level: 'Culture',
-    requiredLevel: 5,
+    requiredLevel: 3,
     glowClass: 'zone-glow-orange',
     lessons: [
       { id: 'hist-1', title: 'Fiestas Españolas', titleAr: 'الأعياد الإسبانية', type: 'culture', xpReward: 30, icon: '🎉' },
