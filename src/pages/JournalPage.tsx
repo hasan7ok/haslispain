@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/Header';
 import { useAuth } from '@/hooks/useAuth';
@@ -59,6 +60,7 @@ type SortOrder = 'newest' | 'oldest' | 'alpha';
 export default function JournalPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -86,7 +88,7 @@ export default function JournalPage() {
   const [canvasReady, setCanvasReady] = useState(false);
 
   // New advanced features
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
   const [editingTitleId, setEditingTitleId] = useState<string | null>(null);
@@ -294,6 +296,7 @@ export default function JournalPage() {
     setCurrentEntryId(entry.id); setEntryTitle(entry.title); setTextContent(entry.text_content || '');
     try { setActions(JSON.parse(entry.canvas_data || '[]')); } catch { setActions([]); }
     setUndoneActions([]);
+    if (isMobile) setSidebarOpen(false);
   };
 
   const newEntry = () => {
@@ -380,13 +383,19 @@ export default function JournalPage() {
       {!isFullscreen && <Header />}
       <div className={`flex ${isFullscreen ? 'h-screen' : 'h-[calc(100vh-60px)]'}`}>
         {/* Sidebar */}
+        {/* Sidebar overlay backdrop on mobile */}
+        {isMobile && sidebarOpen && (
+          <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+        )}
         <AnimatePresence>
           {sidebarOpen && (
             <motion.aside
               initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 280, opacity: 1 }}
+              animate={{ width: isMobile ? '85vw' : 280, opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
-              className="border-l-2 border-border bg-card/80 backdrop-blur-sm flex flex-col overflow-hidden shrink-0"
+              className={`border-l-2 border-border bg-card/95 backdrop-blur-sm flex flex-col overflow-hidden shrink-0 ${
+                isMobile ? 'fixed right-0 top-0 bottom-0 z-50' : ''
+              }`}
             >
               {/* Sidebar header */}
               <div className="p-3 border-b border-border">
@@ -482,7 +491,7 @@ export default function JournalPage() {
         {/* Main content */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Top toolbar */}
-          <div className="border-b-2 border-border bg-card/60 backdrop-blur-sm px-4 py-2 flex items-center gap-2 shrink-0">
+          <div className="border-b-2 border-border bg-card/60 backdrop-blur-sm px-2 sm:px-4 py-2 flex items-center gap-1 sm:gap-2 shrink-0 flex-wrap">
             <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all" title="الشريط الجانبي">
               <FolderOpen size={16} />
             </button>
