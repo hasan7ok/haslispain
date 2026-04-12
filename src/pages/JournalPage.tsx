@@ -88,7 +88,7 @@ export default function JournalPage() {
   const [canvasReady, setCanvasReady] = useState(false);
 
   // New advanced features
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
   const [editingTitleId, setEditingTitleId] = useState<string | null>(null);
