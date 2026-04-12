@@ -491,7 +491,7 @@ export default function JournalPage() {
         {/* Main content */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Top toolbar */}
-          <div className="border-b-2 border-border bg-card/60 backdrop-blur-sm px-4 py-2 flex items-center gap-2 shrink-0">
+          <div className="border-b-2 border-border bg-card/60 backdrop-blur-sm px-2 sm:px-4 py-2 flex items-center gap-1 sm:gap-2 shrink-0 flex-wrap">
             <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all" title="الشريط الجانبي">
               <FolderOpen size={16} />
             </button>
