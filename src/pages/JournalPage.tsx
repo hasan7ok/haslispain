@@ -296,6 +296,7 @@ export default function JournalPage() {
     setCurrentEntryId(entry.id); setEntryTitle(entry.title); setTextContent(entry.text_content || '');
     try { setActions(JSON.parse(entry.canvas_data || '[]')); } catch { setActions([]); }
     setUndoneActions([]);
+    if (isMobile) setSidebarOpen(false);
   };
 
   const newEntry = () => {
