@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/Header';
 import { useAuth } from '@/hooks/useAuth';
