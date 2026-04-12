@@ -382,13 +382,19 @@ export default function JournalPage() {
       {!isFullscreen && <Header />}
       <div className={`flex ${isFullscreen ? 'h-screen' : 'h-[calc(100vh-60px)]'}`}>
         {/* Sidebar */}
+        {/* Sidebar overlay backdrop on mobile */}
+        {isMobile && sidebarOpen && (
+          <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+        )}
         <AnimatePresence>
           {sidebarOpen && (
             <motion.aside
               initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 280, opacity: 1 }}
+              animate={{ width: isMobile ? '85vw' : 280, opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
-              className="border-l-2 border-border bg-card/80 backdrop-blur-sm flex flex-col overflow-hidden shrink-0"
+              className={`border-l-2 border-border bg-card/95 backdrop-blur-sm flex flex-col overflow-hidden shrink-0 ${
+                isMobile ? 'fixed right-0 top-0 bottom-0 z-50' : ''
+              }`}
             >
               {/* Sidebar header */}
               <div className="p-3 border-b border-border">
