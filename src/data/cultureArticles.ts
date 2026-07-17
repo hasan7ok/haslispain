@@ -23,6 +23,11 @@ import cultureSemanaSanta from '@/assets/culture-semana-santa.jpg';
 import cultureModa from '@/assets/culture-moda.jpg';
 import cultureArtesania from '@/assets/culture-artesania.jpg';
 import cultureCine from '@/assets/culture-cine.jpg';
+import cultureFuriaRoja from '@/assets/culture-furia-roja.jpg';
+import cultureClasico from '@/assets/culture-clasico.jpg';
+import cultureMundial2010 from '@/assets/culture-mundial-2010.jpg';
+import cultureLaLiga from '@/assets/culture-la-liga.jpg';
+import cultureLeyendasFutbol from '@/assets/culture-leyendas-futbol.jpg';
 
 export interface VocabItem {
   es: string;
@@ -578,5 +583,130 @@ export const CULTURE_ARTICLES: CultureArticle[] = [
       { heading: 'جوائز غويا', headingEs: 'Los Premios Goya', body: 'جوائز غويا (Premios Goya) هي أعلى تكريم سينمائي في إسبانيا، سُميت تكريماً للرسام فرانثيسكو دي غويا. تُقام سنوياً منذ 1987 وتغطي جميع فئات السينما. حفل غويا يُعتبر "الأوسكار الإسباني" ويُبث مباشرة على التلفزيون ويشاهده ملايين الإسبان.' },
     ],
     funFact: '🎬 هل تعلم؟ فيلم "الآخرون" (Los Otros) لأليخاندرو أمينابار مع نيكول كيدمان صُوِّر بالكامل في كانتابريا بإسبانيا!',
+  },
+  {
+    id: 'furia-roja',
+    titleEs: 'La Furia Roja',
+    titleEn: 'The Spanish National Team',
+    titleAr: 'المنتخب الإسباني — لا فوريا روخا',
+    snippet: 'قصة "الفوريا روخا" — منتخب إسبانيا الذي حكم العالم بين 2008 و2012',
+    heroImage: cultureFuriaRoja,
+    images: [cultureFuriaRoja, cultureMundial2010],
+    vocab: [
+      { es: 'La selección', ar: 'المنتخب', example: 'La selección española es campeona del mundo.' },
+      { es: 'El seleccionador', ar: 'المدرب الوطني', example: 'Vicente del Bosque fue un gran seleccionador.' },
+      { es: 'La camiseta roja', ar: 'القميص الأحمر', example: 'La camiseta roja es icónica.' },
+      { es: 'El himno', ar: 'النشيد الوطني', example: 'Cantan el himno antes del partido.' },
+      { es: 'La convocatoria', ar: 'قائمة الاستدعاء', example: 'Fue incluido en la convocatoria.' },
+      { es: 'El capitán', ar: 'القائد', example: 'Iker Casillas era el capitán.' },
+      { es: 'La afición', ar: 'الجماهير', example: 'La afición española es apasionada.' },
+      { es: 'La victoria', ar: 'الفوز', example: 'La victoria fue histórica.' },
+    ],
+    sections: [
+      { heading: 'الحقبة الذهبية 2008-2012', headingEs: 'La Era Dorada', body: 'حقق منتخب إسبانيا ثلاثية تاريخية غير مسبوقة: يورو 2008 في النمسا/سويسرا بقيادة لويس أراغونيس، وكأس العالم 2010 في جنوب إفريقيا مع فيسنتي ديل بوسكي، ثم يورو 2012 في بولندا/أوكرانيا. لم يسبق لأي منتخب أن فاز بثلاث بطولات كبرى متتالية.' },
+      { heading: 'فلسفة التيكي-تاكا', headingEs: 'El Tiki-Taka', body: 'اعتمد المنتخب على أسلوب "التيكي-تاكا" (Tiki-Taka) — تمريرات قصيرة سريعة، استحواذ مكثف على الكرة، وضغط عالي بعد فقدانها. صنع هذا الأسلوب في أكاديمية لا ماسيا لبرشلونة، ونقله تشافي وإنييستا وبوسكيتس إلى المنتخب الوطني.' },
+      { heading: 'الجيل الجديد', headingEs: 'La Nueva Generación', body: 'بعد سنوات من التراجع، عاد المنتخب بجيل جديد بقيادة لويس دي لا فوينتي (Luis de la Fuente)، ففاز بدوري الأمم الأوروبية 2023 ثم بيورو 2024 في ألمانيا. نجوم مثل رودري (Rodri) الفائز بالكرة الذهبية ولامين يامال (Lamine Yamal) أعادوا الفوريا روخا إلى القمة.' },
+    ],
+    funFact: '⚽ هل تعلم؟ إسبانيا هي الدولة الوحيدة في التاريخ التي فازت بيورو-مونديال-يورو ثلاث بطولات كبرى متتالية بين 2008 و2012!',
+  },
+  {
+    id: 'clasico',
+    titleEs: 'El Clásico',
+    titleEn: 'The Classic Derby',
+    titleAr: 'الكلاسيكو — ريال مدريد وبرشلونة',
+    snippet: 'أعظم مباراة كرة قدم في العالم — صراع ريال مدريد وبرشلونة الأزلي',
+    heroImage: cultureClasico,
+    images: [cultureClasico, cultureLaLiga],
+    vocab: [
+      { es: 'El clásico', ar: 'الكلاسيكو', example: 'El clásico es el partido más visto del mundo.' },
+      { es: 'El rival', ar: 'الغريم', example: 'El Madrid es su gran rival.' },
+      { es: 'El estadio', ar: 'الملعب', example: 'El Santiago Bernabéu es enorme.' },
+      { es: 'El derbi', ar: 'الديربي', example: 'Es un derbi histórico.' },
+      { es: 'La rivalidad', ar: 'التنافس', example: 'La rivalidad viene desde hace un siglo.' },
+      { es: 'El gol', ar: 'الهدف', example: '¡Qué gol tan increíble!' },
+      { es: 'El árbitro', ar: 'الحكم', example: 'El árbitro pitó penalti.' },
+      { es: 'La hinchada', ar: 'المشجعون', example: 'La hinchada llena el estadio.' },
+    ],
+    sections: [
+      { heading: 'أصل العداوة', headingEs: 'El Origen de la Rivalidad', body: 'يعود الكلاسيكو إلى أكثر من قرن، حين لعب الفريقان أول مباراة رسمية عام 1902. تحولت المباراة إلى صراع سياسي وثقافي في عهد فرانكو، إذ مثّل برشلونة الهوية الكاتالانية بينما رمز ريال مدريد إلى المركزية الإسبانية. أصبح الكلاسيكو أكثر من مجرد كرة قدم.' },
+      { heading: 'ميسي vs رونالدو', headingEs: 'Messi vs Cristiano', body: 'شهدت الفترة بين 2009 و2018 أعظم منافسة فردية في تاريخ الكلاسيكو، بين ليونيل ميسي (Lionel Messi) نجم برشلونة وكريستيانو رونالدو (Cristiano Ronaldo) نجم ريال مدريد. سجّل الاثنان مئات الأهداف وحصدا 10 كرات ذهبية بينهما، ورفعا مستوى المباراة إلى العالمية.' },
+      { heading: 'ملاعب الأساطير', headingEs: 'Los Estadios Legendarios', body: 'يُلعب الكلاسيكو في اثنين من أعظم ملاعب العالم: كامب نو (Camp Nou) في برشلونة بسعة 99 ألف متفرج، وسانتياغو برنابيو (Santiago Bernabéu) في مدريد بعد تجديده. تُشاهد المباراة أكثر من 650 مليون مشاهد حول العالم، مما يجعلها أكثر حدث رياضي متابعة.' },
+    ],
+    funFact: '🏟️ هل تعلم؟ الكلاسيكو هو الحدث الرياضي الأكثر مشاهدة في العالم بعد نهائي كأس العالم والسوبر بول الأمريكي!',
+  },
+  {
+    id: 'mundial-2010',
+    titleEs: 'Mundial 2010',
+    titleEn: 'World Cup 2010',
+    titleAr: 'كأس العالم 2010 — النجمة الأولى',
+    snippet: 'الليلة التي رفعت فيها إسبانيا كأس العالم لأول مرة في تاريخها',
+    heroImage: cultureMundial2010,
+    images: [cultureMundial2010, cultureFuriaRoja],
+    vocab: [
+      { es: 'La Copa del Mundo', ar: 'كأس العالم', example: 'España ganó la Copa del Mundo en 2010.' },
+      { es: 'La final', ar: 'النهائي', example: 'La final fue contra Holanda.' },
+      { es: 'La prórroga', ar: 'الوقت الإضافي', example: 'El gol llegó en la prórroga.' },
+      { es: 'El campeón', ar: 'البطل', example: '¡España es campeona del mundo!' },
+      { es: 'El trofeo', ar: 'الكأس', example: 'Levantaron el trofeo con orgullo.' },
+      { es: 'El mundial', ar: 'المونديال', example: 'El mundial se jugó en Sudáfrica.' },
+      { es: 'El delantero', ar: 'المهاجم', example: 'Villa fue el máximo goleador.' },
+      { es: 'El portero', ar: 'حارس المرمى', example: 'Casillas fue el portero titular.' },
+    ],
+    sections: [
+      { heading: 'الطريق إلى النهائي', headingEs: 'El Camino a la Final', body: 'بدأت إسبانيا المونديال بخسارة صادمة أمام سويسرا، لكنها استعادت توازنها وحققت 6 انتصارات متتالية. تغلبت على البرتغال وباراغواي وألمانيا (1-0 بهدف بويول)، لتصل إلى نهائي جوهانسبورغ التاريخي بقيادة تشافي وإنييستا وتوريس وفيا.' },
+      { heading: 'هدف إنييستا الخالد', headingEs: 'El Gol de Iniesta', body: 'في الدقيقة 116 من الوقت الإضافي في نهائي 11 يوليو 2010 ضد هولندا، سدد أندريس إنييستا (Andrés Iniesta) الكرة في الشباك الهولندية، ليصنع أشهر لحظة في تاريخ الكرة الإسبانية. خلع قميصه وأظهر رسالة تكريم لصديقه الراحل داني خاركي (Dani Jarque). فازت إسبانيا 1-0.' },
+      { heading: 'احتفال أمة', headingEs: 'La Celebración de una Nación', body: 'خرج أكثر من مليون شخص إلى شوارع مدريد للاحتفال بالنجمة الأولى. حمل اللاعبون الكأس عبر بوابة القلعة (Puerta de Alcalá) في موكب مهيب. أصبح شعار "يو دي بي" (¡A por ellos!) والأغنية الرسمية "واكا واكا" لشاكيرا رمزاً لتلك الحقبة الذهبية.' },
+    ],
+    funFact: '⭐ هل تعلم؟ إسبانيا هي أول منتخب في التاريخ يفوز بكأس العالم بعد أن خسر مباراته الأولى في البطولة!',
+  },
+  {
+    id: 'la-liga',
+    titleEs: 'La Liga',
+    titleEn: 'The Spanish League',
+    titleAr: 'الليغا — الدوري الإسباني',
+    snippet: 'أقوى دوري في العالم — بيت أعظم المواهب والأندية الأسطورية',
+    heroImage: cultureLaLiga,
+    images: [cultureLaLiga, cultureClasico],
+    vocab: [
+      { es: 'La liga', ar: 'الدوري', example: 'La Liga española es una de las mejores del mundo.' },
+      { es: 'El equipo', ar: 'الفريق', example: 'Mi equipo favorito es el Atlético.' },
+      { es: 'El partido', ar: 'المباراة', example: 'El partido empieza a las nueve.' },
+      { es: 'La jornada', ar: 'الجولة', example: 'La jornada 15 es este fin de semana.' },
+      { es: 'La clasificación', ar: 'الترتيب', example: 'El Barça lidera la clasificación.' },
+      { es: 'El fichaje', ar: 'الصفقة/التعاقد', example: 'El fichaje costó 100 millones.' },
+      { es: 'El descenso', ar: 'الهبوط', example: 'El equipo evitó el descenso.' },
+      { es: 'El ascenso', ar: 'الصعود', example: 'El Girona logró el ascenso a Primera.' },
+    ],
+    sections: [
+      { heading: 'الأندية العملاقة', headingEs: 'Los Gigantes', body: 'تضم الليغا 20 فريقاً، لكن الأنظار تتجه دائماً إلى الثلاثي الكبير: ريال مدريد (35 لقباً) وبرشلونة (27 لقباً) وأتلتيكو مدريد (11 لقباً). يضاف إليهم أندية تاريخية مثل أتلتيك بلباو وفالنسيا وإشبيلية وريال سوسيداد التي أثرت المشهد الكروي الإسباني.' },
+      { heading: 'مصنع المواهب', headingEs: 'La Fábrica de Talentos', body: 'تشتهر الليغا بأكاديميات النخبة: لا ماسيا (La Masia) لبرشلونة أخرجت ميسي وتشافي وإنييستا وبيدري، ولا فابريكا (La Fábrica) لريال مدريد أنجبت راؤول وكاسياس وموراتا، وأكاديمية أتلتيك بلباو التي تعتمد فقط على اللاعبين الباسكيين — سياسة فريدة عمرها أكثر من قرن.' },
+      { heading: 'كأس الملك والسوبر', headingEs: 'Copa del Rey y Supercopa', body: 'إلى جانب الدوري، تتنافس الأندية على كأس الملك (Copa del Rey) — أعرق بطولة كأس محلية تأسست عام 1903، وكأس السوبر الإسباني (Supercopa) التي تُقام حالياً بنظام الأربعة أندية في المملكة العربية السعودية. يعكس هذا التنويع عمق الكرة الإسبانية.' },
+    ],
+    funFact: '🏆 هل تعلم؟ ريال مدريد هو النادي الأكثر تتويجاً في دوري أبطال أوروبا بـ 15 لقباً، أكثر من أي نادٍ آخر في العالم!',
+  },
+  {
+    id: 'leyendas-futbol',
+    titleEs: 'Leyendas del Fútbol',
+    titleEn: 'Football Legends',
+    titleAr: 'أساطير كرة القدم الإسبانية',
+    snippet: 'من راؤول إلى إنييستا — أساطير حفروا أسماءهم في تاريخ الكرة',
+    heroImage: cultureLeyendasFutbol,
+    images: [cultureLeyendasFutbol, cultureFuriaRoja],
+    vocab: [
+      { es: 'La leyenda', ar: 'الأسطورة', example: 'Iniesta es una leyenda del fútbol.' },
+      { es: 'El goleador', ar: 'الهداف', example: 'Villa fue el máximo goleador.' },
+      { es: 'El centrocampista', ar: 'لاعب الوسط', example: 'Xavi fue un centrocampista brillante.' },
+      { es: 'El defensa', ar: 'المدافع', example: 'Sergio Ramos es un defensa legendario.' },
+      { es: 'El Balón de Oro', ar: 'الكرة الذهبية', example: 'Rodri ganó el Balón de Oro 2024.' },
+      { es: 'La cantera', ar: 'الأكاديمية', example: 'Salió de la cantera del Barça.' },
+      { es: 'La retirada', ar: 'الاعتزال', example: 'Anunció su retirada del fútbol.' },
+      { es: 'El ídolo', ar: 'المعبود', example: 'Casillas es el ídolo de una generación.' },
+    ],
+    sections: [
+      { heading: 'إيكر كاسياس — القديس', headingEs: 'Iker Casillas — San Iker', body: 'إيكر كاسياس (Iker Casillas) هو الحارس الأسطوري الذي قاد ريال مدريد لأكثر من عقدين وحمل شارة قيادة المنتخب في التتويج بيورو 2008 والمونديال 2010 ويورو 2012. لقّبه المشجعون بـ"سان إيكر" (القديس إيكر) لتصدياته الحاسمة، خاصة تصديه لروبن في نهائي 2010.' },
+      { heading: 'تشافي وإنييستا — سحر الوسط', headingEs: 'Xavi e Iniesta — La Magia', body: 'شكّل تشافي هيرنانديز (Xavi Hernández) وأندريس إنييستا (Andrés Iniesta) أعظم ثنائي وسط في تاريخ الكرة. من لا ماسيا إلى برشلونة والمنتخب، فازا بكل شيء: 4 دوريات أبطال، مونديال، يوروين. سُرقت منهما الكرة الذهبية لصالح ميسي ورونالدو رغم أنهما استحقاها.' },
+      { heading: 'راؤول وتوريس وفيا', headingEs: 'Raúl, Torres y Villa', body: 'راؤول غونزاليس (Raúl) هو أسطورة ريال مدريد وهدافه التاريخي حتى تجاوزه رونالدو. فرناندو توريس (Fernando Torres) "الطفل" سجّل هدف نهائي يورو 2008 القاتل ضد ألمانيا. دافيد فيا (David Villa) هو الهداف التاريخي للمنتخب برصيد 59 هدفاً، وأنقذ إسبانيا مراراً في مونديال 2010.' },
+    ],
+    funFact: '🥇 هل تعلم؟ رودري (Rodri) لاعب مانشستر سيتي أصبح أول لاعب إسباني منذ لويس سواريث عام 1960 يفوز بالكرة الذهبية عام 2024!',
   },
 ];
