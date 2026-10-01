@@ -14,10 +14,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        pixel: ["'Press Start 2P'", "monospace"],
-        heading: ["'Orbitron'", "sans-serif"],
-        mono: ["'Share Tech Mono'", "monospace"],
-        body: ["'IBM Plex Sans Arabic'", "system-ui", "sans-serif"],
+        pixel: ["'Sora'", "'IBM Plex Sans Arabic'", "sans-serif"],
+        heading: ["'Sora'", "'IBM Plex Sans Arabic'", "sans-serif"],
+        mono: ["'Manrope'", "'IBM Plex Sans Arabic'", "sans-serif"],
+        body: ["'Manrope'", "'IBM Plex Sans Arabic'", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

@@ -1,5 +1,5 @@
 import { CharacterConfig } from '@/hooks/useGameState';
-import pixelCharImg from '@/assets/pixel-character.png';
+import portraitImg from '@/assets/avatar-editorial.jpg';
 
 interface PixelCharacterProps {
   character?: CharacterConfig;
@@ -9,20 +9,19 @@ interface PixelCharacterProps {
 }
 
 export default function PixelCharacter({ size = 6, animate = false, className = '' }: PixelCharacterProps) {
-  const pixelSize = size * 11; // scale factor
+  const portraitSize = size * 11;
 
   return (
     <div
       className={`inline-block ${animate ? 'animate-pixel-float' : ''} ${className}`}
-      style={{ imageRendering: 'pixelated' }}
     >
       <img
-        src={pixelCharImg}
-        alt="Pixel Character"
-        width={pixelSize}
-        height={pixelSize}
-        style={{ imageRendering: 'pixelated' }}
-        className="drop-shadow-[0_0_12px_hsl(var(--primary)/0.5)]"
+        src={portraitImg}
+        alt="صورة المتعلم"
+        width={portraitSize}
+        height={portraitSize}
+        loading="lazy"
+        className="aspect-square rounded-full object-cover border border-primary/50 shadow-[0_0_18px_hsl(var(--primary)/0.18)]"
       />
     </div>
   );
