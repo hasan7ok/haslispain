@@ -7,7 +7,7 @@ interface ThemeContextType {
   setTheme: (theme: ThemeName) => void;
 }
 
-const ThemeContext = createContext<ThemeContextType>({ theme: 'default', setTheme: () => {} });
+const ThemeContext = createContext<ThemeContextType>({ theme: 'arctic-neon', setTheme: () => {} });
 
 const THEME_CLASSES: Record<ThemeName, string> = {
   'default': '',
@@ -18,7 +18,7 @@ const THEME_CLASSES: Record<ThemeName, string> = {
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<ThemeName>(() => {
-    return (localStorage.getItem('pixnol-theme') as ThemeName) || 'default';
+    return (localStorage.getItem('pixnol-theme') as ThemeName) || 'arctic-neon';
   });
 
   useEffect(() => {
