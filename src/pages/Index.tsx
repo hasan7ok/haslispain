@@ -1,197 +1,186 @@
 import { useNavigate } from 'react-router-dom';
-import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { ArrowLeft, BookOpen, Flame, Lock, Map, Swords } from 'lucide-react';
 import { useGameState } from '@/hooks/useGameState';
 import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { ZONES } from '@/data/zones';
-import PixelCharacter from '@/components/PixelCharacter';
-import XPBar from '@/components/XPBar';
 import Header from '@/components/Header';
-import rpgMapBg from '@/assets/rpg-map-bg.png';
-import { Lock, Sparkles, ChevronRight, Flame, BookOpen, Swords } from 'lucide-react';
 import CulturaSection from '@/components/CulturaSection';
 import DonationModal from '@/components/DonationModal';
-import { useEffect, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import heroImage from '@/assets/premium-learning-hero.jpg';
 
-function ParallaxGrid() {
-  const gridRef = useRef<HTMLDivElement>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const smoothX = useSpring(mouseX, { stiffness: 40, damping: 30 });
-  const smoothY = useSpring(mouseY, { stiffness: 40, damping: 30 });
-  const translateX = useTransform(smoothX, [-1, 1], [-18, 18]);
-  const translateY = useTransform(smoothY, [-1, 1], [-12, 12]);
-
-  useEffect(() => {
-    const handleMove = (e: MouseEvent) => {
-      mouseX.set((e.clientX / window.innerWidth - 0.5) * 2);
-      mouseY.set((e.clientY / window.innerHeight - 0.5) * 2);
-    };
-    window.addEventListener('mousemove', handleMove);
-    return () => window.removeEventListener('mousemove', handleMove);
-  }, [mouseX, mouseY]);
-
-  return (
-    <motion.div
-      ref={gridRef}
-      className="fixed inset-0 pointer-events-none opacity-25"
-      style={{
-        translateX,
-        translateY,
-        scale: 1.08,
-        backgroundImage: 'linear-gradient(transparent 94%, hsl(var(--primary)/0.18) 94%), linear-gradient(90deg, transparent 94%, hsl(var(--primary)/0.18) 94%)',
-        backgroundSize: '52px 52px',
-      }}
-    />
-  );
-}
+const QUICK_ACTIONS = [
+  { path: '/daily-challenge', label: 'التحدي اليومي', labelEs: 'Desafío diario', icon: Flame },
+  { path: '/stories', label: 'القصص التفاعلية', labelEs: 'Historias', icon: BookOpen },
+  { path: '/boss-fights', label: 'تحدي القواعد', labelEs: 'Gramática', icon: Swords },
+];
 
 export default function Index() {
   const { state, xpToNextLevel } = useGameState();
   const { playClick, playSuccess, playError } = usePixelSounds();
   const navigate = useNavigate();
+  const progress = Math.min((state.xp / xpToNextLevel) * 100, 100);
 
   return (
-    <div className="min-h-screen bg-background relative">
-      {/* Parallax geometric grid */}
-      <ParallaxGrid />
-      {/* Floating sun */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[600px] h-[600px] rounded-full opacity-10 blur-[100px] pointer-events-none"
-        style={{ background: 'linear-gradient(to bottom, hsl(var(--accent)), hsl(var(--primary)))' }}
-      />
-
+    <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main className="container mx-auto px-3 py-6 relative z-10">
-        {/* Hero section */}
-        <div className="relative mb-6 overflow-hidden pixel-card-primary">
+
+      <main>
+        <section className="relative min-h-[620px] overflow-hidden border-b border-border md:min-h-[690px]">
           <img
-            src={rpgMapBg}
-            alt="RPG World Map"
-            className="absolute inset-0 w-full h-full object-cover opacity-20"
-            style={{ imageRendering: 'auto', mixBlendMode: 'screen' }}
+            src={heroImage}
+            alt="متعلّمة إسبانية في أحد شوارع مدريد"
+            width={1600}
+            height={900}
+            className="absolute inset-0 h-full w-full object-cover object-center"
           />
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10" />
-          <div className="relative z-10 p-6 md:p-10 flex flex-col md:flex-row items-center gap-6">
-            <PixelCharacter character={state.character} size={8} animate />
-            <div className="text-center md:text-right flex-1">
-              <h1 className="font-pixel text-lg md:text-2xl mb-2 text-gradient-vapor">
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/10" />
+
+          <div className="container relative z-10 mx-auto flex min-h-[620px] items-end px-4 pb-12 pt-24 md:min-h-[690px] md:items-center md:pb-16 md:pt-28">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="max-w-2xl text-right"
+              dir="rtl"
+            >
+              <p className="mb-5 flex items-center justify-start gap-2 text-sm font-semibold text-primary">
+                <span className="h-px w-10 bg-primary" />
+                رحلة اليوم · Tu viaje de hoy
+              </p>
+              <h1 className="font-heading text-4xl font-semibold leading-[1.25] md:text-6xl">
                 ¡Hola, {state.username}!
+                <span className="mt-3 block text-foreground/80">ابدأ من حيث توقفت.</span>
               </h1>
-              <p className="text-foreground font-body mb-4">اختر منطقة على الخريطة لبدء مغامرتك</p>
-              <div className="max-w-xs mx-auto md:mx-0">
-                <XPBar xp={state.xp} xpToNext={xpToNextLevel} level={state.level} />
-              </div>
-              <div className="flex gap-4 mt-3 justify-center md:justify-start">
-                <span className="font-pixel text-[0.55rem] text-accent" style={{ filter: 'drop-shadow(0 0 4px rgba(255,153,0,0.5))' }}>🔥 Streak: {state.streak} يوم</span>
-                <span className="font-pixel text-[0.55rem] text-secondary" style={{ filter: 'drop-shadow(0 0 4px rgba(0,255,255,0.5))' }}>✅ {state.completedLessons.length} درس</span>
-              </div>
-            </div>
-          </div>
-        </div>
+              <p className="mt-6 max-w-xl text-base leading-8 text-muted-foreground md:text-lg">
+                تعلّم الإسبانية من خلال مواقف حقيقية وثقافة أصيلة، بخطوات واضحة تناسب مستواك.
+              </p>
 
-        {/* Quick actions */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          <motion.button
-            whileHover={{ y: -4, boxShadow: '0 0 25px rgba(255,0,255,0.3)' }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => { playClick(); navigate('/daily-challenge'); }}
-            className="pixel-card border-t-2 border-t-accent p-4 text-center group transition-all"
-          >
-            <Flame size={24} className="mx-auto text-accent mb-2" style={{ filter: 'drop-shadow(0 0 6px rgba(255,153,0,0.5))' }} />
-            <p className="font-pixel text-[0.5rem] text-accent">التحدي اليومي</p>
-            <p className="font-mono text-[0.5rem] text-muted-foreground mt-1 uppercase tracking-wider">Desafío Diario</p>
-          </motion.button>
-          <motion.button
-            whileHover={{ y: -4, boxShadow: '0 0 25px rgba(0,255,255,0.3)' }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => { playClick(); navigate('/stories'); }}
-            className="pixel-card border-t-2 border-t-secondary p-4 text-center group transition-all"
-          >
-            <BookOpen size={24} className="mx-auto text-secondary mb-2" style={{ filter: 'drop-shadow(0 0 6px rgba(0,255,255,0.5))' }} />
-            <p className="font-pixel text-[0.5rem] text-secondary">القصص</p>
-            <p className="font-mono text-[0.5rem] text-muted-foreground mt-1 uppercase tracking-wider">Historias</p>
-          </motion.button>
-          <motion.button
-            whileHover={{ y: -4, boxShadow: '0 0 25px rgba(255,0,255,0.3)' }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => { playClick(); navigate('/boss-fights'); }}
-            className="pixel-card border-t-2 border-t-destructive p-4 text-center group transition-all"
-          >
-            <Swords size={24} className="mx-auto text-destructive mb-2" style={{ filter: 'drop-shadow(0 0 6px rgba(255,80,80,0.5))' }} />
-            <p className="font-pixel text-[0.5rem] text-destructive">Boss Fight</p>
-            <p className="font-mono text-[0.5rem] text-muted-foreground mt-1 uppercase tracking-wider">معركة القواعد</p>
-          </motion.button>
-        </div>
-
-        {/* Zone Grid */}
-        <h2 className="font-pixel text-sm text-foreground mb-4 flex items-center gap-2">
-          <Sparkles size={16} className="text-primary" style={{ filter: 'drop-shadow(0 0 6px rgba(255,0,255,0.5))' }} />
-          <span className="text-gradient-vapor">خريطة العالم - Mapa del Mundo</span>
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {ZONES.map((zone, idx) => {
-            const isUnlocked = state.unlockedZones.includes(zone.id);
-            const completedCount = zone.lessons.filter(l => state.completedLessons.includes(l.id)).length;
-
-            return (
-              <motion.div
-                key={zone.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                onClick={() => { if (isUnlocked) { playSuccess(); navigate(`/zone/${zone.id}`); } else { playError(); } }}
-                className={`pixel-card relative cursor-pointer transition-all duration-200 group ${
-                  isUnlocked
-                    ? `hover:-translate-y-1 ${zone.glowClass}`
-                    : 'opacity-60 cursor-not-allowed'
-                }`}
-              >
-                {!isUnlocked && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10 backdrop-blur-sm">
-                    <div className="text-center">
-                      <Lock size={24} className="mx-auto text-muted-foreground mb-2" />
-                      <p className="font-pixel text-[0.5rem] text-muted-foreground">
-                        Level {zone.requiredLevel}
-                      </p>
-                    </div>
-                  </div>
-                )}
-                <div className="flex items-start gap-3">
-                  <span className="text-3xl" style={{ filter: 'drop-shadow(0 0 8px rgba(255,0,255,0.3))' }}>{zone.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-pixel text-[0.65rem] text-secondary mb-1" style={{ filter: 'drop-shadow(0 0 4px rgba(0,255,255,0.5))' }}>{zone.name}</h3>
-                    <p className="font-mono text-[0.55rem] text-muted-foreground mb-1 uppercase tracking-wider">{zone.nameEs}</p>
-                    <p className="text-sm text-foreground font-body">{zone.descriptionAr}</p>
-                    <div className="flex items-center justify-between mt-3">
-                      <span className="font-pixel text-[0.45rem] text-accent" style={{ filter: 'drop-shadow(0 0 3px rgba(255,153,0,0.5))' }}>
-                        {completedCount}/{zone.lessons.length} دروس
-                      </span>
-                      <span className="font-mono text-[0.55rem] text-muted-foreground px-2 py-0.5 border border-border uppercase tracking-wider">
-                        {zone.level}
-                      </span>
-                    </div>
-                    {isUnlocked && completedCount < zone.lessons.length && (
-                      <div className="mt-2 xp-bar-bg h-1.5 rounded-none overflow-hidden">
-                        <div
-                          className="xp-bar-fill h-full"
-                          style={{ width: `${(completedCount / zone.lessons.length) * 100}%` }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                  {isUnlocked && (
-                    <ChevronRight size={16} className="text-muted-foreground group-hover:text-secondary transition-colors mt-1" />
-                  )}
+              <div className="mt-8 max-w-lg border-y border-border/80 py-5">
+                <div className="mb-3 flex items-center justify-between text-sm">
+                  <span className="font-heading font-semibold">المستوى {state.level}</span>
+                  <span dir="ltr" className="text-muted-foreground">{state.xp} / {xpToNextLevel} XP</span>
                 </div>
-              </motion.div>
-            );
-          })}
-        </div>
+                <div className="h-1.5 overflow-hidden bg-muted">
+                  <motion.div
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: progress / 100 }}
+                    transition={{ duration: 0.8, ease: 'easeOut' }}
+                    className="h-full origin-left bg-primary"
+                  />
+                </div>
+                <div className="mt-4 flex gap-6 text-sm text-muted-foreground">
+                  <span><strong className="text-foreground">{state.streak}</strong> يوم متتالٍ</span>
+                  <span><strong className="text-foreground">{state.completedLessons.length}</strong> درس مكتمل</span>
+                </div>
+              </div>
 
-        {/* Cultura Section */}
+              <Button
+                size="lg"
+                className="mt-8 rounded-sm px-7 font-semibold"
+                onClick={() => {
+                  playClick();
+                  navigate(`/zone/${state.unlockedZones[0] || ZONES[0].id}`);
+                }}
+              >
+                تابع التعلّم <ArrowLeft className="size-4" />
+              </Button>
+            </motion.div>
+          </div>
+        </section>
+
+        <section className="border-b border-border bg-card/40">
+          <div className="container mx-auto grid grid-cols-1 divide-y divide-border px-4 sm:grid-cols-3 sm:divide-x sm:divide-x-reverse sm:divide-y-0">
+            {QUICK_ACTIONS.map((action) => {
+              const Icon = action.icon;
+              return (
+                <button
+                  key={action.path}
+                  onClick={() => { playClick(); navigate(action.path); }}
+                  className="group flex min-h-32 items-center justify-between gap-4 px-5 py-7 text-right transition-colors hover:bg-muted/60"
+                  dir="rtl"
+                >
+                  <span>
+                    <span className="block font-heading text-base font-semibold">{action.label}</span>
+                    <span className="mt-1 block text-xs text-muted-foreground">{action.labelEs}</span>
+                  </span>
+                  <Icon className="size-5 text-primary transition-transform group-hover:-translate-x-1" />
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="container mx-auto px-4 py-16 md:py-24" dir="rtl">
+          <div className="mb-10 flex flex-col justify-between gap-5 border-b border-border pb-7 md:flex-row md:items-end">
+            <div>
+              <p className="mb-3 flex items-center gap-2 text-xs font-semibold text-primary">
+                <Map className="size-4" /> MAPA DEL MUNDO
+              </p>
+              <h2 className="font-heading text-3xl font-semibold md:text-5xl">مسارك في اللغة الإسبانية</h2>
+            </div>
+            <p className="max-w-md text-sm leading-7 text-muted-foreground">
+              سبع محطات مترابطة، من أساسيات الحديث إلى الأعمال والأدب المتقدم.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 border-l border-t border-border md:grid-cols-2 xl:grid-cols-4">
+            {ZONES.map((zone, idx) => {
+              const isUnlocked = state.unlockedZones.includes(zone.id);
+              const completedCount = zone.lessons.filter((lesson) => state.completedLessons.includes(lesson.id)).length;
+              const zoneProgress = (completedCount / zone.lessons.length) * 100;
+
+              return (
+                <motion.button
+                  key={zone.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ delay: idx * 0.04 }}
+                  onClick={() => {
+                    if (isUnlocked) {
+                      playSuccess();
+                      navigate(`/zone/${zone.id}`);
+                    } else {
+                      playError();
+                    }
+                  }}
+                  className={`relative min-h-64 border-b border-r border-border p-6 text-right transition-colors ${
+                    isUnlocked ? 'group hover:bg-card' : 'cursor-not-allowed bg-muted/20'
+                  } ${idx === 0 ? 'md:col-span-2' : ''}`}
+                >
+                  <div className="flex h-full flex-col">
+                    <div className="flex items-start justify-between">
+                      <span className="font-heading text-4xl font-medium text-foreground/15">0{idx + 1}</span>
+                      {isUnlocked ? (
+                        <span className="border border-primary/40 px-2 py-1 text-[11px] font-semibold text-primary">{zone.level}</span>
+                      ) : (
+                        <Lock className="size-4 text-muted-foreground" />
+                      )}
+                    </div>
+                    <div className="mt-auto pt-10">
+                      <p className="text-xs font-semibold text-primary">{zone.nameEs}</p>
+                      <h3 className="mt-2 font-heading text-xl font-semibold">{zone.name}</h3>
+                      <p className="mt-2 text-sm leading-6 text-muted-foreground">{zone.descriptionAr}</p>
+                      <div className="mt-6 flex items-center justify-between text-xs text-muted-foreground">
+                        <span>{completedCount}/{zone.lessons.length} دروس</span>
+                        <span>{isUnlocked ? 'متاح الآن' : `يفتح عند المستوى ${zone.requiredLevel}`}</span>
+                      </div>
+                      <div className="mt-3 h-px bg-muted">
+                        <div className="h-full origin-right bg-primary" style={{ width: `${zoneProgress}%` }} />
+                      </div>
+                    </div>
+                  </div>
+                </motion.button>
+              );
+            })}
+          </div>
+        </section>
+
         <CulturaSection />
-
       </main>
+
       <DonationModal />
     </div>
   );

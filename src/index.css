@@ -4,39 +4,36 @@
 
 @layer base {
   :root {
-    /* Vaporwave / Outrun Palette */
-    --background: 270 100% 4%;
-    --foreground: 0 0% 88%;
+    /* Arctic Graphite — premium editorial palette */
+    --background: 207 29% 6%;
+    --foreground: 202 22% 87%;
 
-    --card: 255 58% 15%;
-    --card-foreground: 0 0% 88%;
+    --card: 201 20% 13%;
+    --card-foreground: 202 22% 87%;
 
-    --popover: 255 58% 15%;
-    --popover-foreground: 0 0% 88%;
+    --popover: 201 20% 13%;
+    --popover-foreground: 202 22% 87%;
 
-    /* Primary = Hot Magenta */
-    --primary: 300 100% 50%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 187 57% 58%;
+    --primary-foreground: 207 29% 6%;
 
-    /* Secondary = Electric Cyan */
-    --secondary: 180 100% 50%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary: 200 15% 70%;
+    --secondary-foreground: 207 29% 6%;
 
-    /* Accent = Sunset Orange */
-    --accent: 36 100% 50%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 39 42% 63%;
+    --accent-foreground: 207 29% 6%;
 
-    --muted: 264 48% 14%;
-    --muted-foreground: 270 20% 55%;
+    --muted: 202 18% 16%;
+    --muted-foreground: 201 12% 61%;
 
     --destructive: 0 80% 55%;
     --destructive-foreground: 0 0% 95%;
 
-    --border: 264 48% 21%;
-    --input: 264 48% 18%;
-    --ring: 300 100% 50%;
+    --border: 201 18% 22%;
+    --input: 201 18% 18%;
+    --ring: 187 57% 58%;
 
-    --radius: 0rem;
+    --radius: 0.25rem;
 
     /* Game-specific tokens */
     --pixel-blue: 210 80% 55%;
@@ -65,10 +62,10 @@
     --sidebar-border: 264 48% 18%;
     --sidebar-ring: 300 100% 50%;
 
-    --font-pixel: 'Press Start 2P', monospace;
-    --font-heading: 'Orbitron', sans-serif;
-    --font-mono: 'Share Tech Mono', monospace;
-    --font-body: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+    --font-pixel: 'Sora', 'IBM Plex Sans Arabic', sans-serif;
+    --font-heading: 'Sora', 'IBM Plex Sans Arabic', sans-serif;
+    --font-mono: 'Manrope', 'IBM Plex Sans Arabic', sans-serif;
+    --font-body: 'Manrope', 'IBM Plex Sans Arabic', system-ui, sans-serif;
   }
 
   /* ── CYBER SUNSET theme ──────────────────────────────────────────────── */
@@ -99,28 +96,28 @@
 
   /* ── ARCTIC NEON theme ───────────────────────────────────────────────── */
   .theme-arctic-neon {
-    --background: 215 90% 4%;
-    --foreground: 190 20% 90%;
-    --card: 210 80% 10%;
-    --card-foreground: 190 20% 90%;
-    --popover: 210 80% 10%;
-    --popover-foreground: 190 20% 90%;
-    --primary: 200 100% 55%;
-    --primary-foreground: 0 0% 0%;
-    --secondary: 175 100% 55%;
-    --secondary-foreground: 0 0% 0%;
-    --accent: 220 100% 65%;
-    --accent-foreground: 0 0% 0%;
-    --muted: 210 50% 13%;
-    --muted-foreground: 200 20% 55%;
+    --background: 207 29% 6%;
+    --foreground: 202 22% 87%;
+    --card: 201 20% 13%;
+    --card-foreground: 202 22% 87%;
+    --popover: 201 20% 13%;
+    --popover-foreground: 202 22% 87%;
+    --primary: 187 57% 58%;
+    --primary-foreground: 207 29% 6%;
+    --secondary: 200 15% 70%;
+    --secondary-foreground: 207 29% 6%;
+    --accent: 39 42% 63%;
+    --accent-foreground: 207 29% 6%;
+    --muted: 202 18% 16%;
+    --muted-foreground: 201 12% 61%;
     --destructive: 0 80% 55%;
     --destructive-foreground: 0 0% 95%;
-    --border: 200 40% 20%;
-    --input: 200 40% 16%;
-    --ring: 200 100% 55%;
-    --neon-magenta: 220 100% 65%;
-    --neon-cyan: 175 100% 55%;
-    --neon-orange: 200 100% 55%;
+    --border: 201 18% 22%;
+    --input: 201 18% 18%;
+    --ring: 187 57% 58%;
+    --neon-magenta: 200 15% 70%;
+    --neon-cyan: 187 57% 58%;
+    --neon-orange: 39 42% 63%;
   }
 
   /* ── FOREST MATRIX theme ─────────────────────────────────────────────── */
@@ -215,11 +212,15 @@
     @apply bg-background text-foreground;
     font-family: var(--font-body);
     image-rendering: auto;
+    font-weight: 400;
+    line-height: 1.65;
+    letter-spacing: 0;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-pixel);
-    letter-spacing: 0.02em;
+    font-family: var(--font-heading);
+    line-height: 1.25;
+    letter-spacing: 0;
   }
 }
 
@@ -232,14 +233,8 @@
   inset: 0;
   z-index: 9999;
   pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.15) 2px,
-    rgba(0, 0, 0, 0.15) 4px
-  );
-  opacity: 0.4;
+  background: none;
+  opacity: 0;
 }
 
 /* Subtle chromatic aberration overlay */
@@ -249,7 +244,7 @@
   inset: 0;
   z-index: 9998;
   pointer-events: none;
-  background: linear-gradient(90deg, rgba(255,0,255,0.015), rgba(0,255,255,0.01), rgba(255,0,255,0.015));
+  background: none;
 }
 
 /* Disable CRT effects in light mode */
