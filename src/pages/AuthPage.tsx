@@ -1,8 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import PixelAvatar from '@/components/PixelAvatar';
-import { Eye, EyeOff, Loader2, UserPlus, LogIn, RefreshCw, ChevronRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowLeft, Check, Eye, EyeOff, Loader2, LockKeyhole, RefreshCw, Sparkles, UserPlus } from 'lucide-react';
 import { z } from 'zod';
+import PixelAvatar from '@/components/PixelAvatar';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import logo from '@/assets/pixnol-logo.png';
+import authBackground from '@/assets/premium-learning-hero.jpg';
 
 interface AuthPageProps {
   onSignUp: (email: string, password: string, username: string) => Promise<{ error: any }>;
@@ -14,439 +18,156 @@ const emailSchema = z.string().trim().email('بريد إلكتروني غير ص
 const passwordSchema = z.string().min(6, 'كلمة المرور يجب أن تكون 6 أحرف على الأقل').max(128);
 const usernameSchema = z.string().trim().min(3, 'الاسم يجب أن يكون 3 أحرف على الأقل').max(20, 'الاسم يجب أن يكون أقل من 20 حرف').regex(/^[a-zA-Z0-9_]+$/, 'فقط أحرف إنجليزية وأرقام و _');
 
-// Vaporwave grid background
-function VaporGrid() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const particles: { x: number; y: number; vx: number; vy: number; size: number; color: string; alpha: number }[] = [];
-    const colors = ['#FF00FF', '#00FFFF', '#FF9900', '#FF00FF', '#00FFFF'];
-
-    for (let i = 0; i < 60; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.6,
-        vy: (Math.random() - 0.5) * 0.6,
-        size: Math.random() * 3 + 1,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        alpha: Math.random() * 0.5 + 0.1,
-      });
-    }
-
-    let animId: number;
-    let offset = 0;
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      offset += 0.3;
-
-      // Perspective grid
-      ctx.strokeStyle = 'rgba(255, 0, 255, 0.04)';
-      ctx.lineWidth = 1;
-      const cx = canvas.width / 2;
-      const horizon = canvas.height * 0.35;
-      for (let x = -canvas.width; x < canvas.width * 2; x += 60) {
-        ctx.beginPath();
-        ctx.moveTo(cx, horizon);
-        ctx.lineTo(x, canvas.height);
-        ctx.stroke();
-      }
-      for (let y = horizon; y < canvas.height; y += 20 + (y - horizon) * 0.15) {
-        ctx.beginPath();
-        ctx.strokeStyle = `rgba(0, 255, 255, ${0.03 + (y - horizon) / canvas.height * 0.04})`;
-        ctx.moveTo(0, y);
-        ctx.lineTo(canvas.width, y);
-        ctx.stroke();
-      }
-
-      particles.forEach(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
-
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = p.alpha;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = p.color;
-        ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size, p.size);
-        ctx.shadowBlur = 0;
-        ctx.globalAlpha = 1;
-      });
-
-      // Connect nearby particles
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(0, 255, 255, ${0.06 * (1 - dist / 120)})`;
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      animId = requestAnimationFrame(animate);
-    };
-    animate();
-
-    const onResize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-    window.addEventListener('resize', onResize);
-    return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', onResize); };
-  }, []);
-
-  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />;
-}
-
 export default function AuthPage({ onSignUp, onSignIn, checkUsername }: AuthPageProps) {
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [avatarSeed, setAvatarSeed] = useState(() => `pixel_${Date.now()}`);
+  const [avatarSeed, setAvatarSeed] = useState(() => `portrait_${Date.now()}`);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [checkingUsername, setCheckingUsername] = useState(false);
   const [success, setSuccess] = useState('');
 
-  // Debounced username check
   useEffect(() => {
-    if (mode !== 'signup' || !username || username.length < 3) {
+    if (mode !== 'signup' || username.length < 3 || !usernameSchema.safeParse(username).success) {
       setUsernameAvailable(null);
       return;
     }
-    const parsed = usernameSchema.safeParse(username);
-    if (!parsed.success) {
-      setUsernameAvailable(null);
-      return;
-    }
-
     setCheckingUsername(true);
-    const timer = setTimeout(async () => {
-      const available = await checkUsername(username);
-      setUsernameAvailable(available);
+    const timer = window.setTimeout(async () => {
+      setUsernameAvailable(await checkUsername(username));
       setCheckingUsername(false);
     }, 500);
-    return () => clearTimeout(timer);
+    return () => window.clearTimeout(timer);
   }, [username, mode, checkUsername]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const changeMode = (nextMode: 'login' | 'signup') => {
+    setMode(nextMode);
+    setError('');
+    setSuccess('');
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     setError('');
     setSuccess('');
 
     const emailResult = emailSchema.safeParse(email);
-    if (!emailResult.success) {
-      setError(emailResult.error.errors[0].message);
-      return;
-    }
-    const passResult = passwordSchema.safeParse(password);
-    if (!passResult.success) {
-      setError(passResult.error.errors[0].message);
-      return;
-    }
-
+    if (!emailResult.success) return setError(emailResult.error.errors[0].message);
+    const passwordResult = passwordSchema.safeParse(password);
+    if (!passwordResult.success) return setError(passwordResult.error.errors[0].message);
     if (mode === 'signup') {
-      const userResult = usernameSchema.safeParse(username);
-      if (!userResult.success) {
-        setError(userResult.error.errors[0].message);
-        return;
-      }
-      if (usernameAvailable === false) {
-        setError('هذا الاسم مستخدم بالفعل');
-        return;
-      }
+      const usernameResult = usernameSchema.safeParse(username);
+      if (!usernameResult.success) return setError(usernameResult.error.errors[0].message);
+      if (usernameAvailable === false) return setError('هذا الاسم مستخدم بالفعل');
     }
 
     setLoading(true);
     try {
-      if (mode === 'login') {
-        const { error: authError } = await onSignIn(email, password);
-        if (authError) {
-          if (authError.message?.includes('Invalid login credentials')) {
-            setError('بريد إلكتروني أو كلمة مرور خاطئة');
-          } else if (authError.message?.includes('Email not confirmed')) {
-            setError('يرجى تأكيد بريدك الإلكتروني أولاً');
-          } else {
-            setError(authError.message || 'حدث خطأ في تسجيل الدخول');
-          }
-        }
-      } else {
-        const { error: authError } = await onSignUp(email, password, username);
-        if (authError) {
-          if (authError.message?.includes('already registered')) {
-            setError('هذا البريد الإلكتروني مسجل بالفعل');
-          } else {
-            setError(authError.message || 'حدث خطأ في إنشاء الحساب');
-          }
-        } else {
-          setSuccess('تم إنشاء الحساب! تحقق من بريدك الإلكتروني لتأكيد الحساب 📧');
-        }
+      const { error: authError } = mode === 'login'
+        ? await onSignIn(email, password)
+        : await onSignUp(email, password, username);
+      if (authError) {
+        if (authError.message?.includes('Invalid login credentials')) setError('بريد إلكتروني أو كلمة مرور خاطئة');
+        else if (authError.message?.includes('Email not confirmed')) setError('يرجى تأكيد بريدك الإلكتروني أولاً');
+        else if (authError.message?.includes('already registered')) setError('هذا البريد الإلكتروني مسجل بالفعل');
+        else setError(authError.message || 'تعذر إكمال العملية، حاول مرة أخرى');
+      } else if (mode === 'signup') {
+        setSuccess('تم إنشاء الحساب. تحقق من بريدك الإلكتروني لتأكيده.');
       }
     } finally {
       setLoading(false);
     }
   };
 
-  const regenerateAvatar = () => {
-    setAvatarSeed(`pixel_${Date.now()}_${Math.random().toString(36).slice(2)}`);
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, #090014 0%, #120025 50%, #090014 100%)' }}>
-      <VaporGrid />
+    <main className="relative min-h-screen overflow-hidden bg-background text-foreground">
+      <img src={authBackground} alt="شارع إسباني معاصر في مدريد" className="absolute inset-0 h-full w-full object-cover object-[62%_center]" />
+      <div className="absolute inset-0 bg-gradient-to-r from-background/35 via-background/65 to-background" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
 
-      {/* Floating sun orb */}
-      <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full opacity-15 blur-[100px]"
-        style={{ background: 'linear-gradient(to bottom, #FF9900, #FF00FF)' }}
-      />
-
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        transition={{ type: 'spring', stiffness: 200 }}
-        className="relative z-20 w-full max-w-md mx-4"
-      >
-        {/* Terminal window card */}
-        <div className="border-2 border-secondary/40 bg-card/90 backdrop-blur-md"
-          style={{
-            boxShadow: '0 0 30px rgba(0,255,255,0.1), 0 0 60px rgba(255,0,255,0.05)',
-          }}
-        >
-          {/* Window title bar */}
-          <div className="flex items-center justify-between px-4 py-2 border-b border-secondary/30 bg-secondary/5">
-            <div className="flex gap-2">
-              <div className="h-3 w-3 rounded-full bg-primary" />
-              <div className="h-3 w-3 rounded-full bg-secondary" />
-              <div className="h-3 w-3 rounded-full bg-accent" />
+      <div className="relative z-10 mx-auto grid min-h-screen max-w-7xl lg:grid-cols-[1fr_1.05fr]">
+        <section className="hidden min-h-screen flex-col justify-between p-10 lg:flex xl:p-14" dir="rtl">
+          <img src={logo} alt="PIXÑOL" className="h-14 w-14 object-contain" />
+          <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="max-w-xl pb-8">
+            <p className="mb-5 flex items-center gap-3 text-sm font-semibold text-primary"><span className="h-px w-12 bg-primary" /> لغة للحياة الحقيقية</p>
+            <h1 className="font-heading text-5xl font-semibold leading-tight xl:text-6xl">تعلّم الإسبانية<br />كما تُعاش.</h1>
+            <p className="mt-6 max-w-md text-lg leading-8 text-foreground/75">دروس عملية، ثقافة أصيلة، ومسار واضح يأخذك من أول تحية إلى محادثة واثقة.</p>
+            <div className="mt-10 flex gap-8 border-t border-foreground/20 pt-6 text-sm">
+              <span><strong className="block font-heading text-2xl text-foreground">7</strong> مستويات مترابطة</span>
+              <span><strong className="block font-heading text-2xl text-foreground">13+</strong> رحلة ثقافية</span>
             </div>
-            <span className="font-mono text-[0.6rem] text-secondary/60 uppercase tracking-widest">
-              {'>'} auth.sys
-            </span>
-          </div>
+          </motion.div>
+        </section>
 
-          <div className="p-8">
-            {/* Logo */}
-            <div className="text-center mb-6">
-              <motion.h1
-                className="font-pixel text-2xl mb-1"
-                style={{
-                  background: 'linear-gradient(to right, #FF9900, #FF00FF, #00FFFF)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  filter: 'drop-shadow(0 0 20px rgba(255,0,255,0.5))',
-                }}
-                animate={{ filter: ['drop-shadow(0 0 10px rgba(255,0,255,0.3))', 'drop-shadow(0 0 25px rgba(255,0,255,0.6))', 'drop-shadow(0 0 10px rgba(255,0,255,0.3))'] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-              >
-                PIXÑOL
-              </motion.h1>
-              <p className="font-mono text-[0.6rem] text-secondary/70 uppercase tracking-wider">
-                {mode === 'login' ? 'تسجيل الدخول - Iniciar sesión' : 'إنشاء حساب - Crear cuenta'}
-              </p>
+        <section className="flex min-h-screen items-center justify-center px-4 py-8 sm:px-8 lg:justify-end lg:px-12" dir="rtl">
+          <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-[520px] border border-border/80 bg-card/95 p-5 shadow-2xl backdrop-blur-xl sm:p-8">
+            <div className="mb-7 flex items-center justify-between lg:hidden">
+              <img src={logo} alt="PIXÑOL" className="h-12 w-12 object-contain" />
+              <span className="text-xs font-semibold text-primary">APRENDE · EXPLORA · HABLA</span>
             </div>
 
-            {/* Mode toggle */}
-            <div className="flex mb-6 border-2 border-border">
-              <button
-                type="button"
-                onClick={() => { setMode('login'); setError(''); setSuccess(''); }}
-                className={`flex-1 py-2.5 font-pixel text-[0.5rem] flex items-center justify-center gap-1.5 transition-all duration-200 ${
-                  mode === 'login'
-                    ? 'bg-primary text-primary-foreground shadow-[0_0_15px_rgba(255,0,255,0.3)]'
-                    : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-primary/10'
-                }`}
-              >
-                <LogIn size={14} /> دخول
-              </button>
-              <button
-                type="button"
-                onClick={() => { setMode('signup'); setError(''); setSuccess(''); }}
-                className={`flex-1 py-2.5 font-pixel text-[0.5rem] flex items-center justify-center gap-1.5 transition-all duration-200 ${
-                  mode === 'signup'
-                    ? 'bg-primary text-primary-foreground shadow-[0_0_15px_rgba(255,0,255,0.3)]'
-                    : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-primary/10'
-                }`}
-              >
-                <UserPlus size={14} /> تسجيل
-              </button>
+            <p className="text-sm font-semibold text-primary">{mode === 'login' ? 'مرحباً بعودتك' : 'ابدأ رحلتك اليوم'}</p>
+            <h2 className="mt-2 font-heading text-3xl font-semibold sm:text-4xl">{mode === 'login' ? 'تسجيل الدخول' : 'إنشاء حساب جديد'}</h2>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground">{mode === 'login' ? 'تابع من حيث توقفت في مسارك الإسباني.' : 'أنشئ هويتك وابدأ من المستوى المناسب لك.'}</p>
+
+            <div className="mt-7 grid grid-cols-2 border border-border bg-background/50 p-1" aria-label="اختيار التسجيل">
+              <Button type="button" variant={mode === 'login' ? 'default' : 'ghost'} className="rounded-sm" onClick={() => changeMode('login')}><LockKeyhole /> دخول</Button>
+              <Button type="button" variant={mode === 'signup' ? 'default' : 'ghost'} className="rounded-sm" onClick={() => changeMode('signup')}><UserPlus /> حساب جديد</Button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Avatar for signup */}
-              <AnimatePresence mode="wait">
+            <form onSubmit={handleSubmit} className="mt-7 space-y-5">
+              <AnimatePresence initial={false}>
                 {mode === 'signup' && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="flex flex-col items-center gap-3 mb-4">
-                      <p className="font-mono text-[0.6rem] text-secondary/70 uppercase tracking-wider">أفاتارك العشوائي</p>
-                      <motion.div
-                        key={avatarSeed}
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        transition={{ type: 'spring', stiffness: 300 }}
-                      >
-                        <PixelAvatar seed={avatarSeed} size={96} frameStyle="cyber-green" />
-                      </motion.div>
-                      <button
-                        type="button"
-                        onClick={regenerateAvatar}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-secondary border border-secondary/30 hover:bg-secondary/10 hover:shadow-[0_0_10px_rgba(0,255,255,0.2)] transition-all uppercase tracking-wider"
-                      >
-                        <RefreshCw size={12} /> توليد جديد
-                      </button>
+                  <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="grid gap-5 sm:grid-cols-[112px_1fr] sm:items-end">
+                    <div className="flex items-center gap-3 sm:flex-col sm:items-start">
+                      <PixelAvatar seed={avatarSeed} size={82} frameStyle="cyber-green" />
+                      <Button type="button" variant="ghost" size="sm" onClick={() => setAvatarSeed(`portrait_${Date.now()}_${Math.random()}`)}><RefreshCw /> تغيير الصورة</Button>
                     </div>
-
-                    {/* Username */}
-                    <div className="mb-4">
-                      <label className="block font-pixel text-[0.45rem] text-foreground mb-2">
-                        اسم المعرّف - Username
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          value={username}
-                          onChange={e => { setUsername(e.target.value); setError(''); }}
-                          maxLength={20}
-                          placeholder="pixel_warrior"
-                          className="w-full px-4 py-3 bg-background border-b-2 border-primary text-secondary font-mono text-sm placeholder:text-primary/40 focus:outline-none focus:border-secondary focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all"
-                          dir="ltr"
-                        />
-                        {checkingUsername && (
-                          <Loader2 size={14} className="absolute left-3 top-1/2 -translate-y-1/2 animate-spin text-muted-foreground" />
-                        )}
-                        {!checkingUsername && usernameAvailable === true && (
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-accent text-xs" style={{ filter: 'drop-shadow(0 0 4px rgba(255,153,0,0.6))' }}>✓</span>
-                        )}
-                        {!checkingUsername && usernameAvailable === false && (
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-destructive text-xs">✗</span>
-                        )}
-                      </div>
-                    </div>
+                    <label className="block">
+                      <span className="mb-2 block text-sm font-semibold">اسم المستخدم</span>
+                      <span className="relative block">
+                        <Input value={username} onChange={(event) => { setUsername(event.target.value); setError(''); }} maxLength={20} placeholder="spanish_explorer" className="h-12 rounded-sm bg-background/70 pl-10" dir="ltr" />
+                        {checkingUsername && <Loader2 className="absolute left-3 top-4 size-4 animate-spin text-muted-foreground" />}
+                        {!checkingUsername && usernameAvailable === true && <Check className="absolute left-3 top-4 size-4 text-primary" />}
+                      </span>
+                    </label>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              {/* Email */}
-              <div>
-                <label className="block font-pixel text-[0.45rem] text-foreground mb-2">
-                  البريد الإلكتروني - Email
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => { setEmail(e.target.value); setError(''); }}
-                  maxLength={254}
-                  placeholder="email@domain.com"
-                  className="w-full px-4 py-3 bg-background border-b-2 border-primary text-secondary font-mono text-sm placeholder:text-primary/40 focus:outline-none focus:border-secondary focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all"
-                  dir="ltr"
-                />
-              </div>
+              <label className="block">
+                <span className="mb-2 block text-sm font-semibold">البريد الإلكتروني</span>
+                <Input type="email" value={email} onChange={(event) => { setEmail(event.target.value); setError(''); }} maxLength={254} placeholder="name@email.com" className="h-12 rounded-sm bg-background/70" dir="ltr" />
+              </label>
+              <label className="block">
+                <span className="mb-2 block text-sm font-semibold">كلمة المرور</span>
+                <span className="relative block">
+                  <Input type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); setError(''); }} maxLength={128} placeholder="••••••••" className="h-12 rounded-sm bg-background/70 pl-12" dir="ltr" />
+                  <Button type="button" variant="ghost" size="icon" onClick={() => setShowPassword((visible) => !visible)} className="absolute left-1 top-1 h-10 w-10" aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}>{showPassword ? <EyeOff /> : <Eye />}</Button>
+                </span>
+              </label>
 
-              {/* Password */}
-              <div>
-                <label className="block font-pixel text-[0.45rem] text-foreground mb-2">
-                  كلمة المرور - Contraseña
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={e => { setPassword(e.target.value); setError(''); }}
-                    maxLength={128}
-                    placeholder="••••••••"
-                    className="w-full px-4 py-3 bg-background border-b-2 border-primary text-secondary font-mono text-sm placeholder:text-primary/40 focus:outline-none focus:border-secondary focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all pr-12"
-                    dir="ltr"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-secondary transition-colors"
-                  >
-                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-              </div>
-
-              {/* Error/Success */}
               <AnimatePresence>
-                {error && (
-                  <motion.p
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0 }}
-                    className="text-destructive font-body text-sm px-3 py-2 border border-destructive/30 bg-destructive/10"
-                  >
-                    {error}
-                  </motion.p>
-                )}
-                {success && (
-                  <motion.p
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0 }}
-                    className="font-body text-sm px-3 py-2 border bg-secondary/10 text-secondary border-secondary/30"
-                  >
-                    {success}
-                  </motion.p>
-                )}
+                {error && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="border-r-2 border-destructive bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</motion.p>}
+                {success && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="border-r-2 border-primary bg-primary/10 px-4 py-3 text-sm text-primary">{success}</motion.p>}
               </AnimatePresence>
 
-              {/* Submit */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="pixel-btn-secondary w-full flex items-center justify-center gap-2 disabled:opacity-50"
-              >
-                <span className="flex items-center gap-2">
-                  {loading ? (
-                    <Loader2 size={16} className="animate-spin" />
-                  ) : (
-                    <>
-                      {mode === 'login' ? '¡Entrar! دخول' : '¡Crear! إنشاء'}
-                      <ChevronRight size={14} />
-                    </>
-                  )}
-                </span>
-              </button>
+              <Button type="submit" size="lg" disabled={loading} className="h-12 w-full rounded-sm font-semibold">
+                {loading ? <Loader2 className="animate-spin" /> : <>{mode === 'login' ? 'ادخل إلى مسارك' : 'أنشئ حسابك'} <ArrowLeft /></>}
+              </Button>
             </form>
-          </div>
 
-          {/* How it works link */}
-          <div className="px-4 py-2.5 border-t border-border bg-background/50 text-center">
-            <a
-              href="/how-it-works"
-              className="font-pixel text-[0.5rem] text-secondary/70 hover:text-secondary transition-colors uppercase tracking-wider"
-              style={{ filter: 'drop-shadow(0 0 3px rgba(0,255,255,0.3))' }}
-            >
-              كيف يعمل التطبيق؟ - ¿Cómo funciona?
-            </a>
-          </div>
-        </div>
-      </motion.div>
-    </div>
+            <div className="mt-7 flex items-center justify-between border-t border-border pt-5 text-xs text-muted-foreground">
+              <a href="/how-it-works" className="transition-colors hover:text-primary">كيف يعمل PIXÑOL؟</a>
+              <span className="flex items-center gap-1.5"><Sparkles className="size-3.5 text-accent" /> تجربة تعلّم شخصية</span>
+            </div>
+          </motion.div>
+        </section>
+      </div>
+    </main>
   );
 }

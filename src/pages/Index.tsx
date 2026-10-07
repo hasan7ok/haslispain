@@ -9,12 +9,29 @@ import CulturaSection from '@/components/CulturaSection';
 import DonationModal from '@/components/DonationModal';
 import { Button } from '@/components/ui/button';
 import heroImage from '@/assets/premium-learning-hero.jpg';
+import puebloImage from '@/assets/culture-camino.jpg';
+import ciudadImage from '@/assets/culture-sagrada.jpg';
+import historiaImage from '@/assets/culture-alhambra.jpg';
+import latinoImage from '@/assets/culture-carnaval.jpg';
+import debateImage from '@/assets/culture-cine.jpg';
+import negociosImage from '@/assets/culture-moda.jpg';
+import literaturaImage from '@/assets/culture-literatura.jpg';
 
 const QUICK_ACTIONS = [
   { path: '/daily-challenge', label: 'التحدي اليومي', labelEs: 'Desafío diario', icon: Flame },
   { path: '/stories', label: 'القصص التفاعلية', labelEs: 'Historias', icon: BookOpen },
   { path: '/boss-fights', label: 'تحدي القواعد', labelEs: 'Gramática', icon: Swords },
 ];
+
+const ZONE_IMAGES: Record<string, string> = {
+  pueblo: puebloImage,
+  ciudad: ciudadImage,
+  historia: historiaImage,
+  latino: latinoImage,
+  debate: debateImage,
+  negocios: negociosImage,
+  literatura: literaturaImage,
+};
 
 export default function Index() {
   const { state, xpToNextLevel } = useGameState();
@@ -125,7 +142,7 @@ export default function Index() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 border-l border-t border-border md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
             {ZONES.map((zone, idx) => {
               const isUnlocked = state.unlockedZones.includes(zone.id);
               const completedCount = zone.lessons.filter((lesson) => state.completedLessons.includes(lesson.id)).length;
@@ -146,28 +163,35 @@ export default function Index() {
                       playError();
                     }
                   }}
-                  className={`relative min-h-64 border-b border-r border-border p-6 text-right transition-colors ${
-                    isUnlocked ? 'group hover:bg-card' : 'cursor-not-allowed bg-muted/20'
-                  } ${idx === 0 ? 'md:col-span-2' : ''}`}
+                  className={`relative min-h-[330px] overflow-hidden border border-border text-right ${
+                    isUnlocked ? 'group cursor-pointer' : 'cursor-not-allowed'
+                  } ${idx === 0 ? 'md:col-span-2 md:min-h-[380px]' : ''}`}
                 >
-                  <div className="flex h-full flex-col">
+                  <img
+                    src={ZONE_IMAGES[zone.id]}
+                    alt={`مشهد واقعي يمثل ${zone.nameEs}`}
+                    loading="lazy"
+                    className={`absolute inset-0 h-full w-full object-cover transition-transform duration-500 ${isUnlocked ? 'group-hover:scale-[1.03]' : 'grayscale'}`}
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t from-background via-background/65 to-background/10 ${isUnlocked ? '' : 'bg-background/55'}`} />
+                  <div className="relative z-10 flex min-h-[330px] flex-col p-5 sm:p-6 md:min-h-full">
                     <div className="flex items-start justify-between">
-                      <span className="font-heading text-4xl font-medium text-foreground/15">0{idx + 1}</span>
+                      <span className="font-heading text-5xl font-medium text-foreground/35">0{idx + 1}</span>
                       {isUnlocked ? (
-                        <span className="border border-primary/40 px-2 py-1 text-[11px] font-semibold text-primary">{zone.level}</span>
+                        <span className="border border-primary/60 bg-background/70 px-2.5 py-1 text-[11px] font-semibold text-primary backdrop-blur-md">{zone.level}</span>
                       ) : (
-                        <Lock className="size-4 text-muted-foreground" />
+                        <span className="grid size-9 place-items-center border border-border bg-background/70 backdrop-blur-md"><Lock className="size-4 text-muted-foreground" /></span>
                       )}
                     </div>
-                    <div className="mt-auto pt-10">
+                    <div className="mt-auto pt-16">
                       <p className="text-xs font-semibold text-primary">{zone.nameEs}</p>
-                      <h3 className="mt-2 font-heading text-xl font-semibold">{zone.name}</h3>
-                      <p className="mt-2 text-sm leading-6 text-muted-foreground">{zone.descriptionAr}</p>
-                      <div className="mt-6 flex items-center justify-between text-xs text-muted-foreground">
+                      <h3 className={`mt-2 font-heading font-semibold ${idx === 0 ? 'text-3xl' : 'text-2xl'}`}>{zone.name}</h3>
+                      <p className="mt-2 text-sm leading-6 text-foreground/70">{zone.descriptionAr}</p>
+                      <div className="mt-6 flex items-center justify-between gap-4 text-xs text-foreground/65">
                         <span>{completedCount}/{zone.lessons.length} دروس</span>
                         <span>{isUnlocked ? 'متاح الآن' : `يفتح عند المستوى ${zone.requiredLevel}`}</span>
                       </div>
-                      <div className="mt-3 h-px bg-muted">
+                      <div className="mt-3 h-1 overflow-hidden bg-foreground/15">
                         <div className="h-full origin-right bg-primary" style={{ width: `${zoneProgress}%` }} />
                       </div>
                     </div>
