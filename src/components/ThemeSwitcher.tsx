@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Check, Palette, X } from 'lucide-react';
+import { createPortal } from 'react-dom';
 import { THEMES, useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/ui/button';
 
@@ -8,11 +9,13 @@ export default function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const activeTheme = THEMES.find((item) => item.id === theme) ?? THEMES[0];
 
   useEffect(() => {
     const closeOnOutsideClick = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) setOpen(false);
+      const target = event.target as Node;
+      if (ref.current && !ref.current.contains(target) && !dialogRef.current?.contains(target)) setOpen(false);
     };
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setOpen(false);
@@ -31,11 +34,13 @@ export default function ThemeSwitcher() {
         <Palette /> <span className="hidden sm:inline">{activeTheme.labelAr}</span>
       </Button>
 
-      <AnimatePresence>
-        {open && (
+      {createPortal(
+        <AnimatePresence>
+          {open && (
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[60] bg-background/70 backdrop-blur-sm sm:hidden" onClick={() => setOpen(false)} />
             <motion.div
+              ref={dialogRef}
               role="dialog"
               aria-label="اختيار مظهر الموقع"
               initial={{ opacity: 0, y: 18, scale: 0.98 }}
@@ -65,8 +70,10 @@ export default function ThemeSwitcher() {
               </div>
             </motion.div>
           </>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
     </div>
   );
 }
