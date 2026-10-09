@@ -1,5 +1,5 @@
 import { CharacterConfig } from '@/hooks/useGameState';
-import portraitImg from '@/assets/avatar-editorial.jpg';
+import portraitImg from '@/assets/avatar-pixel-premium.jpg';
 
 interface PixelCharacterProps {
   character?: CharacterConfig;
@@ -22,6 +22,7 @@ export default function PixelCharacter({ size = 6, animate = false, className = 
         height={portraitSize}
         loading="lazy"
         className="aspect-square rounded-full object-cover border border-primary/50 shadow-[0_0_18px_hsl(var(--primary)/0.18)]"
+         style={{ imageRendering: 'pixelated' }}
       />
     </div>
   );

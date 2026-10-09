@@ -1,6 +1,5 @@
-import avatarMan from '@/assets/avatar-man.jpg';
-import avatarWoman from '@/assets/avatar-woman.jpg';
-import avatarEditorial from '@/assets/avatar-editorial.jpg';
+import avatarMan from '@/assets/avatar-pixel-premium.jpg';
+import avatarWoman from '@/assets/avatar-pixel-woman.jpg';
 
 interface PixelAvatarProps {
   seed: string;
@@ -19,10 +18,10 @@ function hashCode(str: string): number {
   return Math.abs(hash);
 }
 
-const PORTRAITS = [avatarMan, avatarWoman, avatarEditorial];
+const PORTRAITS = [avatarMan, avatarWoman];
 
 export default function PixelAvatar({ seed, size = 128, className = '', frameStyle }: PixelAvatarProps) {
-  const portrait = PORTRAITS[hashCode(seed) % PORTRAITS.length];
+  const portrait = seed === 'portrait-man' ? avatarMan : seed === 'portrait-woman' ? avatarWoman : PORTRAITS[hashCode(seed) % PORTRAITS.length];
   const frameClasses = getFrameClasses(frameStyle);
 
   return (
@@ -32,12 +31,12 @@ export default function PixelAvatar({ seed, size = 128, className = '', frameSty
       )}
       <img
         src={portrait}
-        alt="صورة شخصية واقعية"
+        alt="صورة حساب بكسل آرت شبه واقعية"
         width={size}
         height={size}
         loading="lazy"
         className="relative z-10 rounded-full object-cover"
-        style={{ width: size, height: size }}
+        style={{ width: size, height: size, imageRendering: 'pixelated' }}
       />
     </div>
   );
