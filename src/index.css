@@ -282,6 +282,12 @@
     line-height: 1.25;
     letter-spacing: 0;
   }
+
+  .audio-control {
+    font-family: 'IBM Plex Sans Arabic', 'Sora', sans-serif;
+    letter-spacing: 0;
+    box-shadow: 0 6px 24px hsl(var(--background) / 0.25);
+  }
 }
 
 /* ===== GLOBAL VAPORWAVE EFFECTS ===== */

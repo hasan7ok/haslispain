@@ -1,5 +1,5 @@
-import { Volume2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import SpanishAudio from '@/components/SpanishAudio';
+import { playSpanish } from '@/lib/spanishSpeech';
 
 type Gender = 'm' | 'f' | null;
 
@@ -26,17 +26,7 @@ export function detectGender(word: string): Gender {
 
 /** Speak Spanish text using Web Speech API */
 export function speakSpanish(text: string) {
-  if (!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'es-ES';
-  utterance.rate = 0.85;
-  utterance.pitch = 1;
-  // Try to find a Spanish voice
-  const voices = window.speechSynthesis.getVoices();
-  const esVoice = voices.find(v => v.lang.startsWith('es'));
-  if (esVoice) utterance.voice = esVoice;
-  window.speechSynthesis.speak(utterance);
+  playSpanish([text], `text-${text}`);
 }
 
 interface SpanishWordProps {
@@ -71,19 +61,7 @@ export default function SpanishWord({ word, className = '', showGender = true, s
     <span className={`inline-flex items-center gap-1.5 ${genderGlow ? `px-2 py-0.5 rounded-sm border ${genderGlow}` : ''} ${className}`}>
       {gender && <span className={`w-1.5 h-1.5 rounded-full ${genderDot} flex-shrink-0 opacity-70`} />}
       <span className={sizeClasses[size]}>{word}</span>
-      <motion.button
-        whileHover={{ scale: 1.15 }}
-        whileTap={{ scale: 0.9 }}
-        onClick={(e) => {
-          e.stopPropagation();
-          speakSpanish(word);
-        }}
-        className="text-muted-foreground hover:text-primary transition-colors flex-shrink-0 opacity-60 hover:opacity-100"
-        title="نطق الكلمة"
-        aria-label={`Pronounce ${word}`}
-      >
-        <Volume2 size={size === 'sm' ? 12 : size === 'lg' ? 18 : 14} />
-      </motion.button>
+      <SpanishAudio compact texts={[word]} id={`word-${word}`} label={`نطق ${word}`} />
     </span>
   );
 }

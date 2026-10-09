@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/Header';
@@ -59,6 +59,8 @@ type SortOrder = 'newest' | 'oldest' | 'alpha';
 
 export default function JournalPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const requestedEntry = searchParams.get('entry');
   const { user } = useAuth();
   const isMobile = useIsMobile();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -128,11 +130,19 @@ export default function JournalPage() {
         .select('id, title, text_content, canvas_data, created_at, updated_at')
         .eq('user_id', user.id)
         .order('updated_at', { ascending: false });
-      if (data) setEntries(data);
+      if (data) {
+        setEntries(data);
+        const entry = data.find(item => item.id === requestedEntry);
+        if (entry) {
+          setCurrentEntryId(entry.id); setEntryTitle(entry.title); setTextContent(entry.text_content || '');
+          try { setActions(JSON.parse(entry.canvas_data || '[]')); } catch { setActions([]); }
+          setUndoneActions([]);
+        }
+      }
       setLoading(false);
     };
     load();
-  }, [user]);
+  }, [user, requestedEntry]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
