@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { useLearningTools } from '@/hooks/useLearningTools';
 import { localDay, recordDailyLesson, toggleItem } from '@/lib/learningTools';
 import { Bookmark, Star } from 'lucide-react';
+import { ZONES } from '@/data/zones';
 import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw, Volume2 } from 'lucide-react';
 
 
@@ -51,7 +52,7 @@ export default function LessonPage() {
 
   const vocab = lesson.vocabulary;
   const isAlreadyCompleted = state.completedLessons.includes(lesson.id);
-  const zoneId = lesson.id.split('-')[0];
+  const zoneId = ZONES.find(zone => zone.lessons.some(item => item.id === lesson.id))?.id || 'pueblo';
 
   const handleComplete = () => {
     updateTools(previous => ({ ...recordDailyLesson(previous, lesson.id, localDay()), resume: null }));
