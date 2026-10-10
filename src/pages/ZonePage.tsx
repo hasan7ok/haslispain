@@ -4,6 +4,8 @@ import { useGameState } from '@/hooks/useGameState';
 import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { ZONES } from '@/data/zones';
 import Header from '@/components/Header';
+import { LESSONS } from '@/data/vocabulary';
+import SpanishAudio from '@/components/SpanishAudio';
 import { ArrowLeft, Check, BookOpen, Gamepad2, ChevronRight } from 'lucide-react';
 
 
@@ -35,7 +37,7 @@ export default function ZonePage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-3 py-6 max-w-3xl">
+      <main className="container mx-auto px-3 pb-6 pt-24 max-w-3xl">
         {/* Back button */}
         <button onClick={() => navigate('/')} className="flex items-center gap-2 text-muted-foreground hover:text-foreground font-body text-sm mb-4 transition-colors">
           <ArrowLeft size={16} /> العودة للخريطة
@@ -91,6 +93,7 @@ export default function ZonePage() {
                     )}
                   </div>
                 </Link>
+                {LESSONS[lesson.id] && <div className="mt-2 mb-4"><SpanishAudio texts={LESSONS[lesson.id].vocabulary.flatMap(item => [item.word, item.example])} id={`zone-audio-${lesson.id}`} label={`استمع · ${lesson.titleAr}`} /></div>}
               </motion.div>
             );
           })}

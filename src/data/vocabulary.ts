@@ -307,6 +307,73 @@ export const LESSONS: Record<string, LessonContent> = {
   },
 };
 
+// Advanced lesson material is kept alongside the existing catalog for every learning route.
+const advancedLessons: { id: string; introAr: string; tipAr?: string; items: [string, string, string, string, string][] }[] = [
+  { id: 'neg-1', introAr: 'مفردات أساسية لفهم التقارير والاجتماعات في بيئة العمل.', items: [
+    ['El presupuesto', 'Budget', 'الميزانية', 'Debemos revisar el presupuesto anual.', 'We must review the annual budget.'],
+    ['La rentabilidad', 'Profitability', 'الربحية', 'La rentabilidad ha mejorado este trimestre.', 'Profitability has improved this quarter.'],
+    ['El proveedor', 'Supplier', 'المورّد', 'El proveedor entregará el pedido mañana.', 'The supplier will deliver the order tomorrow.'],
+    ['El plazo', 'Deadline', 'المهلة', 'El plazo de entrega vence el viernes.', 'The delivery deadline is Friday.'],
+  ] },
+  { id: 'neg-2', introAr: 'اكتب بريدًا مهنيًا يبدأ بتحية واضحة وينتهي بطلب أو متابعة مهذبة.', items: [
+    ['Le escribo para', 'I am writing to', 'أكتب إليكم من أجل', 'Le escribo para confirmar nuestra reunión.', 'I am writing to confirm our meeting.'],
+    ['Adjunto encontrará', 'Attached you will find', 'تجدون في المرفق', 'Adjunto encontrará el informe solicitado.', 'Attached you will find the requested report.'],
+    ['Quedo a su disposición', 'I remain at your disposal', 'أبقى رهن إشارتكم', 'Quedo a su disposición para cualquier consulta.', 'I remain at your disposal for any questions.'],
+    ['Agradecería su respuesta', 'I would appreciate your reply', 'أقدّر ردّكم', 'Agradecería su respuesta antes del lunes.', 'I would appreciate your reply before Monday.'],
+  ] },
+  { id: 'neg-3', introAr: 'قدّم فكرة واشرح نتائجها ثم انتقل إلى خلاصة واضحة.', items: [
+    ['El objetivo principal', 'The main objective', 'الهدف الرئيسي', 'El objetivo principal es mejorar la calidad.', 'The main objective is to improve quality.'],
+    ['Como pueden observar', 'As you can see', 'كما يمكنكم ملاحظة', 'Como pueden observar, las ventas han aumentado.', 'As you can see, sales have increased.'],
+    ['Cabe destacar', 'It is worth highlighting', 'يجدر إبراز', 'Cabe destacar el esfuerzo del equipo.', 'It is worth highlighting the team’s effort.'],
+    ['Para concluir', 'To conclude', 'في الختام', 'Para concluir, proponemos una nueva estrategia.', 'To conclude, we propose a new strategy.'],
+  ] },
+  { id: 'neg-4', introAr: 'استخدم الشرطي لطلب مهذب والمستقبل التام لحدث سيكتمل قبل موعد مستقبلي.', tipAr: 'الشرطي: infinitivo + ía. المستقبل التام: futuro de haber + participio، مثل habremos terminado.', items: [
+    ['Podríamos', 'We could', 'يمكننا', 'Podríamos reducir los costes de producción.', 'We could reduce production costs.'],
+    ['Me gustaría', 'I would like', 'أودّ', 'Me gustaría conocer su propuesta.', 'I would like to hear your proposal.'],
+    ['Habremos terminado', 'We will have finished', 'سنكون قد أنهينا', 'Para el viernes habremos terminado el proyecto.', 'By Friday we will have finished the project.'],
+    ['Habrá recibido', 'You will have received (formal)', 'ستكونون قد استلمتم', 'Para mañana habrá recibido el contrato.', 'By tomorrow you will have received the contract.'],
+  ] },
+  { id: 'neg-5', introAr: 'ناقش الشروط وقدّم بديلًا واقعيًا للوصول إلى اتفاق.', items: [
+    ['Llegar a un acuerdo', 'To reach an agreement', 'التوصل إلى اتفاق', 'Queremos llegar a un acuerdo beneficioso para ambos.', 'We want to reach an agreement that benefits both sides.'],
+    ['A cambio de', 'In exchange for', 'مقابل', 'Ofrecemos un descuento a cambio de un pedido mayor.', 'We offer a discount in exchange for a larger order.'],
+    ['Siempre que', 'Provided that', 'بشرط أن', 'Aceptaremos siempre que se respete el plazo.', 'We will accept provided that the deadline is respected.'],
+    ['Una alternativa viable', 'A viable alternative', 'بديل قابل للتطبيق', 'Podemos buscar una alternativa viable.', 'We can look for a viable alternative.'],
+  ] },
+  { id: 'lit-1', introAr: 'تعرّف إلى مفردات السرد والمثل العليا في دون كيشوت دون الاعتماد على اقتباسات طويلة.', items: [
+    ['El caballero andante', 'The knight-errant', 'الفارس الجوّال', 'El caballero andante busca aventuras.', 'The knight-errant seeks adventures.'],
+    ['El escudero', 'The squire', 'حامل درع الفارس', 'Sancho Panza acompaña al caballero como escudero.', 'Sancho Panza accompanies the knight as his squire.'],
+    ['Los molinos de viento', 'The windmills', 'طواحين الهواء', 'Don Quijote confunde los molinos de viento con gigantes.', 'Don Quixote mistakes windmills for giants.'],
+    ['El idealismo', 'Idealism', 'المثالية', 'El relato contrapone el idealismo y la realidad.', 'The story contrasts idealism and reality.'],
+  ] },
+  { id: 'lit-2', introAr: 'مفردات لفهم الصورة الشعرية والإيقاع عند قراءة نيرودا ولوركا؛ الأمثلة التعليمية أصلية.', items: [
+    ['La metáfora', 'Metaphor', 'الاستعارة', 'La metáfora transforma la luna en un espejo.', 'The metaphor turns the moon into a mirror.'],
+    ['El verso', 'Verse', 'البيت الشعري', 'Cada verso aporta una imagen distinta.', 'Each verse adds a different image.'],
+    ['La nostalgia', 'Nostalgia', 'الحنين', 'La voz del poema expresa nostalgia por su tierra.', 'The voice of the poem expresses nostalgia for its homeland.'],
+    ['El ritmo', 'Rhythm', 'الإيقاع', 'El ritmo refuerza la emoción del poema.', 'Rhythm reinforces the emotion of the poem.'],
+  ] },
+  { id: 'lit-3', introAr: 'أمثال إسبانية شائعة ومعانيها العملية في الحديث اليومي.', items: [
+    ['Más vale tarde que nunca', 'Better late than never', 'أن تأتي متأخرًا خير من ألا تأتي', 'Has empezado a estudiar: más vale tarde que nunca.', 'You have started studying: better late than never.'],
+    ['No hay mal que por bien no venga', 'Every cloud has a silver lining', 'ربّ ضارة نافعة', 'Perdí el tren, pero conocí a un amigo: no hay mal que por bien no venga.', 'I missed the train but met a friend: every cloud has a silver lining.'],
+    ['A buen entendedor, pocas palabras bastan', 'A word to the wise is enough', 'اللبيب بالإشارة يفهم', 'No necesito explicarlo todo: a buen entendedor, pocas palabras bastan.', 'I do not need to explain everything: a word to the wise is enough.'],
+    ['El hábito no hace al monje', 'Clothes do not make the person', 'المظاهر لا تصنع الجوهر', 'No juzgues por la ropa: el hábito no hace al monje.', 'Do not judge by clothes: clothes do not make the person.'],
+  ] },
+  { id: 'lit-4', introAr: 'الماضي الناقص للـ Subjuntivo في الرغبات الماضية والافتراضات غير الواقعية.', tipAr: 'بعد si لافتراض غير واقعي: si + imperfecto de subjuntivo ثم condicional. مثال: Si tuviera tiempo, leería más.', items: [
+    ['Si tuviera tiempo', 'If I had time', 'لو كان لديّ وقت', 'Si tuviera tiempo, leería más novelas.', 'If I had time, I would read more novels.'],
+    ['Quería que vinieras', 'I wanted you to come', 'أردتُ أن تأتي', 'Quería que vinieras a la lectura.', 'I wanted you to come to the reading.'],
+    ['Ojalá pudiera', 'I wish I could', 'ليتني أستطيع', 'Ojalá pudiera escribir como ella.', 'I wish I could write like her.'],
+    ['Como si fuera', 'As if it were', 'كما لو كان', 'Cuenta la historia como si fuera un recuerdo.', 'She tells the story as if it were a memory.'],
+  ] },
+  { id: 'lit-5', introAr: 'ابنِ مشهدًا من خلال صوت الراوي والتفاصيل والحوار ونهاية مترابطة.', items: [
+    ['El narrador', 'Narrator', 'الراوي', 'El narrador describe la ciudad al amanecer.', 'The narrator describes the city at dawn.'],
+    ['El desenlace', 'Ending', 'الخاتمة', 'El desenlace resuelve el conflicto principal.', 'The ending resolves the main conflict.'],
+    ['La voz narrativa', 'Narrative voice', 'الصوت السردي', 'La voz narrativa cambia según el personaje.', 'The narrative voice changes with the character.'],
+    ['El punto de vista', 'Point of view', 'وجهة النظر', 'Escribe la escena desde otro punto de vista.', 'Write the scene from another point of view.'],
+  ] },
+];
+for (const lesson of advancedLessons) {
+  LESSONS[lesson.id] = { id: lesson.id, intro: '', introAr: lesson.introAr, tipAr: lesson.tipAr, vocabulary: lesson.items.map(([word, translation, translationAr, example, exampleTranslation]) => ({ word, translation, translationAr, example, exampleTranslation })) };
+}
+
 export const SENTENCE_CHALLENGES: SentenceChallenge[] = [
   { targetSentence: 'Yo como una manzana', translation: 'I eat an apple', translationAr: 'أنا آكل تفاحة', words: ['una', 'Yo', 'manzana', 'como'], level: 'A1' },
   { targetSentence: 'Ella tiene un gato', translation: 'She has a cat', translationAr: 'هي تملك قطة', words: ['gato', 'tiene', 'un', 'Ella'], level: 'A1' },

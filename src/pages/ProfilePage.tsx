@@ -1,24 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { useGameState, CharacterConfig } from '@/hooks/useGameState';
+import { useGameState } from '@/hooks/useGameState';
 import { useAuth } from '@/hooks/useAuth';
-import PixelCharacter from '@/components/PixelCharacter';
 import PixelAvatar from '@/components/PixelAvatar';
 import NFTCollection, { NFTItem } from '@/components/NFTCollection';
-import XPBar from '@/components/XPBar';
 import Header from '@/components/Header';
-import { ArrowLeft, Edit3, Save, Trash2, RefreshCw, Check, Share2 } from 'lucide-react';
-import { PixelLoader } from '@/components/PixelLoader';
-import SVGProgressRing from '@/components/SVGProgressRing';
+import { ArrowLeft, Save, Trash2, Share2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { z } from 'zod';
-
-const SKIN_COLORS = ['#f4c794', '#e0ac69', '#c68642', '#8d5524', '#6b3a1f', '#f9d5a7'];
-const HAIR_COLORS = ['#3d2314', '#1a1a2e', '#c9a96e', '#e74c3c', '#2980b9', '#8e44ad', '#f39c12', '#ecf0f1'];
-const OUTFIT_COLORS = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c', '#e67e22', '#34495e'];
-const BOOTS_COLORS = ['#5d4037', '#1a1a2e', '#795548', '#3e2723', '#4a148c', '#b71c1c'];
+import { Button } from '@/components/ui/button';
+import { BookOpen, FileText, Flame, Trophy } from 'lucide-react';
+import { LESSONS } from '@/data/vocabulary';
+import { ZONES } from '@/data/zones';
+import ProfileLearningPanel from '@/components/ProfileLearningPanel';
+import ProfileJournals from '@/components/ProfileJournals';
 
 const ACHIEVEMENTS_LIST = [
   { id: 'firstGame', name: 'اللاعب الأول', nameEs: 'Primer Jugador', icon: '🎮', desc: 'أكمل أول لعبة' },
@@ -34,15 +30,14 @@ const usernameSchema = z.string().trim().min(3, 'الاسم يجب أن يكون
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-  const { state, updateCharacter, updateUsername, resetProgress, xpToNextLevel } = useGameState();
+  const { state, updateUsername, resetProgress, xpToNextLevel } = useGameState();
   const { profile, user, updateProfile, checkUsernameAvailable, refreshProfile } = useAuth();
 
-  const [editingName, setEditingName] = useState(false);
-  const [newName, setNewName] = useState(state.username);
   const [nfts, setNfts] = useState<NFTItem[]>([]);
 
   // Settings state
   const [username, setUsername] = useState(profile?.username || '');
+  useEffect(() => { if (profile) { setUsername(profile.username); setAvatarSeed(profile.avatar_url || profile.username); } }, [profile?.username, profile?.avatar_url]);
   const [avatarSeed, setAvatarSeed] = useState(profile?.avatar_url || '');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -72,17 +67,7 @@ export default function ProfilePage() {
     loadNFTs();
   }, [user]);
 
-  const handleColorChange = (key: keyof CharacterConfig, value: string) => {
-    updateCharacter({ [key]: value });
-  };
 
-  const saveName = () => {
-    if (newName.trim()) { updateUsername(newName.trim()); setEditingName(false); }
-  };
-
-  const regenerateAvatar = () => {
-    setAvatarSeed(`pixel_${Date.now()}_${Math.random().toString(36).slice(2)}`);
-  };
 
   const handleUsernameChange = async (value: string) => {
     setUsername(value);
@@ -218,181 +203,45 @@ export default function ProfilePage() {
     }, 'image/png');
   };
 
+  const progress = Math.min(state.xp / xpToNextLevel, 1);
+  const learnedWords = new Set(state.completedLessons.flatMap(id => LESSONS[id]?.vocabulary.map(word => word.word) || [])).size;
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main className="container mx-auto px-3 py-6 max-w-2xl">
-        <button onClick={() => navigate('/')} className="flex items-center gap-2 text-muted-foreground hover:text-foreground font-body text-sm mb-4">
-          <ArrowLeft size={16} /> العودة
-        </button>
-
-        {/* Character display */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pixel-card-primary p-6 mb-6 text-center">
-          <PixelCharacter character={state.character} size={10} animate className="mb-4" />
-          {editingName ? (
-            <div className="flex gap-2 justify-center items-center">
-              <input value={newName} onChange={e => setNewName(e.target.value)} onKeyDown={e => e.key === 'Enter' && saveName()}
-                className="px-3 py-1 bg-muted border-2 border-primary text-foreground font-body text-center focus:outline-none" dir="auto" autoFocus />
-              <button onClick={saveName} className="p-1 text-accent"><Save size={16} /></button>
-            </div>
-          ) : (
-            <div className="flex items-center justify-center gap-2">
-              <h2 className="font-pixel text-sm text-primary">{state.username}</h2>
-              <button onClick={() => setEditingName(true)} className="text-muted-foreground hover:text-foreground"><Edit3 size={14} /></button>
-            </div>
-          )}
-          {profile?.avatar_url && (
-            <div className="mt-3 flex justify-center">
-              <PixelAvatar seed={profile.avatar_url || profile.username} size={48} frameStyle="cyber-green" />
-            </div>
-          )}
-          <div className="max-w-xs mx-auto mt-3">
-            <XPBar xp={state.xp} xpToNext={xpToNextLevel} level={state.level} />
-          </div>
-          <div className="flex gap-4 justify-center mt-3 text-sm font-body">
-            <span className="text-secondary">🔥 {state.streak} يوم</span>
-            <span className="text-accent">✅ {state.completedLessons.length} درس</span>
-            <span className="text-xp">⭐ {state.totalXpEarned} XP</span>
-          </div>
-        </motion.div>
-
-        {/* ─── Statistics Section (SVG Progress Rings) ─── */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="pixel-card p-5 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-pixel text-[0.6rem] text-gradient-vapor">الإحصائيات - Estadísticas</h3>
-            <button onClick={shareStats} className="flex items-center gap-1.5 px-3 py-1.5 font-pixel text-[0.4rem] text-primary border-2 border-primary/40 hover:border-primary hover:bg-primary/10 hover:shadow-[0_0_12px_hsl(var(--primary)/0.3)] transition-all">
-              <Share2 size={12} /> مشاركة
-            </button>
-          </div>
-          <div id="stats-share-area" className="grid grid-cols-3 sm:grid-cols-3 gap-4">
-            <SVGProgressRing value={state.completedLessons.length} max={20} icon="📚" label="دروس مكتملة" labelEs="Lecciones" />
-            <SVGProgressRing value={state.completedGames.length} max={15} icon="🎮" label="ألعاب مكتملة" labelEs="Juegos" />
-            <SVGProgressRing value={state.completedLessons.length * 8} max={200} icon="📝" label="كلمات متعلّمة" labelEs="Palabras" />
-            <SVGProgressRing value={state.totalXpEarned} max={2000} icon="⭐" label="مجموع XP" labelEs="XP Total" />
-            <SVGProgressRing value={state.streak} max={30} icon="🔥" label="أيام متتالية" labelEs="Racha" />
-            <SVGProgressRing value={state.achievements.length} max={7} icon="🏆" label="إنجازات" labelEs="Logros" />
-            <SVGProgressRing value={state.unlockedZones.length} max={5} icon="🗺️" label="مناطق مفتوحة" labelEs="Zonas" />
-            <SVGProgressRing value={Math.max(1, Math.round((state.completedLessons.length * 5 + state.completedGames.length * 3)))} max={120} icon="⏱️" label="دقائق تعلّم" labelEs="Minutos" />
-            <SVGProgressRing value={state.level} max={20} icon="🎯" label="المستوى" labelEs="Nivel" />
-          </div>
-        </motion.div>
-
-        {/* ─── Settings Section ─── */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-          <h3 className="font-pixel text-[0.6rem] text-gradient-vapor mb-4">الإعدادات - Ajustes</h3>
-
-          {/* Avatar regeneration */}
-          <div className="pixel-card-primary p-6 mb-4 text-center">
-            <p className="font-pixel text-[0.5rem] text-secondary mb-4">الصورة الرمزية - Avatar</p>
-            <motion.div key={avatarSeed} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring' }}>
-              <PixelAvatar seed={avatarSeed} size={96} frameStyle="cyber-green" />
-            </motion.div>
-            <button type="button" onClick={regenerateAvatar}
-              className="mt-4 flex items-center gap-1.5 px-4 py-2 mx-auto text-xs font-mono text-secondary border border-secondary/30 hover:bg-secondary/10 hover:shadow-[0_0_10px_rgba(0,255,255,0.2)] transition-all uppercase tracking-wider">
-              <RefreshCw size={12} /> توليد صورة جديدة
-            </button>
-          </div>
-
-          {/* Username edit */}
-          <div className="pixel-card p-6 mb-4">
-            <label className="block font-pixel text-[0.5rem] text-foreground mb-3">اسم المعرّف - Username</label>
-            <div className="relative">
-              <input type="text" value={username} onChange={e => handleUsernameChange(e.target.value)} maxLength={20}
-                className="w-full px-4 py-3 bg-background border-b-2 border-primary text-secondary font-mono text-sm placeholder:text-primary/40 focus:outline-none focus:border-secondary focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all" dir="ltr" />
-              <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                {checkingUsername && <PixelLoader size={14} className="text-muted-foreground" />}
-                {!checkingUsername && usernameAvailable === true && <Check size={14} className="text-accent" />}
-                {!checkingUsername && usernameAvailable === false && <span className="text-destructive text-xs">✗</span>}
-              </div>
-            </div>
-            <p className="font-mono text-[0.55rem] text-muted-foreground mt-2">3-20 حرف إنجليزي أو أرقام أو _</p>
-          </div>
-
-          {/* Error / Success */}
-          {error && (
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-destructive font-body text-sm px-3 py-2 border border-destructive/30 bg-destructive/10 mb-4">{error}</motion.p>
-          )}
-          {success && (
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-accent font-body text-sm px-3 py-2 border border-accent/30 bg-accent/10 mb-4">{success}</motion.p>
-          )}
-
-          {/* Game-style Save Button */}
-          <button onClick={handleSave} disabled={saving}
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 font-pixel text-[0.65rem] uppercase tracking-widest text-primary-foreground border-2 border-primary transition-all duration-200 hover:shadow-[0_0_20px_hsl(var(--primary)/0.5),0_0_40px_hsl(var(--primary)/0.2)] active:scale-95 disabled:opacity-50"
-            style={{
-              background: 'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.7))',
-              boxShadow: '0 0 12px hsl(var(--primary) / 0.4), inset 0 1px 0 hsl(var(--primary-foreground) / 0.1)',
-            }}
-          >
-            {saving ? <PixelLoader size={18} className="text-primary-foreground" /> : <Check size={18} />}
-            {saving ? 'جاري الحفظ...' : 'حفظ'}
-          </button>
-        </motion.div>
-
-        {/* ─── Customization ─── */}
-        <div className="pixel-card p-4 mb-6 mt-6">
-          <h3 className="font-pixel text-[0.6rem] text-foreground mb-4">تخصيص الشخصية - Personalizar</h3>
-          {[
-            { label: 'لون البشرة', key: 'skinColor' as keyof CharacterConfig, colors: SKIN_COLORS },
-            { label: 'لون الشعر', key: 'hairColor' as keyof CharacterConfig, colors: HAIR_COLORS },
-            { label: 'لون الملابس', key: 'outfitColor' as keyof CharacterConfig, colors: OUTFIT_COLORS },
-            { label: 'لون الحذاء', key: 'bootsColor' as keyof CharacterConfig, colors: BOOTS_COLORS },
-          ].map(({ label, key, colors }) => (
-            <div key={key} className="mb-3">
-              <p className="text-muted-foreground font-body text-xs mb-1.5">{label}</p>
-              <div className="flex gap-2 flex-wrap">
-                {colors.map(color => (
-                  <button key={color} onClick={() => handleColorChange(key, color)}
-                    className={`w-7 h-7 border-2 transition-all ${state.character[key] === color ? 'border-primary scale-110' : 'border-border hover:border-muted-foreground'}`}
-                    style={{ backgroundColor: color }} />
-                ))}
-              </div>
-            </div>
-          ))}
-          <div className="mb-3">
-            <p className="text-muted-foreground font-body text-xs mb-1.5">تسريحة الشعر</p>
-            <div className="flex gap-2">
-              {[0, 1, 2].map(style => (
-                <button key={style} onClick={() => updateCharacter({ hairStyle: style })}
-                  className={`px-3 py-1 font-pixel text-[0.45rem] border-2 ${state.character.hairStyle === style ? 'border-primary text-primary' : 'border-border text-muted-foreground'}`}>
-                  Style {style + 1}
-                </button>
-              ))}
+      <main className="container mx-auto max-w-5xl px-4 pb-12 pt-24" dir="rtl">
+        <Button variant="ghost" className="mb-6 px-0 text-muted-foreground" onClick={() => navigate('/')}><ArrowLeft />العودة للخريطة</Button>
+        <section className="border-b border-border pb-10">
+          <p className="mb-6 text-xs text-primary">MI PERFIL · ملفّي الشخصي</p>
+          <div className="flex flex-col gap-7 sm:flex-row sm:items-center">
+            <PixelAvatar seed={profile?.avatar_url || profile?.username || state.username} size={112} frameStyle="cyber-green" />
+            <div className="min-w-0 flex-1"><h1 dir="auto" className="break-words font-heading text-3xl font-semibold sm:text-4xl">{profile?.username || state.username}</h1><p className="mt-2 text-sm text-muted-foreground">رحلتي في اللغة الإسبانية · Mi viaje</p>
+              <div className="mt-6 flex items-center justify-between gap-4 text-sm"><span>المستوى {state.level}</span><span dir="ltr" className="text-primary">{state.xp} / {xpToNextLevel} XP</span></div>
+              <div role="progressbar" aria-label="تقدم المستوى" aria-valuenow={Math.round(progress * 100)} aria-valuemin={0} aria-valuemax={100} className="mt-3 h-2 overflow-hidden rounded-sm bg-muted"><div className="h-full origin-right bg-primary" style={{ transform: `scaleX(${progress})` }} /></div>
+              <p className="mt-2 text-xs text-muted-foreground">{Math.max(0, xpToNextLevel - state.xp)} نقطة للمستوى التالي</p>
             </div>
           </div>
-        </div>
-
-        {/* NFT Collection */}
-        {nfts.length > 0 && (
-          <div className="pixel-card p-4 mb-6">
-            <NFTCollection nfts={nfts} title="مجموعة NFT - Colección NFT" />
-          </div>
-        )}
-
-        {/* Achievements */}
-        <div className="pixel-card p-4 mb-6">
-          <h3 className="font-pixel text-[0.6rem] text-foreground mb-4">الإنجازات - Logros</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {ACHIEVEMENTS_LIST.map(ach => {
-              const unlocked = state.achievements.includes(ach.id);
-              return (
-                <div key={ach.id} className={`pixel-card p-3 text-center ${unlocked ? 'border-primary/50' : 'opacity-40'}`}>
-                  <div className="text-2xl mb-1">{ach.icon}</div>
-                  <p className="font-pixel text-[0.4rem] text-foreground">{ach.name}</p>
-                  <p className="text-muted-foreground font-body text-[0.6rem]">{ach.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Reset */}
-        <div className="text-center mb-8">
-          <button onClick={() => { if (confirm('هل أنت متأكد؟ سيتم حذف كل التقدم!')) resetProgress(); }}
-            className="text-destructive font-body text-xs flex items-center gap-1 mx-auto hover:underline">
-            <Trash2 size={12} /> إعادة تعيين التقدم
-          </button>
-        </div>
+        </section>
+        <section id="stats-share-area" className="border-b border-border py-8">
+          <div className="mb-5 flex items-center justify-between"><h2 className="font-heading text-xl font-semibold">لمحة عن تقدّمي</h2><Button variant="ghost" size="icon" title="مشاركة الإحصائيات" aria-label="مشاركة الإحصائيات" onClick={shareStats}><Share2 /></Button></div>
+          <div className="grid grid-cols-2 gap-y-6 sm:grid-cols-4">{[
+            { value: state.completedLessons.length, label: 'دروس مكتملة', icon: BookOpen },
+            { value: learnedWords, label: 'مفردات الدروس المكتملة', icon: FileText },
+            { value: state.streak, label: 'أيام متتالية', icon: Flame },
+            { value: state.totalXpEarned, label: 'إجمالي نقاط الخبرة', icon: Trophy },
+          ].map(stat => <div key={stat.label} className="border-r border-border px-4"><stat.icon className="mb-3 size-4 text-accent" /><p className="font-heading text-3xl font-semibold">{stat.value}</p><p className="mt-2 text-xs leading-6 text-muted-foreground">{stat.label}</p></div>)}</div>
+        </section>
+        <section className="border-b border-border py-10"><div className="mb-6 flex items-center justify-between"><h2 className="font-heading text-2xl font-semibold">تقدّم المناطق</h2><span className="text-xs text-muted-foreground">{state.unlockedZones.length} / {ZONES.length}</span></div>
+          <div className="space-y-5">{ZONES.map(zone => { const count = zone.lessons.filter(lesson => state.completedLessons.includes(lesson.id)).length; return <div key={zone.id} className="flex items-center gap-4"><span dir="ltr" className="w-16 shrink-0 text-xs text-accent">{zone.level}</span><div className="min-w-0 flex-1"><div className="mb-2 flex items-center justify-between text-sm"><span>{zone.nameEs}</span><span className="text-xs text-muted-foreground">{count} / {zone.lessons.length}</span></div><div className="h-1.5 overflow-hidden bg-muted"><div className="h-full origin-right bg-primary" style={{ transform: `scaleX(${count / zone.lessons.length})` }} /></div></div></div>; })}</div>
+        </section>
+        <ProfileLearningPanel />
+        <ProfileJournals userId={user?.id} />
+        <section className="border-b border-border py-10"><h2 className="mb-6 font-heading text-2xl font-semibold">إعدادات الحساب</h2><div className="grid gap-8 sm:grid-cols-2">
+          <div><h3 className="mb-4 text-sm font-semibold">صورة الحساب</h3><div className="flex gap-5">{['portrait-man', 'portrait-woman'].map(seed => <Button key={seed} variant="ghost" className={`h-auto rounded-full p-1 ${avatarSeed === seed ? 'ring-2 ring-primary' : ''}`} aria-label={seed === 'portrait-man' ? 'اختيار صورة الرجل' : 'اختيار صورة المرأة'} aria-pressed={avatarSeed === seed} onClick={() => setAvatarSeed(seed)}><PixelAvatar seed={seed} size={76} /></Button>)}</div><p className="mt-3 text-xs text-muted-foreground">{avatarSeed !== profile?.avatar_url ? 'احفظ لتطبيق الصورة الجديدة' : 'صورة الحساب الحالية'}</p></div>
+          <div><label htmlFor="profile-username" className="mb-3 block text-sm font-semibold">اسم المستخدم</label><input id="profile-username" value={username} onChange={event => handleUsernameChange(event.target.value)} maxLength={20} dir="ltr" className="h-12 w-full rounded-md border border-input bg-card/40 px-4 font-body text-base" /><div className="mt-2 min-h-6 text-xs text-muted-foreground">{checkingUsername ? 'جارٍ التحقق…' : usernameAvailable === false ? 'اسم المستخدم غير متاح' : '3–20 حرف إنجليزي أو أرقام أو _'}</div></div>
+        </div>{error && <p role="alert" className="mt-4 text-sm text-destructive">{error}</p>}{success && <p role="status" className="mt-4 text-sm text-primary">{success}</p>}<Button className="mt-6 w-full sm:w-auto" disabled={saving || checkingUsername} onClick={handleSave}><Save />{saving ? 'جارٍ الحفظ…' : 'حفظ التغييرات'}</Button></section>
+        {nfts.length > 0 && <section className="border-b border-border py-10"><NFTCollection nfts={nfts} title="مكافآتي · Mis recompensas" /></section>}
+        <section className="py-10"><h2 className="mb-6 font-heading text-2xl font-semibold">إنجازاتي</h2><div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{ACHIEVEMENTS_LIST.map(achievement => <div key={achievement.id} className={`rounded-md border border-border p-4 ${state.achievements.includes(achievement.id) ? 'bg-card/40' : 'opacity-50'}`}><Trophy className={`mb-3 size-5 ${state.achievements.includes(achievement.id) ? 'text-accent' : 'text-muted-foreground'}`} /><p className="font-semibold">{achievement.name}</p><p className="mt-2 text-xs leading-6 text-muted-foreground">{achievement.desc}</p></div>)}</div></section>
+        <Button variant="ghost" className="text-destructive" onClick={() => { if (confirm('هل أنت متأكد؟ سيتم حذف كل التقدم!')) resetProgress(); }}><Trash2 />إعادة تعيين التقدم</Button>
       </main>
     </div>
   );
