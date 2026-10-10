@@ -83,7 +83,7 @@ export default function LessonPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-4 py-8 max-w-2xl" dir="rtl">
+      <main className="container mx-auto px-4 pb-8 pt-24 max-w-2xl" dir="rtl">
         <button onClick={() => navigate(`/zone/${zoneId}`)} className="flex items-center gap-2 text-muted-foreground hover:text-foreground font-body text-sm mb-4">
           <ArrowLeft size={16} /> العودة
         </button>

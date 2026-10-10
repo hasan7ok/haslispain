@@ -208,7 +208,7 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main className="container mx-auto max-w-5xl px-4 pb-12 pt-8" dir="rtl">
+      <main className="container mx-auto max-w-5xl px-4 pb-12 pt-24" dir="rtl">
         <Button variant="ghost" className="mb-6 px-0 text-muted-foreground" onClick={() => navigate('/')}><ArrowLeft />العودة للخريطة</Button>
         <section className="border-b border-border pb-10">
           <p className="mb-6 text-xs text-primary">MI PERFIL · ملفّي الشخصي</p>

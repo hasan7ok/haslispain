@@ -37,7 +37,7 @@ export default function ZonePage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-3 py-6 max-w-3xl">
+      <main className="container mx-auto px-3 pb-6 pt-24 max-w-3xl">
         {/* Back button */}
         <button onClick={() => navigate('/')} className="flex items-center gap-2 text-muted-foreground hover:text-foreground font-body text-sm mb-4 transition-colors">
           <ArrowLeft size={16} /> العودة للخريطة

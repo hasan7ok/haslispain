@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { BookOpen, LogOut, Map, Menu, MessageCircle, PenLine, Trophy, User, X } from 'lucide-react';
 import { useGameState } from '@/hooks/useGameState';
 import { useAuth } from '@/hooks/useAuth';
-import PixelCharacter from './PixelCharacter';
+import PixelAvatar from './PixelAvatar';
 import ThemeSwitcher from './ThemeSwitcher';
 import { Button } from '@/components/ui/button';
 import logo from '@/assets/pixnol-logo.png';
@@ -18,7 +18,7 @@ const NAV_ITEMS = [
 
 export default function Header() {
   const { state } = useGameState();
-  const { signOut } = useAuth();
+  const { signOut, profile } = useAuth();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -53,7 +53,7 @@ export default function Header() {
           </span>
           <ThemeSwitcher />
           <Link to="/profile" aria-label="الملف الشخصي">
-            <PixelCharacter character={state.character} size={4} />
+            <PixelAvatar seed={profile?.avatar_url || profile?.username || state.username} size={44} />
           </Link>
           <Button variant="ghost" size="icon" onClick={signOut} title="تسجيل الخروج" aria-label="تسجيل الخروج">
             <LogOut />
