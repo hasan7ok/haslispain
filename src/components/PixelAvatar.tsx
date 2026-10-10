@@ -25,7 +25,7 @@ export default function PixelAvatar({ seed, size = 128, className = '', frameSty
   const frameClasses = getFrameClasses(frameStyle);
 
   return (
-    <div className={`relative inline-block shrink-0 ${className}`}>
+    <div className={`relative inline-block shrink-0 self-start ${className}`} style={{ width: size, height: size }}>
       {frameStyle && (
         <div className={`absolute -inset-1 ${frameClasses} rounded-full`} />
       )}

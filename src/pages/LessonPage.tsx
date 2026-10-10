@@ -146,10 +146,10 @@ export default function LessonPage() {
                   <p className="text-muted-foreground font-body text-sm mb-4">{vocab[currentCard].translation}</p>
                   <div className="p-3 bg-muted/50 border border-border mt-2">
                     <div className="flex items-center justify-center gap-2">
-                      <p className="text-primary font-body text-sm font-medium">{vocab[currentCard].example}</p>
+                      <p dir="ltr" className="text-primary font-body text-sm font-medium">{vocab[currentCard].example}</p>
                       <SpanishAudio compact texts={[vocab[currentCard].example]} id={`example-${lesson.id}-${currentCard}`} rate={slow ? 0.55 : 0.85} label="نطق المثال" />
                     </div>
-                    <p className="text-muted-foreground font-body text-xs mt-1">{vocab[currentCard].exampleTranslation}</p>
+                    <p dir="ltr" className="text-muted-foreground font-body text-xs mt-1">{vocab[currentCard].exampleTranslation}</p>
                   </div>
                 </motion.div>
               )}

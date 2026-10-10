@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { useGameState } from '@/hooks/useGameState';
 import { useAuth } from '@/hooks/useAuth';
 import PixelAvatar from '@/components/PixelAvatar';
 import NFTCollection, { NFTItem } from '@/components/NFTCollection';
 import Header from '@/components/Header';
-import { ArrowLeft, Edit3, Save, Trash2, RefreshCw, Check, Share2 } from 'lucide-react';
-import { PixelLoader } from '@/components/PixelLoader';
+import { ArrowLeft, Save, Trash2, Share2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -35,8 +33,6 @@ export default function ProfilePage() {
   const { state, updateUsername, resetProgress, xpToNextLevel } = useGameState();
   const { profile, user, updateProfile, checkUsernameAvailable, refreshProfile } = useAuth();
 
-  const [editingName, setEditingName] = useState(false);
-  const [newName, setNewName] = useState(state.username);
   const [nfts, setNfts] = useState<NFTItem[]>([]);
 
   // Settings state
@@ -72,14 +68,6 @@ export default function ProfilePage() {
   }, [user]);
 
 
-
-  const saveName = () => {
-    if (newName.trim()) { updateUsername(newName.trim()); setEditingName(false); }
-  };
-
-  const regenerateAvatar = () => {
-    setAvatarSeed(`pixel_${Date.now()}_${Math.random().toString(36).slice(2)}`);
-  };
 
   const handleUsernameChange = async (value: string) => {
     setUsername(value);
