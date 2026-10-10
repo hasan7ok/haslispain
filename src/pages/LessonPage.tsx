@@ -1,11 +1,16 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameState } from '@/hooks/useGameState';
 import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { LESSONS } from '@/data/vocabulary';
 import Header from '@/components/Header';
-import SpanishWord, { speakSpanish } from '@/components/SpanishWord';
+import SpanishWord from '@/components/SpanishWord';
+import SpanishAudio from '@/components/SpanishAudio';
+import { Button } from '@/components/ui/button';
+import { useLearningTools } from '@/hooks/useLearningTools';
+import { localDay, recordDailyLesson, toggleItem } from '@/lib/learningTools';
+import { Bookmark, Star } from 'lucide-react';
 import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw, Volume2 } from 'lucide-react';
 
 
@@ -17,6 +22,19 @@ export default function LessonPage() {
   const [currentCard, setCurrentCard] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const { tools, updateTools, ready } = useLearningTools();
+  const [slow, setSlow] = useState(false);
+  const restored = useRef(false);
+  useEffect(() => {
+    if (!ready || restored.current || !lessonId) return;
+    restored.current = true;
+    const saved = tools.resume;
+    if (saved?.lessonId === lessonId) setCurrentCard(Math.min(saved.card, Math.max(0, (LESSONS[lessonId]?.vocabulary.length || 1) - 1)));
+  }, [ready, lessonId, tools.resume]);
+  useEffect(() => {
+    if (!ready || !restored.current || !lessonId || !LESSONS[lessonId] || completed) return;
+    updateTools(previous => ({ ...previous, resume: { lessonId, card: currentCard } }));
+  }, [currentCard, lessonId, ready, completed, updateTools]);
 
   const lesson = lessonId ? LESSONS[lessonId] : undefined;
   if (!lesson) {
@@ -36,6 +54,7 @@ export default function LessonPage() {
   const zoneId = lesson.id.split('-')[0];
 
   const handleComplete = () => {
+    updateTools(previous => ({ ...recordDailyLesson(previous, lesson.id, localDay()), resume: null }));
     setCompleted(true);
     playVictory();
     if (!isAlreadyCompleted) {
@@ -63,7 +82,7 @@ export default function LessonPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-3 py-6 max-w-2xl">
+      <main className="container mx-auto px-4 py-8 max-w-2xl" dir="rtl">
         <button onClick={() => navigate(`/zone/${zoneId}`)} className="flex items-center gap-2 text-muted-foreground hover:text-foreground font-body text-sm mb-4">
           <ArrowLeft size={16} /> العودة
         </button>
@@ -71,8 +90,8 @@ export default function LessonPage() {
 
 
 
-        {/* Lesson header */}
-        <div className="pixel-card-primary p-4 mb-6">
+        <div className="mb-6 flex items-center justify-between gap-3"><p className="text-xs text-primary">LECCIÓN · الدرس</p><Button variant="ghost" size="icon" title="حفظ الدرس في المفضّلة" aria-label="حفظ الدرس في المفضّلة" aria-pressed={tools.bookmarks.includes(lesson.id)} onClick={() => updateTools(previous => ({ ...previous, bookmarks: toggleItem(previous.bookmarks, lesson.id) }))}><Bookmark className={tools.bookmarks.includes(lesson.id) ? 'fill-primary text-primary' : ''} /></Button></div>
+        <div className="border-b border-border pb-6 mb-6">
           <p className="text-foreground font-body text-sm">{lesson.introAr}</p>
           {lesson.tipAr && (
             <div className="mt-3 p-3 bg-primary/5 border-2 border-primary/20 flex gap-2">
@@ -81,6 +100,8 @@ export default function LessonPage() {
             </div>
           )}
         </div>
+
+        <div className="mb-7 space-y-3"><SpanishAudio texts={vocab.flatMap(item => [item.word, item.example])} id={`lesson-${lesson.id}`} rate={slow ? 0.55 : 0.85} /><div className="flex items-center justify-between"><span className="text-xs text-muted-foreground">النطق الإسباني · Español</span><div className="flex gap-1" role="group" aria-label="سرعة النطق"><Button size="sm" variant={!slow ? 'default' : 'ghost'} aria-pressed={!slow} onClick={() => setSlow(false)}>عادي</Button><Button size="sm" variant={slow ? 'default' : 'ghost'} aria-pressed={slow} onClick={() => setSlow(true)}>بطيء</Button></div></div></div>
 
         {/* Progress */}
         <div className="flex items-center justify-between mb-4">
@@ -112,11 +133,11 @@ export default function LessonPage() {
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -30 }}
-              className="pixel-card-primary p-6 min-h-[250px] flex flex-col items-center justify-center cursor-pointer"
-              onClick={() => { playSuccess(); setShowTranslation(!showTranslation); }}
+              className="rounded-md border border-border bg-card/40 p-5 sm:p-8 min-h-[300px] flex flex-col items-center justify-center"
             >
-              <p className="font-pixel text-[0.5rem] text-muted-foreground mb-4">اضغط لكشف الترجمة</p>
-              <SpanishWord word={vocab[currentCard].word} size="lg" className="font-pixel text-primary mb-2" />
+              <div className="mb-5 flex w-full justify-end"><Button variant="ghost" size="icon" title="حفظ المفردة" aria-label="حفظ المفردة" aria-pressed={tools.words.includes(vocab[currentCard].word)} onClick={() => updateTools(previous => ({ ...previous, words: toggleItem(previous.words, vocab[currentCard].word) }))}><Star className={tools.words.includes(vocab[currentCard].word) ? 'fill-accent text-accent' : 'text-muted-foreground'} /></Button></div>
+              <SpanishWord word={vocab[currentCard].word} size="lg" className="font-heading text-primary mb-2 max-w-full text-center" />
+              <Button variant="ghost" className="mt-3" onClick={() => { playSuccess(); setShowTranslation(value => !value); }}>{showTranslation ? 'إخفاء المعنى' : 'كشف المعنى'}</Button>
 
               {showTranslation && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center mt-3">
@@ -125,9 +146,7 @@ export default function LessonPage() {
                   <div className="p-3 bg-muted/50 border border-border mt-2">
                     <div className="flex items-center justify-center gap-2">
                       <p className="text-primary font-body text-sm font-medium">{vocab[currentCard].example}</p>
-                      <button onClick={(e) => { e.stopPropagation(); speakSpanish(vocab[currentCard].example); }} className="text-muted-foreground hover:text-primary opacity-60 hover:opacity-100 transition-colors">
-                        <Volume2 size={14} />
-                      </button>
+                      <SpanishAudio compact texts={[vocab[currentCard].example]} id={`example-${lesson.id}-${currentCard}`} rate={slow ? 0.55 : 0.85} label="نطق المثال" />
                     </div>
                     <p className="text-muted-foreground font-body text-xs mt-1">{vocab[currentCard].exampleTranslation}</p>
                   </div>
@@ -139,16 +158,16 @@ export default function LessonPage() {
 
         {!completed && (
           <div className="flex justify-between mt-4">
-            <button onClick={prevCard} disabled={currentCard === 0} className="pixel-btn-secondary disabled:opacity-30 flex items-center gap-1">
+            <Button onClick={prevCard} disabled={currentCard === 0} variant="outline">
               <ArrowRight size={12} /> السابق
-            </button>
-            <button onClick={nextCard} className="pixel-btn flex items-center gap-1">
+            </Button>
+            <Button onClick={nextCard}>
               {currentCard === vocab.length - 1 ? (
                 <><Check size={12} /> إنهاء</>
               ) : (
                 <>التالي <ArrowLeft size={12} /></>
               )}
-            </button>
+            </Button>
           </div>
         )}
 

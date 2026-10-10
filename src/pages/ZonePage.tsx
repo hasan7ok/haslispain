@@ -4,6 +4,8 @@ import { useGameState } from '@/hooks/useGameState';
 import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { ZONES } from '@/data/zones';
 import Header from '@/components/Header';
+import { LESSONS } from '@/data/vocabulary';
+import SpanishAudio from '@/components/SpanishAudio';
 import { ArrowLeft, Check, BookOpen, Gamepad2, ChevronRight } from 'lucide-react';
 
 
@@ -91,6 +93,7 @@ export default function ZonePage() {
                     )}
                   </div>
                 </Link>
+                {LESSONS[lesson.id] && <div className="mt-2 mb-4"><SpanishAudio texts={LESSONS[lesson.id].vocabulary.flatMap(item => [item.word, item.example])} id={`zone-audio-${lesson.id}`} label={`استمع · ${lesson.titleAr}`} /></div>}
               </motion.div>
             );
           })}
