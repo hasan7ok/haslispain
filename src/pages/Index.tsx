@@ -6,6 +6,7 @@ import { usePixelSounds } from '@/hooks/usePixelSounds';
 import { ZONES } from '@/data/zones';
 import Header from '@/components/Header';
 import CulturaSection from '@/components/CulturaSection';
+import StudyStudio from '@/components/StudyStudio';
 import DonationModal from '@/components/DonationModal';
 import { Button } from '@/components/ui/button';
 import heroImage from '@/assets/premium-learning-hero.jpg';
@@ -202,6 +203,7 @@ export default function Index() {
           </div>
         </section>
 
+        <StudyStudio />
         <CulturaSection />
       </main>
 
