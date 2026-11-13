@@ -5,7 +5,8 @@ import { useAuth } from '@/hooks/useAuth';
 import PixelAvatar from '@/components/PixelAvatar';
 import NFTCollection, { NFTItem } from '@/components/NFTCollection';
 import Header from '@/components/Header';
-import { ArrowLeft, Save, Trash2, Share2 } from 'lucide-react';
+import { ArrowLeft, Save, Trash2, Share2, LogOut, CheckCircle2, Circle, PlayCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -31,7 +32,7 @@ const usernameSchema = z.string().trim().min(3, 'الاسم يجب أن يكون
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { state, updateUsername, resetProgress, xpToNextLevel } = useGameState();
-  const { profile, user, updateProfile, checkUsernameAvailable, refreshProfile } = useAuth();
+  const { signOut, profile, user, updateProfile, checkUsernameAvailable, refreshProfile } = useAuth();
 
   const [nfts, setNfts] = useState<NFTItem[]>([]);
 
@@ -209,7 +210,7 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       <main className="container mx-auto max-w-5xl px-4 pb-12 pt-24" dir="rtl">
-        <Button variant="ghost" className="mb-6 px-0 text-muted-foreground" onClick={() => navigate('/')}><ArrowLeft />العودة للخريطة</Button>
+        <div className="mb-6 flex items-center justify-between gap-3"><Button variant="ghost" className="px-0 text-muted-foreground" onClick={() => navigate('/')}><ArrowLeft />العودة للخريطة</Button><Button variant="outline" size="sm" onClick={signOut}><LogOut />تسجيل الخروج</Button></div>
         <section className="border-b border-border pb-10">
           <p className="mb-6 text-xs text-primary">MI PERFIL · ملفّي الشخصي</p>
           <div className="flex flex-col gap-7 sm:flex-row sm:items-center">
@@ -233,6 +234,13 @@ export default function ProfilePage() {
         <section className="border-b border-border py-10"><div className="mb-6 flex items-center justify-between"><h2 className="font-heading text-2xl font-semibold">تقدّم المناطق</h2><span className="text-xs text-muted-foreground">{state.unlockedZones.length} / {ZONES.length}</span></div>
           <div className="space-y-5">{ZONES.map(zone => { const count = zone.lessons.filter(lesson => state.completedLessons.includes(lesson.id)).length; return <div key={zone.id} className="flex items-center gap-4"><span dir="ltr" className="w-16 shrink-0 text-xs text-accent">{zone.level}</span><div className="min-w-0 flex-1"><div className="mb-2 flex items-center justify-between text-sm"><span>{zone.nameEs}</span><span className="text-xs text-muted-foreground">{count} / {zone.lessons.length}</span></div><div className="h-1.5 overflow-hidden bg-muted"><div className="h-full origin-right bg-primary" style={{ transform: `scaleX(${count / zone.lessons.length})` }} /></div></div></div>; })}</div>
         </section>
+        {(() => { const all = ZONES.flatMap(zone => zone.lessons.map(lesson => ({ ...lesson, zone }))); const unlocked = all.filter(l => state.unlockedZones.includes(l.zone.id)); const done = all.filter(l => state.completedLessons.includes(l.id)); const next = unlocked.filter(l => !state.completedLessons.includes(l.id)).slice(0, 4); const recent = done.slice(-4).reverse(); return (
+        <section className="border-b border-border py-10"><div className="mb-6 flex items-center justify-between"><h2 className="font-heading text-2xl font-semibold">متابعة الدروس</h2><span className="text-xs text-muted-foreground">{done.length} / {all.length}</span></div>
+          <div className="grid gap-8 sm:grid-cols-2">
+            <div><h3 className="mb-3 text-sm font-semibold text-muted-foreground">الدروس التالية</h3>{next.length === 0 ? <p className="text-sm text-muted-foreground">أكملت كل الدروس المتاحة 🎉</p> : <ul className="space-y-2">{next.map(l => <li key={l.id}><Link to={`/lesson/${l.id}`} className="flex items-center gap-3 rounded-md border border-border bg-card/40 p-3 transition-colors hover:border-primary"><PlayCircle className="size-5 shrink-0 text-primary" /><div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{l.titleAr}</p><p dir="ltr" className="truncate text-right text-xs text-muted-foreground">{l.title} · {l.zone.nameEs}</p></div><span className="shrink-0 text-xs text-accent">+{l.xpReward} XP</span></Link></li>)}</ul>}</div>
+            <div><h3 className="mb-3 text-sm font-semibold text-muted-foreground">آخر ما أكملته</h3>{recent.length === 0 ? <p className="flex items-center gap-2 text-sm text-muted-foreground"><Circle className="size-4" />لم تُكمل أي درس بعد</p> : <ul className="space-y-2">{recent.map(l => <li key={l.id}><Link to={`/lesson/${l.id}`} className="flex items-center gap-3 rounded-md border border-border p-3 transition-colors hover:border-primary"><CheckCircle2 className="size-5 shrink-0 text-accent" /><div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{l.titleAr}</p><p dir="ltr" className="truncate text-right text-xs text-muted-foreground">{l.title}</p></div></Link></li>)}</ul>}</div>
+          </div>
+        </section>); })()}
         <ProfileLearningPanel />
         <ProfileJournals userId={user?.id} />
         <section className="border-b border-border py-10"><h2 className="mb-6 font-heading text-2xl font-semibold">إعدادات الحساب</h2><div className="grid gap-8 sm:grid-cols-2">
