@@ -1,5 +1,7 @@
-import avatarMan from '@/assets/avatar-pixel-premium.jpg';
-import avatarWoman from '@/assets/avatar-pixel-woman.jpg';
+import avatarOne from '@/assets/avatar-spain-1.jpg.asset.json';
+import avatarTwo from '@/assets/avatar-spain-2.jpg.asset.json';
+const avatarMan = avatarOne.url;
+const avatarWoman = avatarTwo.url;
 
 interface PixelAvatarProps {
   seed: string;
@@ -26,18 +28,24 @@ export default function PixelAvatar({ seed, size = 128, className = '', frameSty
 
   return (
     <div className={`relative inline-block shrink-0 self-start ${className}`} style={{ width: size, height: size }}>
+      {size >= 56 && (
+        <div aria-hidden className="absolute -inset-1.5 rounded-full opacity-80 animate-[spin_8s_linear_infinite] will-change-transform"
+          style={{ background: 'conic-gradient(from 0deg, hsl(var(--primary)), hsl(var(--accent)), transparent 40%, hsl(var(--secondary)), hsl(var(--primary)))' }} />
+      )}
       {frameStyle && (
         <div className={`absolute -inset-1 ${frameClasses} rounded-full`} />
       )}
-      <img
-        src={portrait}
-        alt="صورة حساب بكسل آرت شبه واقعية"
-        width={size}
-        height={size}
-        loading="lazy"
-        className="relative z-10 rounded-full object-cover"
-        style={{ width: size, height: size, imageRendering: 'pixelated' }}
-      />
+      <div className="relative z-10 rounded-full overflow-hidden bg-background ring-2 ring-background" style={{ width: size, height: size }}>
+        <img
+          src={portrait}
+          alt="صورة الحساب"
+          width={size}
+          height={size}
+          loading="lazy"
+          className="object-cover scale-[1.12]"
+          style={{ width: size, height: size, imageRendering: 'pixelated' }}
+        />
+      </div>
     </div>
   );
 }
