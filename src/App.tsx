@@ -1,3 +1,4 @@
+import { CloudProgressSync } from '@/components/CloudProgressSync';
 import { supabase } from "@/integrations/supabase/client";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -122,6 +123,7 @@ function AppContent() {
 
   return (
     <BrowserRouter>
+      <CloudProgressSync userId={auth.user.id} />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/zone/:zoneId" element={<ZonePage />} />

@@ -21,6 +21,7 @@ export function useLearningTools() {
     localStorage.setItem(key, JSON.stringify(next));
     setTools(next);
     window.dispatchEvent(new Event('pixnol-learning-tools'));
+    window.dispatchEvent(new Event('pixnol-progress-changed'));
   }, [key]);
   return { tools, updateTools, ready: Boolean(key && loadedKey === key) };
 }

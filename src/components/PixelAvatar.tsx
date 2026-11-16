@@ -1,7 +1,5 @@
-import avatarOne from '@/assets/avatar-spain-1.jpg.asset.json';
-import avatarTwo from '@/assets/avatar-spain-2.jpg.asset.json';
-const avatarMan = avatarOne.url;
-const avatarWoman = avatarTwo.url;
+import avatarMan from '@/assets/avatar-spain-1.jpg';
+import avatarWoman from '@/assets/avatar-spain-2.jpg';
 
 interface PixelAvatarProps {
   seed: string;
@@ -29,7 +27,7 @@ export default function PixelAvatar({ seed, size = 128, className = '', frameSty
   return (
     <div className={`relative inline-block shrink-0 self-start ${className}`} style={{ width: size, height: size }}>
       {size >= 56 && (
-        <div aria-hidden className="absolute -inset-1.5 rounded-full opacity-80 animate-[spin_8s_linear_infinite] will-change-transform"
+        <div aria-hidden className="absolute inset-0 scale-[1.1] rounded-full opacity-80 animate-[spin_8s_linear_infinite] will-change-transform"
           style={{ background: 'conic-gradient(from 0deg, hsl(var(--primary)), hsl(var(--accent)), transparent 40%, hsl(var(--secondary)), hsl(var(--primary)))' }} />
       )}
       {frameStyle && (
