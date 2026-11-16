@@ -668,3 +668,8 @@
 }
 
 #lovable-badge {display: none !important;}
+
+/* Room for the phone bottom navigation */
+@media (max-width: 639px) {
+  body { padding-bottom: calc(4rem + env(safe-area-inset-bottom)); }
+}

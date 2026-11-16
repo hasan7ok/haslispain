@@ -18,6 +18,7 @@ export default function Header() {
   const location = useLocation();
 
   return (
+    <>
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border/80 bg-background/90 backdrop-blur-xl">
       <div className="container mx-auto flex h-[72px] items-center gap-2 px-3 sm:px-4">
         <Link to="/" className="flex shrink-0 items-center" aria-label="PIXÑOL">
@@ -28,7 +29,7 @@ export default function Header() {
           <strong className="font-semibold text-foreground">Lv. {state.level}</strong> · {state.streak} أيام
         </span>
 
-        <nav className="flex min-w-0 flex-1 items-center justify-end gap-1" dir="rtl" aria-label="التنقل الرئيسي">
+        <nav className="hidden min-w-0 sm:flex flex-1 items-center justify-end gap-1" dir="rtl" aria-label="التنقل الرئيسي">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path || (item.path === '/profile' && location.pathname === '/settings');
@@ -49,8 +50,33 @@ export default function Header() {
             );
           })}
         </nav>
-        <div className="shrink-0"><ThemeSwitcher /></div>
+        <div className="ms-auto shrink-0 sm:ms-0"><ThemeSwitcher /></div>
       </div>
     </header>
+    <nav
+      className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-6 border-t border-border/80 bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl sm:hidden"
+      dir="rtl"
+      aria-label="التنقل السفلي"
+    >
+      {NAV_ITEMS.map((item) => {
+        const Icon = item.icon;
+        const isActive = location.pathname === item.path || (item.path === '/profile' && location.pathname === '/settings');
+        return (
+          <Link
+            key={item.path}
+            to={item.path}
+            aria-label={item.label}
+            aria-current={isActive ? 'page' : undefined}
+            className={`flex h-16 flex-col items-center justify-center gap-1 text-[10px] font-semibold transition-colors ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}
+          >
+            <span className={`flex h-7 w-11 items-center justify-center rounded-full transition-colors ${isActive ? 'bg-primary/15' : ''}`}>
+              <Icon className={`size-[18px] ${isActive ? 'text-primary' : ''}`} />
+            </span>
+            <span className="max-w-full truncate px-0.5">{item.label === 'الملف الشخصي' ? 'حسابي' : item.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
+    </>
   );
 }
