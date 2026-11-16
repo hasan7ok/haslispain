@@ -64,8 +64,27 @@ export function useGameState() {
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const serialized = JSON.stringify(state);
+    if (localStorage.getItem(STORAGE_KEY) !== serialized) {
+      localStorage.setItem(STORAGE_KEY, serialized);
+      window.dispatchEvent(new Event('pixnol-progress-changed'));
+    }
   }, [state]);
+
+  // Reload when progress arrives from the cloud or another tab
+  useEffect(() => {
+    const reload = () => {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) return;
+        const parsed = JSON.parse(saved);
+        setState(prev => JSON.stringify(prev) === saved ? prev : { ...DEFAULT_STATE, ...parsed, character: { ...DEFAULT_CHARACTER, ...parsed.character } });
+      } catch { /* ignore */ }
+    };
+    window.addEventListener('pixnol-game-state', reload);
+    window.addEventListener('storage', reload);
+    return () => { window.removeEventListener('pixnol-game-state', reload); window.removeEventListener('storage', reload); };
+  }, []);
 
   // Update streak on mount
   useEffect(() => {
