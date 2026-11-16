@@ -169,6 +169,27 @@ export type Database = {
           },
         ]
       }
+      user_progress: {
+        Row: {
+          game_state: Json
+          learning_tools: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          game_state?: Json
+          learning_tools?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          game_state?: Json
+          learning_tools?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
