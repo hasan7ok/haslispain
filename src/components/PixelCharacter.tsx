@@ -1,6 +1,6 @@
 import { CharacterConfig } from '@/hooks/useGameState';
-import portraitAsset from '@/assets/avatar-spain-1.jpg.asset.json';
-const portraitImg = portraitAsset.url;
+import portraitAssetSrc from '@/assets/avatar-spain-1.jpg';
+const portraitImg = portraitAssetSrc;
 
 interface PixelCharacterProps {
   character?: CharacterConfig;

@@ -7,3 +7,9 @@
 - [x] Semi-realistic pixel-art account avatars
 - [x] Five learning improvements: lesson bookmarks, saved vocabulary, vocabulary review, daily goal, resume lesson
 - [x] Tests and browser verification- [x] Real starter content for bookmarks, vocab decks, review tips, goal plans, resume
+- [x] Sync learning progress & tools to the account across devices
+- [x] Phone bottom navigation; top bar kept on larger screens
+- [x] Fix profile picture loading and phone sideways scroll
+- [ ] Unify older games/stories with frosted Arctic design
+- [ ] Image size/speed optimisation
+- [ ] Pronunciation scoring with AI; real spaced repetition

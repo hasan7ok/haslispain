@@ -4,4 +4,4 @@
 - Keep the authenticated home as an editorial learning overview composed from existing game-state and culture data, preserving all learning routes.
 - Keep theme state centralized in ThemeContext; theme controls consume the shared context so visual selection and applied CSS never diverge.
 - Keep Spanish playback in a shared browser-speech controller so all controls share playing, stopping, and error states without adding a paid audio dependency.
-- Store supplementary learning preferences per authenticated user through one shared hook; journals remain in their existing cloud table to preserve ownership and saved content.
+- Store supplementary learning preferences per authenticated user through one shared hook; journals remain in their existing cloud table to preserve ownership and saved content.- Sync game state and learning tools to the user_progress table via CloudProgressSync, keeping localStorage as the fast cache, so progress follows the learner across devices.
