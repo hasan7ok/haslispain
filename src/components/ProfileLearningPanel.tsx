@@ -19,7 +19,7 @@ export default function ProfileLearningPanel() {
   const dailyCount = tools.dailyDate === localDay() ? tools.dailyLessons.length : 0;
   const lessons = ZONES.flatMap(zone => zone.lessons);
   const resumeLesson = lessons.find(lesson => lesson.id === tools.resume?.lessonId);
-  return <section className="border-b border-border py-10" dir="rtl">
+  return <section className="glass-panel mb-5 p-5 sm:p-8" dir="rtl">
     <div className="mb-6 flex flex-wrap items-center justify-between gap-3"><h2 className="font-heading text-2xl font-semibold">مساحة التعلّم</h2><span className="text-xs text-muted-foreground">Mi aprendizaje</span></div>
     <div className="grid gap-8 lg:grid-cols-2">
       <div className="space-y-7">
