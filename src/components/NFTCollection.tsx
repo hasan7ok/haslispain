@@ -29,7 +29,7 @@ const RARITY_CONFIG: Record<string, { label: string; color: string; bgClass: str
 export default function NFTCollection({ nfts, title = 'مجموعة NFT' }: NFTCollectionProps) {
   return (
     <div>
-      <h3 className="font-pixel text-[0.6rem] text-foreground mb-4 flex items-center gap-2">
+      <h3 className="font-heading text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
         🖼️ {title}
       </h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -55,15 +55,15 @@ export default function NFTCollection({ nfts, title = 'مجموعة NFT' }: NFTC
                   frameStyle={nft.earned ? nft.frame_style : undefined}
                 />
               </div>
-              <p className="font-pixel text-[0.4rem] text-foreground mb-1 truncate">{nft.name}</p>
-              <span className={`font-pixel text-[0.35rem] ${rarity.color}`}>
+              <p className="text-sm font-semibold text-foreground mb-1 truncate">{nft.name}</p>
+              <span className={`text-xs font-medium ${rarity.color}`}>
                 {rarity.label}
               </span>
               {nft.earned && (
-                <p className="text-[0.55rem] text-muted-foreground font-body mt-1">✅ مُكتسب</p>
+                <p className="text-xs text-muted-foreground font-body mt-1">✅ مُكتسب</p>
               )}
               {!nft.earned && nft.description && (
-                <p className="text-[0.55rem] text-muted-foreground font-body mt-1">{nft.description}</p>
+                <p className="text-xs text-muted-foreground font-body mt-1">{nft.description}</p>
               )}
             </motion.div>
           );

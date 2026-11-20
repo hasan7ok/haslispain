@@ -16,6 +16,7 @@ import { LESSONS } from '@/data/vocabulary';
 import { ZONES } from '@/data/zones';
 import ProfileLearningPanel from '@/components/ProfileLearningPanel';
 import ProfileJournals from '@/components/ProfileJournals';
+import stageImage from '@/assets/premium-learning-hero.jpg';
 
 const ACHIEVEMENTS_LIST = [
   { id: 'firstGame', name: 'اللاعب الأول', nameEs: 'Primer Jugador', icon: '🎮', desc: 'أكمل أول لعبة' },
@@ -207,11 +208,13 @@ export default function ProfilePage() {
   const progress = Math.min(state.xp / xpToNextLevel, 1);
   const learnedWords = new Set(state.completedLessons.flatMap(id => LESSONS[id]?.vocabulary.map(word => word.word) || [])).size;
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="profile-stage min-h-screen text-foreground">
+      <div aria-hidden className="profile-stage__photo" style={{ backgroundImage: `url(${stageImage})` }} />
+      <div aria-hidden className="profile-stage__veil" />
       <Header />
-      <main className="container mx-auto max-w-5xl px-4 pb-12 pt-24" dir="rtl">
-        <div className="mb-6 flex items-center justify-between gap-3"><Button variant="ghost" className="px-0 text-muted-foreground" onClick={() => navigate('/')}><ArrowLeft />العودة للخريطة</Button><Button variant="outline" size="sm" onClick={signOut}><LogOut />تسجيل الخروج</Button></div>
-        <section className="border-b border-border pb-10">
+      <main className="container relative z-10 mx-auto max-w-5xl px-4 pb-12 pt-24" dir="rtl">
+        <div className="glass-chip mb-5 flex items-center justify-between gap-3 px-4 py-2.5"><Button variant="ghost" className="px-0 text-foreground/85 hover:text-primary" onClick={() => navigate('/')}><ArrowLeft />العودة للخريطة</Button><Button variant="outline" size="sm" onClick={signOut}><LogOut />تسجيل الخروج</Button></div>
+        <section className="glass-panel mb-5 p-5 sm:p-8">
           <p className="mb-6 text-xs text-primary">MI PERFIL · ملفّي الشخصي</p>
           <div className="flex flex-col gap-7 sm:flex-row sm:items-center">
             <PixelAvatar seed={profile?.avatar_url || profile?.username || state.username} size={112} frameStyle="cyber-green" />
@@ -222,7 +225,7 @@ export default function ProfilePage() {
             </div>
           </div>
         </section>
-        <section id="stats-share-area" className="border-b border-border py-8">
+        <section id="stats-share-area" className="glass-panel mb-5 p-5 sm:p-8">
           <div className="mb-5 flex items-center justify-between"><h2 className="font-heading text-xl font-semibold">لمحة عن تقدّمي</h2><Button variant="ghost" size="icon" title="مشاركة الإحصائيات" aria-label="مشاركة الإحصائيات" onClick={shareStats}><Share2 /></Button></div>
           <div className="grid grid-cols-2 gap-y-6 sm:grid-cols-4">{[
             { value: state.completedLessons.length, label: 'دروس مكتملة', icon: BookOpen },
@@ -231,25 +234,25 @@ export default function ProfilePage() {
             { value: state.totalXpEarned, label: 'إجمالي نقاط الخبرة', icon: Trophy },
           ].map(stat => <div key={stat.label} className="border-r border-border px-4"><stat.icon className="mb-3 size-4 text-accent" /><p className="font-heading text-3xl font-semibold">{stat.value}</p><p className="mt-2 text-xs leading-6 text-muted-foreground">{stat.label}</p></div>)}</div>
         </section>
-        <section className="border-b border-border py-10"><div className="mb-6 flex items-center justify-between"><h2 className="font-heading text-2xl font-semibold">تقدّم المناطق</h2><span className="text-xs text-muted-foreground">{state.unlockedZones.length} / {ZONES.length}</span></div>
+        <section className="glass-panel mb-5 p-5 sm:p-8"><div className="mb-6 flex items-center justify-between"><h2 className="font-heading text-2xl font-semibold">تقدّم المناطق</h2><span className="text-xs text-muted-foreground">{state.unlockedZones.length} / {ZONES.length}</span></div>
           <div className="space-y-5">{ZONES.map(zone => { const count = zone.lessons.filter(lesson => state.completedLessons.includes(lesson.id)).length; return <div key={zone.id} className="flex items-center gap-4"><span dir="ltr" className="w-16 shrink-0 text-xs text-accent">{zone.level}</span><div className="min-w-0 flex-1"><div className="mb-2 flex items-center justify-between text-sm"><span>{zone.nameEs}</span><span className="text-xs text-muted-foreground">{count} / {zone.lessons.length}</span></div><div className="h-1.5 overflow-hidden bg-muted"><div className="h-full origin-right bg-primary" style={{ transform: `scaleX(${count / zone.lessons.length})` }} /></div></div></div>; })}</div>
         </section>
         {(() => { const all = ZONES.flatMap(zone => zone.lessons.map(lesson => ({ ...lesson, zone }))); const unlocked = all.filter(l => state.unlockedZones.includes(l.zone.id)); const done = all.filter(l => state.completedLessons.includes(l.id)); const next = unlocked.filter(l => !state.completedLessons.includes(l.id)).slice(0, 4); const recent = done.slice(-4).reverse(); return (
-        <section className="border-b border-border py-10"><div className="mb-6 flex items-center justify-between"><h2 className="font-heading text-2xl font-semibold">متابعة الدروس</h2><span className="text-xs text-muted-foreground">{done.length} / {all.length}</span></div>
+        <section className="glass-panel mb-5 p-5 sm:p-8"><div className="mb-6 flex items-center justify-between"><h2 className="font-heading text-2xl font-semibold">متابعة الدروس</h2><span className="text-xs text-muted-foreground">{done.length} / {all.length}</span></div>
           <div className="grid gap-8 sm:grid-cols-2">
-            <div><h3 className="mb-3 text-sm font-semibold text-muted-foreground">الدروس التالية</h3>{next.length === 0 ? <p className="text-sm text-muted-foreground">أكملت كل الدروس المتاحة 🎉</p> : <ul className="space-y-2">{next.map(l => <li key={l.id}><Link to={`/lesson/${l.id}`} className="flex items-center gap-3 rounded-md border border-border bg-card/40 p-3 transition-colors hover:border-primary"><PlayCircle className="size-5 shrink-0 text-primary" /><div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{l.titleAr}</p><p dir="ltr" className="truncate text-right text-xs text-muted-foreground">{l.title} · {l.zone.nameEs}</p></div><span className="shrink-0 text-xs text-accent">+{l.xpReward} XP</span></Link></li>)}</ul>}</div>
+            <div><h3 className="mb-3 text-sm font-semibold text-muted-foreground">الدروس التالية</h3>{next.length === 0 ? <p className="text-sm text-muted-foreground">أكملت كل الدروس المتاحة 🎉</p> : <ul className="space-y-2">{next.map(l => <li key={l.id}><Link to={`/lesson/${l.id}`} className="flex items-center gap-3 rounded-md border border-border bg-background/55 p-3 transition-colors hover:border-primary"><PlayCircle className="size-5 shrink-0 text-primary" /><div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{l.titleAr}</p><p dir="ltr" className="truncate text-right text-xs text-muted-foreground">{l.title} · {l.zone.nameEs}</p></div><span className="shrink-0 text-xs text-accent">+{l.xpReward} XP</span></Link></li>)}</ul>}</div>
             <div><h3 className="mb-3 text-sm font-semibold text-muted-foreground">آخر ما أكملته</h3>{recent.length === 0 ? <p className="flex items-center gap-2 text-sm text-muted-foreground"><Circle className="size-4" />لم تُكمل أي درس بعد</p> : <ul className="space-y-2">{recent.map(l => <li key={l.id}><Link to={`/lesson/${l.id}`} className="flex items-center gap-3 rounded-md border border-border p-3 transition-colors hover:border-primary"><CheckCircle2 className="size-5 shrink-0 text-accent" /><div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{l.titleAr}</p><p dir="ltr" className="truncate text-right text-xs text-muted-foreground">{l.title}</p></div></Link></li>)}</ul>}</div>
           </div>
         </section>); })()}
         <ProfileLearningPanel />
         <ProfileJournals userId={user?.id} />
-        <section className="border-b border-border py-10"><h2 className="mb-6 font-heading text-2xl font-semibold">إعدادات الحساب</h2><div className="grid gap-8 sm:grid-cols-2">
+        <section className="glass-panel mb-5 p-5 sm:p-8"><h2 className="mb-6 font-heading text-2xl font-semibold">إعدادات الحساب</h2><div className="grid gap-8 sm:grid-cols-2">
           <div><h3 className="mb-4 text-sm font-semibold">صورة الحساب</h3><div className="flex gap-5">{['portrait-man', 'portrait-woman'].map(seed => <Button key={seed} variant="ghost" className={`h-auto rounded-full p-1 ${avatarSeed === seed ? 'ring-2 ring-primary' : ''}`} aria-label={seed === 'portrait-man' ? 'اختيار صورة الرجل' : 'اختيار صورة المرأة'} aria-pressed={avatarSeed === seed} onClick={() => setAvatarSeed(seed)}><PixelAvatar seed={seed} size={76} /></Button>)}</div><p className="mt-3 text-xs text-muted-foreground">{avatarSeed !== profile?.avatar_url ? 'احفظ لتطبيق الصورة الجديدة' : 'صورة الحساب الحالية'}</p></div>
-          <div><label htmlFor="profile-username" className="mb-3 block text-sm font-semibold">اسم المستخدم</label><input id="profile-username" value={username} onChange={event => handleUsernameChange(event.target.value)} maxLength={20} dir="ltr" className="h-12 w-full rounded-md border border-input bg-card/40 px-4 font-body text-base" /><div className="mt-2 min-h-6 text-xs text-muted-foreground">{checkingUsername ? 'جارٍ التحقق…' : usernameAvailable === false ? 'اسم المستخدم غير متاح' : '3–20 حرف إنجليزي أو أرقام أو _'}</div></div>
+          <div><label htmlFor="profile-username" className="mb-3 block text-sm font-semibold">اسم المستخدم</label><input id="profile-username" value={username} onChange={event => handleUsernameChange(event.target.value)} maxLength={20} dir="ltr" className="h-12 w-full rounded-md border border-input bg-background/55 px-4 font-body text-base" /><div className="mt-2 min-h-6 text-xs text-muted-foreground">{checkingUsername ? 'جارٍ التحقق…' : usernameAvailable === false ? 'اسم المستخدم غير متاح' : '3–20 حرف إنجليزي أو أرقام أو _'}</div></div>
         </div>{error && <p role="alert" className="mt-4 text-sm text-destructive">{error}</p>}{success && <p role="status" className="mt-4 text-sm text-primary">{success}</p>}<Button className="mt-6 w-full sm:w-auto" disabled={saving || checkingUsername} onClick={handleSave}><Save />{saving ? 'جارٍ الحفظ…' : 'حفظ التغييرات'}</Button></section>
-        {nfts.length > 0 && <section className="border-b border-border py-10"><NFTCollection nfts={nfts} title="مكافآتي · Mis recompensas" /></section>}
-        <section className="py-10"><h2 className="mb-6 font-heading text-2xl font-semibold">إنجازاتي</h2><div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{ACHIEVEMENTS_LIST.map(achievement => <div key={achievement.id} className={`rounded-md border border-border p-4 ${state.achievements.includes(achievement.id) ? 'bg-card/40' : 'opacity-50'}`}><Trophy className={`mb-3 size-5 ${state.achievements.includes(achievement.id) ? 'text-accent' : 'text-muted-foreground'}`} /><p className="font-semibold">{achievement.name}</p><p className="mt-2 text-xs leading-6 text-muted-foreground">{achievement.desc}</p></div>)}</div></section>
-        <Button variant="ghost" className="text-destructive" onClick={() => { if (confirm('هل أنت متأكد؟ سيتم حذف كل التقدم!')) resetProgress(); }}><Trash2 />إعادة تعيين التقدم</Button>
+        {nfts.length > 0 && <section className="glass-panel mb-5 p-5 sm:p-8"><NFTCollection nfts={nfts} title="مكافآتي · Mis recompensas" /></section>}
+        <section className="glass-panel mb-5 p-5 sm:p-8"><h2 className="mb-6 font-heading text-2xl font-semibold">إنجازاتي</h2><div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{ACHIEVEMENTS_LIST.map(achievement => <div key={achievement.id} className={`rounded-md border border-border p-4 ${state.achievements.includes(achievement.id) ? 'bg-background/55' : 'opacity-50'}`}><Trophy className={`mb-3 size-5 ${state.achievements.includes(achievement.id) ? 'text-accent' : 'text-muted-foreground'}`} /><p className="font-semibold">{achievement.name}</p><p className="mt-2 text-xs leading-6 text-muted-foreground">{achievement.desc}</p></div>)}</div></section>
+        <Button variant="ghost" className="glass-chip text-destructive hover:text-destructive" onClick={() => { if (confirm('هل أنت متأكد؟ سيتم حذف كل التقدم!')) resetProgress(); }}><Trash2 />إعادة تعيين التقدم</Button>
       </main>
     </div>
   );
